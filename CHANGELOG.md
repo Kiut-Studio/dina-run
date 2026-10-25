@@ -1,0 +1,55 @@
+# Novedades de Sofi Runner
+
+## Versión 0.6 — octubre 2026: ¡Sofi Runner! y Halloween
+
+- 🏃 El juego ahora se llama **Sofi Runner** (antes, en pruebas, Torta Runner+). El progreso de la versión de prueba se trae solo.
+- 🎃 **Halloween** (del 15/10 al 2/11): murciélagos, calabazas, luna naranja y tortas con sombrero de bruja. Se puede apagar en ⚙️.
+- 🧙 Cosméticos de temporada: sombrero de bruja y confeti calabaza. Solo se compran en Halloween, y después quedan para siempre.
+- 📈 **Más difícil a medida que avanzás:** la velocidad sigue subiendo, y aparecen tortas dobles, torres y tríos con menos espacio entre ellas.
+- 🐢 Tropezar te frena solo un momento: en 2 segundos recuperás la velocidad (antes te quedabas más lento, y chocar terminaba ayudando).
+- 😾 Dina se enoja: cada tropezón de la partida la hace tardar 1 s más en cansarse, y nunca se cansa en menos de 4 s.
+- 🍭 El primer dulce sale al caer la primera noche, y después uno en cada amanecer (hasta 8 por partida). Como mucho 3 corazones a la vez.
+
+## Versión 0.5 — octubre 2026: Día y noche
+
+- 🌙 Cada 1000 m se hace de noche, con estrellas que titilan y luna, y a los 1000 siguientes vuelve el día.
+- 🍭 Con cada cambio de día o de noche elegís un dulce (cada 1000 m).
+- ☁️ El fondo ya no tiene el saludo de cumpleaños: quedan las nubes, los corazones y las estrellitas de Sofía.
+- 💪 ¡Una más! y el desafío de la semana vuelven a tener sus textos completos.
+
+## Versión 0.4 — octubre 2026: Menos texto, más juego
+
+- 🎨 Lo nuevo usa íconos y etiquetas en vez de frases: los datos de la pantalla de Dina (récord, puesto, desafío, dulces y logros), el menú, los dulces, ¡Una más! y la Pastelería. Los textos de siempre del juego (el "¡Uy! Te caíste", el globito de Dina, la pausa y los mensajes de la partida) quedan como estaban.
+- ⭐ Cada habilidad y cada dulce muestran su explicación y, además, un dato corto (🐱 −2 s, 🦘 +1 salto…).
+- 🔓 Comprar un personaje muestra una barrita de cuánto te falta.
+
+## Versión 0.3 — octubre 2026: Cosméticos y más equilibrio
+
+- 🎀 **Cosméticos a la venta:** accesorios (corazón, hoodie rosa, corona) y confeti de 5 colores que te sigue al correr. Antes de comprarlos se ven puestos en tu personaje.
+- ✨ Accesorio y confeti se eligen con flechitas, igual que los personajes.
+- ❤️ La curita ahora es un **corazón**: se guarda hasta que chocás y se ve en el marcador y al costado de tu personaje.
+- 🛡️ Cuando el escudo aguanta dos choques, se ve con **dos anillos** y el marcador dice 🛡️×2.
+- 🍭 Los dulces salen más espaciados: a los 1000 m, 2500, 4500, 7000…
+- ⚖️ **Habilidades más parejas:** Sofi ahora es escurridiza (Dina se cansa 2 s antes) y Cinthia arranca con un corazón. Nadie corre más rápido que nadie.
+- 📱 El menú entra completo en cualquier pantalla, sin deslizar, y la pantalla de Dina también. La ayuda está en ❓, y los créditos y "Borrar mi progreso" en ⚙️.
+- Los outfits que ya tenías se conservan.
+
+## Versión 0.2 — octubre 2026: Dulces y personajes con habilidades
+
+- 🍭 **Dulces:** cada 400 m elegís 1 de 3 (12 en total, uno con trampa). Te ayudan hasta que termina la partida y se pueden juntar.
+- ⚡ **Habilidades:** Sofi es veloz, Deisy salta más alto, Leandro atrae frutillas, Nora encuentra más Kampitos y Cinthia arranca con escudo.
+- 🛍️ Los personajes se compran a 500 🍓 cada uno.
+- 🎠 **Menú nuevo:** tu personaje al centro y los demás en un carrusel.
+- 🧁 La Pastelería está más a la vista (también en la pantalla de Dina) y avisa cuando te alcanza para algo.
+- 🏅 Logro nuevo: Golosa.
+
+## Versión 0.1 — octubre 2026: Las frutillas sirven para algo
+
+Primera versión, a partir de Torta Runner 2.2 (el juego de cumpleaños de la familia).
+
+- 🧁 **Pastelería:** gastá tus frutillas en 4 mejoras para siempre (imán más largo, escudo reforzado, pancito más rico y Dina que se cansa antes), cada una con 4 niveles.
+- 💪 **¡Una más!:** cuando Dina te alcanza, podés darle frutillas y seguir corriendo, una vez por partida.
+- 🍓 Gastar no te saca nada: los personajes y outfits se desbloquean con todas las frutillas que juntaste.
+- 🏅 Logros nuevos: Repostera, Maestra pastelera y ¡Una más!
+- Se quitaron la fiesta final, los cumpleaños de la familia, el ranking compartido y la caja fuerte. Cinthia es un personaje más.
+- El progreso se guarda aparte del juego de la familia, aunque estén en el mismo sitio.
