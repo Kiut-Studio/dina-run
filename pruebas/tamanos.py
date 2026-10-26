@@ -31,15 +31,15 @@ try:
       errs=[];pg.on('pageerror',lambda e:errs.append('error js: '+str(e)))
       pg.goto('http://localhost:8771/index.html#prueba');pg.wait_for_timeout(150)
       pg.evaluate("d=>localStorage.setItem('sofiRunner.v1',JSON.stringify(d))",{'total':900,'spent':0,'seenVersion':'0.6','tips':TIPS,'ach':{'primera':1}})
-      pg.reload();pg.wait_for_timeout(900)
+      pg.reload();pg.wait_for_timeout(900);pg.evaluate("TR.setSeason('halloween')");pg.wait_for_timeout(150) # con Halloween: botón y pantalla del pase
       probs=pg.evaluate(MENU)
       pg.screenshot(path=f'{OUT}/{w}x{h}_menu.png')
       # con un personaje bloqueado al centro (botón Comprar) y un cosmético sin comprar
       pg.click('#carNext');pg.click('#accNext');pg.click('#trailNext');pg.wait_for_timeout(500)
       probs+=['[bloqueado] '+x for x in pg.evaluate(MENU)]
       pg.screenshot(path=f'{OUT}/{w}x{h}_menu2.png')
-      for ov,sel in [('#settings','#settings .goCard'),('#help','#help .goCard'),('#shop','#shop .goCard'),('#news','#news .goCard'),('#ach','#ach .goCard'),('#rank','#rank .goCard')]:
-        pg.evaluate(f"document.querySelector('{ov}').hidden=false");pg.wait_for_timeout(150)
+      for ov,sel in [('#settings','#settings .goCard'),('#help','#help .goCard'),('#shop','#shop .goCard'),('#news','#news .goCard'),('#ach','#ach .goCard'),('#rank','#rank .goCard'),('#pass','#pass .goCard')]:
+        pg.evaluate("TR.openPass()" if ov=='#pass' else f"document.querySelector('{ov}').hidden=false");pg.wait_for_timeout(150)
         probs+=pg.evaluate(FIT,sel)
         # nada del menú puede quedar por encima de la ventana: se mira qué elemento está arriba en varios puntos
         probs+=pg.evaluate('''(o=>{const ov=document.querySelector(o),r=ov.getBoundingClientRect(),P=[];
@@ -59,6 +59,7 @@ try:
       pg.evaluate("document.getElementById('offerNo').click()");pg.wait_for_timeout(1500)
       probs+=pg.evaluate(FIT,'#overCard')
       pg.screenshot(path=f'{OUT}/{w}x{h}_dina.png')
+      pg.evaluate('TR.openPass()');pg.wait_for_timeout(150);pg.screenshot(path=f'{OUT}/{w}x{h}_pase.png')
       probs+=errs
       tot+=len(probs)
       print(f'{w}x{h}:', 'ok' if not probs else '\n   - '+'\n   - '.join(probs))

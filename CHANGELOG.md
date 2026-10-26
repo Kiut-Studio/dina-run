@@ -1,4 +1,16 @@
-# Novedades de Sofi Runner
+# Novedades de Dina Run
+
+## Versión 0.7.1 — octubre 2026: ¡Ahora se llama Dina Run!
+
+- 🐱 El juego ahora se llama **Dina Run** (antes Sofi Runner), igual que su hermano de ritmo **Dina Beat**. El progreso guardado, las frutillas y el pase de Halloween siguen igual.
+
+## Versión 0.7 — octubre 2026: Halloween con Dina
+
+- 🐱 **Dina nueva:** corre con los dos cuadros de la caminata que dibujó Sofía.
+- 🎟️ **Pase de Halloween** (gratis): los metros que corrés en Halloween suben de nivel, con un tope de 2500 m por día (el vestido de Alicia lleva por lo menos 7 días). Los premios se reclaman en el pase: 400 m disfraz de bruja para Dina · 1500 m 100 🍓 · 3000 m confeti calabaza · 5000 m disfraz de brujito para Dina · 7500 m 200 🍓 · 10.000 m sombrero de bruja · 13.000 m capa de vampiro para Dina · 16.000 m **vestido de Alicia** para Sofi. Quedan para siempre; el pase vuelve a empezar cada año. El sombrero de bruja y el confeti calabaza ya no se compran: a quien los había comprado se le devuelven las frutillas y los puede ganar en el pase.
+- 🎃 **Más Halloween:** calabazas para esquivar en vez de tortas con sombrero, pociones en vez de Kampitos, golosinas que van cambiando en vez de pancitos, Dina disfrazada (con los disfraces ganados) y comiéndose la calabaza al final, y una música nueva en La menor. Todo se apaga junto con *Temas de temporada*.
+- 👗 Cada personaje se acuerda del último accesorio que le pusiste.
+- ✨ Al chocar, el personaje parpadea; ya no aparece un rectángulo blanco (se notaba mucho de noche).
 
 ## Versión 0.6 — octubre 2026: ¡Sofi Runner! y Halloween
 

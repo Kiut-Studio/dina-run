@@ -17,7 +17,7 @@ try:
     seed(pg,{'total':100,'owned':['sofi'],'outfit':'corona'})
     sv=pg.evaluate('TR.save')
     check(set(sv['cosm'])>={'default','none','hoodie','corazon','corona'} and sv['outfit']=='corona','al venir de la 0.2 se conservan los outfits que tenía')
-    seed(pg,{'total':800,'spent':0,'owned':['sofi'],'cosm':['default','none']})
+    seed(pg,{'total':800,'spent':0,'owned':['sofi'],'cosm':['default','none']});pg.evaluate("TR.setSeason('halloween')")
     check('Sin accesorio' in pg.inner_text('#accVal') and 'Sin confeti' in pg.inner_text('#trailVal'),'arranca sin accesorio ni confeti')
     pg.click('#accNext');pg.wait_for_timeout(200)
     check('Corazón' in pg.inner_text('#accVal') and pg.is_visible('#accAct .cBuy') and pg.evaluate('TR.save.outfit')=='default','mirar el Corazón: botón de compra, sin ponérselo todavía')
@@ -33,12 +33,79 @@ try:
     check(sv['outfit']=='corazon' and sv['spent']==270,'comprar Corazón: puesto')
     # hoodie solo con Sofi
     names=[]
-    for _ in range(4): pg.click('#accNext');pg.wait_for_timeout(80);names.append(pg.inner_text('#accVal'))
+    for _ in range(6): pg.click('#accNext');pg.wait_for_timeout(80);names.append(pg.inner_text('#accVal'))
     check(any('Hoodie' in n for n in names),'con Sofi aparece el hoodie')
+    check(any('Alicia' in n for n in names),'con Sofi aparece el vestido de Alicia')
     seed(pg,{'total':3000,'owned':['sofi','deisy','leandro','nora','cinthia'],'cosm':['default','none','hoodie'],'outfit':'hoodie','char':'deisy'})
     names=[]
     for _ in range(4): pg.click('#accNext');pg.wait_for_timeout(80);names.append(pg.inner_text('#accVal'))
     check(not any('Hoodie' in n for n in names),'con Deisy el hoodie no aparece')
+    check(not any('Alicia' in n for n in names),'con Deisy el vestido de Alicia no aparece')
+    # pase de Halloween: se gana corriendo; el último premio es el vestido de Alicia
+    seed(pg,{'total':3000,'cosm':['default','none'],'char':'sofi'});pg.evaluate("TR.setSeason('halloween')");pg.wait_for_timeout(150)
+    for _ in range(8):
+        if 'Alicia' in pg.inner_text('#accVal'): break
+        pg.click('#accNext');pg.wait_for_timeout(80)
+    check('Nv 8' in pg.inner_text('#accAct') and pg.evaluate('TR.save.outfit')=='default','el vestido de Alicia no se compra: se gana en el nivel 8 del pase')
+    check(pg.is_visible('#passBanner'),'en Halloween el menú muestra el cartel del pase')
+    pg.click('#passBanner',force=True);pg.wait_for_timeout(200)
+    check(pg.locator('#passGrid .passItem').count()==8 and pg.is_visible('#pass'),'la pantalla del pase muestra 8 niveles')
+    pg.screenshot(path=f'{OUT}/07_pase.png');pg.click('#passBack')
+    pg.click('#playBtn');pg.wait_for_timeout(250);pg.evaluate('TR.hold()');pg.evaluate('TR.setNextCard(1e9)')
+    pg.evaluate('TR.setDist(1200)');pg.evaluate('TR.die()');pg.wait_for_timeout(1800)
+    sv=pg.evaluate('TR.save')
+    check(sv['pass']['m']==1200 and sv['pass']['got']==[] and sv['dinaLooks']==[] and sv['total']==3000,f"1200 m: los premios no se dan solos ({sv['pass']})")
+    check(pg.is_hidden('#unlock') and 'Premio' in pg.inner_text('#passLine'),'la pantalla de Dina avisa que hay premio para reclamar')
+    pg.wait_for_timeout(1000);check(pg.is_visible('#toast') and 'Pase' in pg.inner_text('#toast'),'aparece el aviso del premio nuevo')
+    pg.click('#passLine',force=True);pg.wait_for_timeout(200)
+    check(pg.locator('#passGrid .passClaim').count()==1,'en el pase hay 1 botón de Reclamar (nivel 1, 400 m)')
+    pg.screenshot(path=f'{OUT}/08_reclamar.png')
+    pg.locator('#passGrid .passClaim').first.click(force=True);pg.wait_for_timeout(200)
+    sv=pg.evaluate('TR.save')
+    check(sv['pass']['got']==[0] and sv['dinaLooks']==['bruja'] and pg.is_visible('#unlock'),'reclamar el nivel 1: disfraz de bruja para Dina, con felicitaciones')
+    pg.screenshot(path=f'{OUT}/09_premio_pase.png');pg.click('#uOk');pg.wait_for_timeout(150)
+    # tope diario: 2500 m por día
+    pg.evaluate('TR.passAdd(20000)')
+    check(pg.evaluate('TR.save.pass.m')==2500,'tope diario: ese día suman como mucho 2500 m')
+    pg.evaluate('TR.openPass()');check('tope' in pg.inner_text('#passDay'),'el pase avisa que por hoy se llegó al tope')
+    for _ in range(5): pg.evaluate("TR.save.pass.day='ayer'");pg.evaluate('TR.passAdd(5000)')
+    check(pg.evaluate('TR.save.pass.m')==15000 and len(pg.evaluate('TR.passData().got'))==1,'a los 6 días todavía no llega a Alicia (15.000 de 16.000 m)')
+    pg.evaluate("TR.save.pass.day='ayer'");pg.evaluate('TR.passAdd(5000)')
+    pg.evaluate('TR.openPass()');pg.wait_for_timeout(100)
+    check(pg.locator('#passGrid .passClaim').count()==7,'al séptimo día están los 7 premios restantes para reclamar, Alicia incluida')
+    for _ in range(7):
+        pg.locator('#passGrid .passClaim').first.click(force=True);pg.wait_for_timeout(120);pg.click('#uOk');pg.wait_for_timeout(80)
+    sv=pg.evaluate('TR.save')
+    check({'alicia','bruja','calabaza'}<=set(sv['cosm']) and len(sv['dinaLooks'])==3 and sv['total']==3300,'pase completo: Alicia, sombrero, confeti calabaza, 3 disfraces de Dina y 300 🍓')
+    pg.evaluate("TR.save.pass.day='ayer'")
+    pg.evaluate("TR.setSeason('')");pg.evaluate('TR.passAdd(500)')
+    check(pg.evaluate('TR.save.pass.m')==17500,'sin Halloween el pase no suma')
+    # 0.7: quien tenía comprados los premios del pase (0.6 o pruebas) los pierde y recupera las frutillas
+    seed(pg,{'total':3000,'spent':700,'cosm':['default','none','corona','bruja','calabaza','alicia'],'outfit':'alicia','outfits':{'sofi':'alicia','deisy':'bruja'},'trail':'calabaza','char':'sofi'})
+    sv=pg.evaluate('TR.save')
+    check(sv['cosm']==['default','none','corona'] and sv['spent']==0 and sv['outfit']=='default' and sv['trail']=='none' and sv['outfits']['deisy']=='default','los premios del pase comprados antes se sacan y se devuelven 700 🍓')
+    # cada personaje recuerda su último accesorio
+    seed(pg,{'total':3000,'owned':['sofi','deisy','leandro','nora','cinthia'],'cosm':['default','none','alicia','corona'],'outfit':'alicia','char':'sofi','mig07':1})
+    pg.click('#carNext');pg.wait_for_timeout(150)
+    sv=pg.evaluate('TR.save')
+    check(sv['char']=='deisy' and sv['outfit']=='default','al pasar a Deisy no hereda el vestido de Sofi')
+    for _ in range(6):
+        if 'Corona' in pg.inner_text('#accVal'): break
+        pg.click('#accNext');pg.wait_for_timeout(80)
+    pg.click('#carPrev');pg.wait_for_timeout(150)
+    sv=pg.evaluate('TR.save')
+    check(sv['char']=='sofi' and sv['outfit']=='alicia','al volver a Sofi sigue con el vestido de Alicia')
+    pg.click('#carNext');pg.wait_for_timeout(150)
+    check(pg.evaluate('TR.save.outfit')=='corona','y Deisy sigue con su corona')
+    # Dina: fuera de Halloween va sin disfraz aunque los tenga
+    seed(pg,{'total':3000,'owned':['sofi','deisy'],'char':'deisy','dinaLooks':['bruja','brujito','vampiro']});pg.evaluate("TR.setSeason('')")
+    pg.click('#playBtn');pg.wait_for_timeout(250);pg.evaluate('TR.hold()')
+    looks=[]
+    for _ in range(2):
+        pg.evaluate('TR.setDist(800)');pg.evaluate('TR.cake(80)');pg.wait_for_timeout(1300)
+        looks.append(pg.evaluate('TR.dina.look'))
+        pg.evaluate("TR.dina.stage=0;TR.dina.calm=0;TR.dina.x=-300")
+    check(looks==['',''],f'fuera de Halloween (o con el tema apagado) Dina va sin disfraz ({looks})')
     # ---------- juego ----------
     def run(ch,extra={}):
         d={'total':3000,'owned':['sofi','deisy','leandro','nora','cinthia'],'char':ch,'cosm':['default','none','rosa'],'trail':'rosa'};d.update(extra);seed(pg,d)
@@ -86,7 +153,25 @@ try:
     check(pg.evaluate("document.body.dataset.season")=='halloween','en temporada se ve Halloween')
     names=[]
     for _ in range(5): pg.click('#accNext');pg.wait_for_timeout(60);names.append(pg.inner_text('#accVal'))
-    check(any('bruja' in n for n in names),'en Halloween se puede comprar el sombrero de bruja')
+    check(any('bruja' in n for n in names),'en Halloween aparece el sombrero de bruja')
+    pg.click('#playBtn');pg.wait_for_timeout(250);pg.evaluate('TR.hold()')
+    pg.evaluate('TR.setDist(800)');pg.evaluate('TR.cake(80)');pg.wait_for_timeout(1300)
+    check(pg.evaluate('TR.dina.look')=='','en Halloween, sin disfraces ganados, Dina va sin disfraz')
+    pg.evaluate("TR.dina.stage=0;TR.dina.calm=0;TR.dina.x=-300;TR.save.dinaLooks.push('bruja','brujito','vampiro')")
+    looks=[]
+    for _ in range(4):
+        pg.evaluate('TR.setDist(800)');pg.evaluate('TR.cake(80)');pg.wait_for_timeout(1300);looks.append(pg.evaluate('TR.dina.look'))
+        if len(looks)==2: pg.screenshot(path=f'{OUT}/02b_dina_disfraz.png')
+        pg.evaluate("TR.dina.stage=0;TR.dina.calm=0;TR.dina.x=-300")
+    check('' not in looks and len(set(looks))==3,f'en Halloween Dina rota los disfraces ganados ({looks})')
+    pg.evaluate('TR.setDist(1600)');pg.evaluate('TR.cake(80)');pg.wait_for_timeout(500)
+    for dx in (330,600,666): pg.evaluate(f'TR.cake({dx})')
+    pg.evaluate('TR.power("escudo")');pg.wait_for_timeout(250)
+    pg.screenshot(path=f'{OUT}/05_calabazas.png')
+    pg.evaluate('TR.die()');pg.wait_for_timeout(1800)
+    check('dina_calabaza' in pg.get_attribute('.dinaRow .dinaImg','src') and 'calabaza' in pg.inner_text('#goSub'),'en Halloween Dina se come una calabaza (y lo dice)')
+    pg.screenshot(path=f'{OUT}/06_dina_calabaza.png')
+    pg.evaluate("TR.die()");pg.wait_for_timeout(1500);seed(pg,{'total':800});pg.evaluate("TR.setSeason('halloween')");pg.wait_for_timeout(200)
     pg.click('#setBtn');pg.click('#setSeason');pg.wait_for_timeout(150)
     check(pg.evaluate("document.body.dataset.season")=='' and not pg.evaluate('TR.save.set.seasonal'),'Ajustes: apagar los temas de temporada')
     pg.click('#setBack')

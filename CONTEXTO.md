@@ -1,15 +1,18 @@
-# Sofi Runner — contexto del proyecto
+# Dina Run — contexto del proyecto
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 25/10/2026 · versión 0.6
+Última actualización: 26/10/2026 · versión 0.7.1
 
 ## Qué es
+
+**Nombre:** Dina Run (antes *Sofi Runner*, y antes de eso *Torta Runner+*). Leandro decidió centrar los juegos en la gata Dina, porque Sofi es solo uno de los personajes jugables. La serie es **Dina Run** (este runner) y **Dina Beat** (juego de ritmo, proyecto y repo aparte: `LeandroACasco/dina-beat`). Lo interno no cambia para no perder progreso ni cachés: clave de guardado `sofiRunner.v1`, música `sofiRunner.music`, prefijo de caché `sofi-runner-`.
 
 *Infinite runner* de un solo toque, cute, con estética de juego flash de chicas de los 2000. Se corre, se juntan frutillas, se esquivan porciones de torta y, si chocás, la gata **Dina** te persigue. Las frutillas se gastan en personajes, cosméticos y mejoras.
 
 - **Autor:** Leandro (programación con asistencia de IA).
 - **Dibujos, personajes y animación:** **Sofía** (Sofi). Todos los dibujos son suyos y están © Sofía; ella aceptó reutilizarlos en este juego.
+- **Excepciones, siempre acreditadas:** el vestido de Alicia de Sofi, Dina comiendo la calabaza (`dina_calabaza.webp`, recortada del fondo magenta) y las pociones y golosinas de Halloween (`hw_*.webp`) se hicieron con ayuda de IA sobre dibujos de Sofía; las calabazas que se esquivan son un diseño provisorio hecho con código (`pumpkinCv` en `index.html`) hasta que Sofía pase su dibujo.
 - **Personajes:** Sofi, Deisy, Leandro, Nora y Cinthia, más la gata Dina. Son la familia de Leandro.
 - **Público:** cualquiera (amigos de la familia que lo probaron y les gustó). Se piensa a futuro en Play Store.
 
@@ -23,7 +26,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - Sin servidor: el progreso, el ranking y el desafío semanal se guardan solo en el dispositivo (`localStorage`, clave `sofiRunner.v1`).
-- **Comparte sitio con el juego de la familia** (`leandroacasco.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (`sofi-runner-v1`, `v2`…).
+- **Comparte sitio con el juego de la familia** (`leandroacasco.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (`sofi-runner-v1`, `v2`, `v3`…).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -32,21 +35,22 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v1)
+sw.js             copia sin conexión (caché sofi-runner-v2)
 icon-192.png, icon-512.png, favicon-32.png
-assets/           dibujos de Sofía (WebP)
+assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
 pruebas/          pruebas automáticas y simulador (ver pruebas/README.md)
 README.md, CHANGELOG.md, LICENSE (MIT solo para el código; dibujos © Sofía), CONTEXTO.md
 ```
 
-## Cómo se juega hoy (0.6)
+## Cómo se juega hoy (0.7)
 
 ### Básico
 - Tocar para saltar; tocar en el aire para el doble salto.
 - **Frutilla** +1, **pancito con salame** +5 (más con mejoras).
 - **Kampitos** (el jugo de la fiesta, sabores reales): 🟢 Green → imán (6 s), 🟡 Tropical → frutillas x2 (6 s), 🟠 Citrus → escudo (8 s o un choque; también espanta a Dina).
 - **Dina:** el primer choque te hace tropezar y Dina te persigue; si chocás otra vez antes de que se canse, te alcanza.
+- **Dina se ve así:** camina alternando los 2 cuadros de Sofía (cada 7 actualizaciones, con un saltito por paso). En cada persecución nueva se pone el siguiente look: los disfraces son de Halloween: solo aparecen con el tema prendido y solo los que ganaste en el pase (`save.dinaLooks`); rotan uno por persecución. Fuera de Halloween, o con *Temas de temporada* apagado, Dina va sin disfraz. (No hay un ajuste aparte: Leandro pidió que todo lo de Halloween vaya junto.) Los dibujos originales de los disfraces venían en una sola pose; el sombrero o la capa se recortaron y se pusieron sobre los dos cuadros (alineados por los ojos).
 - **¡Una más!:** cuando Dina te alcanza, pagás frutillas para seguir, **una vez por partida**. 25 🍓 + 5 cada 100 m (tope 100). Se vence en 6 s.
 
 ### Frutillas
@@ -64,9 +68,22 @@ Ninguna habilidad cambia la velocidad, para que los récords se comparen parejo.
 | Cinthia | ❤️ Fiestera: arranca cada partida con un corazón |
 
 ### Cosméticos (se ven puestos antes de comprarlos)
-- Accesorios: Corazón 150, Hoodie rosa 200 (solo Sofi), Corona 300, **Sombrero de bruja 250 (Halloween)**.
-- Confeti que sigue al personaje: Rosa 120, Menta 150, Cielo 150, Dorado 200, Arcoíris 250, **Calabaza 200 (Halloween)**.
+- Accesorios: Corazón 150, Hoodie rosa 200 (solo Sofi), Corona 300. **Del pase de Halloween** (no se compran): vestido de Alicia (solo Sofi), sombrero de bruja y confeti calabaza. En el carrusel se ven con la etiqueta 🎃 Nv N y tocándola se abre el pase.
+- La ropa que cambia el dibujo entero (hoodie, Alicia) se marca en `ACCS` con `only` (personaje) e `img` (dibujo); `outfitImg()` la resuelve.
+- **Cada personaje recuerda su accesorio** (`save.outfits`, por personaje; `equipAcc()` y `accFor()`). `save.outfit` es el del personaje elegido.
+- Después de un choque el personaje parpadea con transparencia (antes era un rectángulo blanco que se notaba de noche).
+- Confeti que sigue al personaje: Rosa 120, Menta 150, Cielo 150, Dorado 200, Arcoíris 250, Calabaza (pase de Halloween).
 - Los de temporada solo se compran en su temporada; después quedan para siempre.
+
+### Pase de Halloween
+- Gratis. Suben de nivel los metros corridos en Halloween con el tema prendido (`passAdd` al terminar la partida). **Los premios no se dan solos:** al llegar a un nivel aparece un aviso y la etiqueta "🎁 ¡Premio en el pase!", y se reclaman con el botón ¡Reclamar! en la pantalla del pase (`passClaim`), que muestra el cartel de ¡Felicitaciones!. Se guarda en `save.pass` (`key` = halloween-año, `m`, `got`), así que vuelve a empezar cada año.
+- 8 niveles (`PASS` en `index.html`): 400 m Dina bruja · 1500 m 100 🍓 · 3000 m confeti calabaza · 5000 m Dina brujito · 7500 m 200 🍓 · 10.000 m sombrero de bruja · 13.000 m Dina vampiro · 16.000 m vestido de Alicia.
+- **Tope diario de 2500 m** (`PASS.daily`, `save.pass.day/dm`): el vestido de Alicia lleva como mínimo 7 días (Leandro pidió que lleve por lo menos una semana). Una jugadora normal (mediana 1332 m por partida, simulación de la 0.6) llega al tope en 2 o 3 partidas por día. Halloween dura del 15/10 al 2/11, así que hay que empezar a más tardar el 27/10 para completarlo.
+- Migración 0.7 (`save.mig07`): si alguien tenía comprados el sombrero de bruja, el confeti calabaza o el vestido de Alicia (0.6 o versiones de prueba) sin haberlos reclamado en el pase, se le sacan y se le devuelven las frutillas.
+- Se abre con el cartel naranja **Pase de Halloween** del menú, al lado del desafío de la semana (late, y salta cuando hay premio), o con la etiqueta en la pantalla de Dina.
+
+### Música
+- Cajita musical hecha con código (`RUN_MEL`). En Halloween suena otra melodía en La menor, un poco más lenta (`HW_MEL`, `HW_BASS`).
 
 ### Pastelería (mejoras para siempre, 4 niveles: 50, 120, 220, 350 🍓)
 Imán 6 → 12 s · Escudo 8 → 14 s y, al máximo, 2 choques (se ve con dos anillos) · Pancito 5 → 10 🍓 · Dina se cansa 9 → 5 s.
@@ -98,7 +115,7 @@ Imán 6 → 12 s · Escudo 8 → 14 s y, al máximo, 2 choques (se ve con dos an
 Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hizo 39.441 m y 16.147 frutillas en una partida). Ojo: el jugador automático es una aproximación; lo que valen son las pruebas con gente.
 
 ### Temas de temporada
-- **Halloween** (15/10 al 2/11): fondo violeta y naranja, murciélagos, calabazas en el piso, luna llena naranja de noche, sombrero de bruja en las tortas, colores de la página en naranja y violeta, y sus dos cosméticos.
+- **Halloween** (15/10 al 2/11): fondo violeta y naranja, murciélagos, calabazas en el piso, luna llena naranja de noche, **calabazas en vez de tortas** (Sofía no quería sombreros sobre las tortas; misma caja de choque, así que la dificultad no cambia; la mitad de las segundas y terceras de un grupo van sin carita), **pociones en vez de Kampitos** (verde imán, violeta x2, naranja escudo; `HW_POTION`), **golosinas en vez de pancitos** que rotan (`HW_CANDY`), Dina comiendo una calabaza en la pantalla final con textos de Halloween ("miau… ¡la calabaza era mía!"; fuera de Halloween, los originales), colores de la página en naranja y violeta, y sus dos cosméticos.
 - Se activan solos por fecha y se pueden apagar en ⚙️ *Temas de temporada*.
 - Para agregar uno: sumar a `SEASONS` (id, nombre, fechas), dibujarlo en `drawBG` y marcar sus cosméticos con `season`.
 
@@ -123,10 +140,13 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.4 | Íconos y etiquetas en lo nuevo; arreglo de capas del carrusel |
 | 0.5 | Día y noche cada 1000 m; fondo sin el saludo de cumpleaños |
 | 0.6 | Nombre Sofi Runner, equilibrio con simulador, Halloween y temas de temporada |
+| 0.7 | Dina con la caminata de Sofía, Halloween completo (calabazas, pociones, golosinas, Dina con la calabaza, música) y Pase de Halloween con Alicia al final; accesorio por personaje |
+
+| 0.7.1 | Nombre nuevo: Dina Run |
 
 ## Pendientes e ideas
 
-1. Subir el repositorio `sofi-runner` a GitHub y activar Pages.
+1. **Dibujo de la calabaza de Sofía:** cuando llegue, guardarlo en `assets/calabaza.webp`, sumarlo a `IMG_FILES` y a `sw.js`, y usarlo en `pumpkinCv()`.
 2. Probarlo con amigos y ajustar precios y dificultad con lo que digan.
 3. Dulces que se desbloquean con frutillas en la Pastelería.
 4. Más temas de temporada (Navidad, verano, Pascua) y zonas nuevas, idealmente con fondos dibujados por Sofía.

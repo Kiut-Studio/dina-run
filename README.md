@@ -1,4 +1,6 @@
-# Sofi Runner 🍓🏃‍♀️
+# Dina Run 🍓🏃‍♀️
+
+*(Antes se llamaba Sofi Runner.)*
 
 Un *infinite runner* de un solo toque, con dibujos de Sofía. Corrés, juntás frutillas, esquivás porciones de torta, elegís dulces en el camino y gastás lo que juntaste en personajes, cosméticos y mejoras para llegar cada vez más lejos. Si chocás… Dina te persigue.
 
@@ -54,7 +56,7 @@ Cada 1000 m cambia el día y la noche: de día el cielo rosa con las nubes de So
 
 ## 🎃 Temas de temporada
 
-En ciertas fechas el juego se viste solo. El primero es **Halloween** (del 15/10 al 2/11): murciélagos, calabazas, luna naranja y tortas con sombrero de bruja. Trae cosméticos que solo se compran en esa temporada (y después quedan para siempre): el sombrero de bruja y el confeti calabaza. Se puede apagar en ⚙️ *Temas de temporada*.
+En ciertas fechas el juego se viste solo. El primero es **Halloween** (del 15/10 al 2/11): murciélagos, calabazas, luna naranja y calabazas para esquivar en vez de tortas. Trae cosméticos que solo se compran en esa temporada (y después quedan para siempre): el sombrero de bruja y el confeti calabaza. Se puede apagar en ⚙️ *Temas de temporada*.
 
 ## Las frutillas
 
@@ -143,10 +145,12 @@ El juego se puede instalar y jugar sin internet una vez abierto.
 
 | Qué | Quién |
 | --- | --- |
-| Dibujos, personajes y animación | **Sofía** 🎨 |
+| Dibujos, personajes y animación (incluida la caminata y los disfraces de Dina) | **Sofía** 🎨 |
+| Vestido de Alicia de Sofi, Dina comiendo la calabaza, pociones y golosinas de Halloween | Hechos con ayuda de IA sobre los dibujos de Sofía |
+| Calabazas de Halloween | Diseño provisorio hecho con código, hasta que llegue el dibujo de Sofía |
 | Idea y producción | Leandro |
 | Programación | Leandro, con asistencia de IA (Claude) |
-| Música | Melodía original tipo cajita musical |
+| Música | Melodías originales tipo cajita musical (una normal y una de Halloween) |
 | Tipografías | [Caveat](https://fonts.google.com/specimen/Caveat) y [Fredoka](https://fonts.google.com/specimen/Fredoka) (Google Fonts, licencia OFL) |
 
 ## Licencia
