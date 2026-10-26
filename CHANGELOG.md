@@ -1,5 +1,9 @@
 # Novedades de Dina Run
 
+## Versión 0.7.3 — octubre 2026: arreglo para instalar
+
+- 📲 Arreglado: en algunos teléfonos Android, Chrome decía "No se puede instalar esta app".
+
 ## Versión 0.7.2 — octubre 2026: ícono nuevo
 
 - 📲 Ícono nuevo con Dina comiendo la calabaza (antes era el mismo que Torta Runner), y cada juego se instala como app aparte.
