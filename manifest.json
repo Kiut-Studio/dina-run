@@ -1,7 +1,7 @@
 {
  "name": "Dina Run",
  "short_name": "Dina Run",
- "start_url": ".",
+ "start_url": "./",
  "display": "fullscreen",
  "orientation": "landscape",
  "background_color": "#FFEFF5",
@@ -19,5 +19,6 @@
    "purpose": "any maskable"
   }
  ],
- "id": "./?app=sofi-runner"
+ "id": "./?app=sofi-runner",
+ "scope": "./"
 }

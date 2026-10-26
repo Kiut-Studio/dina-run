@@ -2,11 +2,11 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 26/10/2026 · versión 0.7.1
+Última actualización: 26/10/2026 · versión 0.7.2
 
 ## Qué es
 
-**Nombre:** Dina Run (antes *Sofi Runner*, y antes de eso *Torta Runner+*). Leandro decidió centrar los juegos en la gata Dina, porque Sofi es solo uno de los personajes jugables. La serie es **Dina Run** (este runner) y **Dina Beat** (juego de ritmo, proyecto y repo aparte: `LeandroACasco/dina-beat`). Lo interno no cambia para no perder progreso ni cachés: clave de guardado `sofiRunner.v1`, música `sofiRunner.music`, prefijo de caché `sofi-runner-`.
+**Nombre:** Dina Run (antes *Sofi Runner*, y antes de eso *Torta Runner+*). Leandro decidió centrar los juegos en la gata Dina, porque Sofi es solo uno de los personajes jugables. La serie es **Dina Run** (este runner) y **Dina Beat** (juego de ritmo, proyecto y repo aparte: `LeandroACasco/dina-beat`; lee los personajes y suma frutillas a la bolsa de Dina Run porque comparten sitio). Lo interno no cambia para no perder progreso ni cachés: clave de guardado `sofiRunner.v1`, música `sofiRunner.music`, prefijo de caché `sofi-runner-`.
 
 *Infinite runner* de un solo toque, cute, con estética de juego flash de chicas de los 2000. Se corre, se juntan frutillas, se esquivan porciones de torta y, si chocás, la gata **Dina** te persigue. Las frutillas se gastan en personajes, cosméticos y mejoras.
 
@@ -24,9 +24,11 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 ## Cómo está hecho
 
+- **Instalación como app:** Torta Runner, Dina Run y Dina Beat están en el mismo sitio (`leandroacasco.github.io`), cada uno en su carpeta. Cada `manifest.json` tiene su propio `id` y `scope` (`./`) y su ícono, para que el teléfono los instale aparte. Hasta la 0.7 los tres usaban el mismo ícono de Torta Runner y parecían el mismo; desde la 0.7.2 Dina Run usa a Dina comiendo la calabaza (`dina_calabaza.webp`, hecha con ayuda de IA sobre el dibujo de Sofía) en un círculo rosa claro sobre fondo rosa (Leandro la eligió).
+
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - Sin servidor: el progreso, el ranking y el desafío semanal se guardan solo en el dispositivo (`localStorage`, clave `sofiRunner.v1`).
-- **Comparte sitio con el juego de la familia** (`leandroacasco.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (`sofi-runner-v1`, `v2`, `v3`…).
+- **Comparte sitio con el juego de la familia** (`leandroacasco.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (`sofi-runner-v1`, `v2`, `v3`, `v4`…).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -143,6 +145,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.7 | Dina con la caminata de Sofía, Halloween completo (calabazas, pociones, golosinas, Dina con la calabaza, música) y Pase de Halloween con Alicia al final; accesorio por personaje |
 
 | 0.7.1 | Nombre nuevo: Dina Run |
+| 0.7.2 | Ícono propio (Dina comiendo la calabaza), `id` y `scope` propios para instalarse aparte; dirección nueva `/dina-run/` (sin redirección: Leandro les pasa el enlace nuevo a sus testers) |
 
 ## Pendientes e ideas
 

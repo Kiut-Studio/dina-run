@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.7.2 — octubre 2026: ícono nuevo
+
+- 📲 Ícono nuevo con Dina comiendo la calabaza (antes era el mismo que Torta Runner), y cada juego se instala como app aparte.
+- 🔗 Nueva dirección: https://leandroacasco.github.io/dina-run/
+
 ## Versión 0.7.1 — octubre 2026: ¡Ahora se llama Dina Run!
 
 - 🐱 El juego ahora se llama **Dina Run** (antes Sofi Runner), igual que su hermano de ritmo **Dina Beat**. El progreso guardado, las frutillas y el pase de Halloween siguen igual.
