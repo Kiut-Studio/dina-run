@@ -1,5 +1,9 @@
 # Novedades de Dina Run
 
+## Versión 0.8.1 — octubre 2026: Dina y la calabaza, de Sofía
+
+- 🎨 Sofía dibujó a Dina comiéndose la calabaza: ahora es el ícono del juego y aparece al final de las partidas de Halloween (antes era una versión hecha con ayuda de IA).
+
 ## Versión 0.8 — octubre 2026: ¡Nos mudamos a Kiut Studio!
 
 - 🏠 Dina Run ahora vive en **Kiut Studio**, el estudio de Sofía y Leandro: https://kiut-studio.github.io/dina-run/

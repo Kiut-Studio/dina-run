@@ -146,7 +146,7 @@ El juego se puede instalar y jugar sin internet una vez abierto.
 | Qué | Quién |
 | --- | --- |
 | Dibujos, personajes y animación (incluida la caminata y los disfraces de Dina) | **Sofía** 🎨 |
-| Vestido de Alicia de Sofi, Dina comiendo la calabaza, pociones y golosinas de Halloween | Hechos con ayuda de IA sobre los dibujos de Sofía |
+| Vestido de Alicia de Sofi, pociones y golosinas de Halloween | Hechos con ayuda de IA sobre los dibujos de Sofía |
 | Calabazas de Halloween | Diseño provisorio hecho con código, hasta que llegue el dibujo de Sofía |
 | Idea y producción | Leandro |
 | Programación | Leandro, con asistencia de IA (Claude) |
