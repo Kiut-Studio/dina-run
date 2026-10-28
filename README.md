@@ -132,7 +132,7 @@ Al lado del carrusel hay dos filas con flechitas: **accesorio** y **confeti**. C
 - **🎯 Desafío de la semana:** cambia todos los lunes.
 - **🏆 Ranking:** por ahora es el de cada dispositivo (varias personas pueden anotarse en el mismo).
 
-Todo el progreso se guarda en el dispositivo donde jugás.
+El progreso se guarda en el dispositivo donde jugás. Con **☁️ Entrar** (arriba en el menú) y una cuenta de Google también queda guardado en la nube, con la misma cuenta que Dina Beat: no se pierde si cambiás de teléfono o se borra el navegador.
 
 ## Jugar en el celular como app
 

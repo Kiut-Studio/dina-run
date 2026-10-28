@@ -817,6 +817,25 @@ body.calm .offerCard,body.calm .upg.bought{animation:none}
 .setRow .lbl{flex:1 1 auto;font-size:15px;line-height:1.15}
 .setRow .lbl small{display:block;font-size:12px;opacity:.65}
 .setRow input[type=range]{width:120px;accent-color:var(--red)}
+.setGo{flex:0 0 auto;border:3px solid var(--ink);border-radius:999px;background:var(--white);font:inherit;font-size:14px;padding:4px 12px;cursor:pointer;box-shadow:0 2px 0 var(--ink)}
+#menu.m3 .ibtn#acctBtn{width:auto;border-radius:999px;padding:0 11px;gap:4px;display:flex;font-size:15px}
+#acctBtn .acL{font-size:14px;font-weight:700}
+#menu.m3 .ibtn#acctBtn.in,#stage.slim #menu.m3 .ibtn#acctBtn,#stage.tiny #menu.m3 .ibtn#acctBtn{width:38px;padding:0;justify-content:center;overflow:hidden}
+#stage.narrow #menu.m3 .ibtn#acctBtn{width:34px}#stage.tiny #menu.m3 .ibtn#acctBtn{width:32px}
+#stage.slim #acctBtn .acL,#stage.tiny #acctBtn .acL,#acctBtn.in .acL{display:none}
+#acctBtn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#acct{background:rgba(255,239,245,.97);display:flex;padding:14px}
+.acctCard{max-width:440px;margin:auto;max-height:100%;overflow-y:auto}
+#acctBody p{font-size:15px;line-height:1.3;margin:10px 0}
+#acctBody .small{font-size:13px;opacity:.75}
+.acctWho{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:10px;text-align:left}
+.acctWho img,.acctWho .ph{width:52px;height:52px;border-radius:50%;border:3px solid var(--ink);object-fit:cover;display:grid;place-items:center;font-size:28px;background:var(--white)}
+.acctWho small{display:block;font-size:12px;opacity:.7}
+.acctRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.acctRow .setGo{font-size:15px;padding:6px 14px}
+.gbtn{display:inline-flex;align-items:center;gap:10px;border:3px solid var(--ink);border-radius:999px;background:#fff;font:inherit;font-size:17px;padding:9px 18px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.gbtn svg{width:22px;height:22px}
+.acctMsg{font-size:14px;margin-top:8px;text-align:center}
 .setRow .val{width:38px;text-align:right;font-variant-numeric:tabular-nums;font-size:14px}
 .tog{flex:0 0 auto;width:56px;height:30px;border-radius:999px;border:3px solid var(--ink);background:#eee;position:relative;padding:0}
 .tog:after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--white);border:2px solid var(--ink);transition:left .15s}
@@ -895,6 +914,7 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
           <div class="pill thick-sm">⭐ <b id="mBest">0</b>&nbsp;m</div>
         </div>
         <div class="grp">
+          <button class="ibtn thick-sm" id="acctBtn" aria-label="Entrar con Google para guardar en la nube">☁️<span class="acL">Entrar</span></button>
           <button class="ibtn thick-sm" id="rankBtn" aria-label="Ranking">🏆</button>
           <button class="ibtn thick-sm" id="shopBtn" aria-label="Pastelería">🧁<span class="dot" id="shopDot" hidden></span></button>
           <button class="ibtn thick-sm" id="achBtn" aria-label="Logros">🏅</button>
@@ -1068,6 +1088,7 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="goTitle">⚙️ Ajustes</div>
         <div class="setScroll">
         <div class="setRows">
+        <div class="setRow"><span class="e">☁️</span><span class="lbl">Cuenta de Google<small id="acctNote">guardá tu progreso en la nube</small></span><button class="setGo" id="acctSet">Entrar</button></div>
         <div class="setRow"><span class="e" id="soundEm">🔊</span><span class="lbl">Sonido<small>apaga todo: música y efectos</small></span><button class="tog" id="soundBtn" role="switch" aria-label="Sonido"></button></div>
         <label class="setRow"><span class="e">🎵</span><span class="lbl">Música</span><input type="range" id="setMusic" min="0" max="100" step="5"><span class="val" id="setMusicV"></span></label>
         <label class="setRow"><span class="e">🔊</span><span class="lbl">Efectos<small>saltos, frutillas, choques</small></span><input type="range" id="setSfx" min="0" max="100" step="5"><span class="val" id="setSfxV"></span></label>
@@ -1086,6 +1107,14 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         </div>
         </div>
         <div class="goBtns"><button class="btn thick-sm" id="setBack" style="background:var(--red);color:var(--white)">Listo</button></div>
+      </div>
+    </div>
+    <div id="acct" class="overlay" hidden>
+      <div class="goCard acctCard thick">
+        <div class="goTitle" style="font-size:36px">☁️ Tu cuenta</div>
+        <div id="acctBody"></div>
+        <div class="acctMsg" id="acctMsg" hidden></div>
+        <div class="goBtns"><button class="btn thick-sm" id="acctBack" style="background:var(--red);color:var(--white)">Volver</button></div>
       </div>
     </div>
     <div id="shop" class="overlay" hidden>
@@ -1320,8 +1349,13 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.7';
+const VERSION='0.9';
 const NEWS=[
+  {v:'0.9',fecha:'octubre 2026',titulo:'Tu progreso en la nube',items:[
+    ['☁️','Tocá ☁️ Entrar (arriba en el menú) y entrá con tu cuenta de Google: tus frutillas, personajes, cosméticos, mejoras, récords, logros y el pase quedan guardados en la nube. Así no se pierden si cambiás de teléfono o se borra el navegador.'],
+    ['🎵','Es la misma cuenta de Dina Beat: si ya entraste ahí, acá entrás solo.'],
+    ['🍓','Si tenés Dina Beat abierto en otra pestaña, las frutillas que ganás ahí ya no se pierden.'],
+  ]},
   {v:'0.8.1',fecha:'octubre 2026',titulo:'Dina y la calabaza, de Sofía',items:[
     ['🎨','Sofía dibujó a Dina comiéndose la calabaza: ahora es el ícono del juego y aparece al final de las partidas de Halloween (antes era una versión hecha con ayuda de IA).'],
   ]},
@@ -1438,6 +1472,7 @@ function weekInfo(d=new Date()){
 const whenNext=w=>w.daysLeft===1?'mañana':`en ${w.daysLeft} días`;
 
 /* ---------- guardado (tolerante a fallos) ---------- */
+var cloud=null,cloudPushT=0,simulating=false,stored={total:0,spent:0,mod:0}; // ☁️ nube: se arma más abajo
 const KEY='sofiRunner.v1'; // distinta de la del juego de la familia: comparten el mismo sitio (github.io)
 const OLD_KEY='tortaRunnerPlus.v1'; // si se jugó la versión de prueba como Torta Runner+, el progreso se trae una vez
 const save={total:0,best:0,char:'sofi',outfit:'default',muted:false,seen:['sofi','default'],name:'',runs:[],pending:[],avatars:{},anonBest:null,lastTop:[],
@@ -1446,6 +1481,7 @@ try{
   const raw=localStorage.getItem(KEY)||localStorage.getItem(OLD_KEY);
   if(raw) Object.assign(save,JSON.parse(raw));
 }catch(e){}
+stored={total:save.total|0,spent:save.spent|0,mod:save.mod||0}; // lo último que hay en el teléfono (para la pestaña de al lado)
 const ST0=()=>({runs:0,pans:0,kamps:0,tortas:0,escudos:0,bestFru:0,bestPans:0,powers:[],chars:[],continues:0,escapes:0,scared:0,bestEscapes:0,cleanBest:0,meters:0});
 save.st=Object.assign(ST0(),save.st);
 // ajustes de este dispositivo (no viajan a la caja fuerte)
@@ -1455,7 +1491,7 @@ const calm=()=>!!save.set.calm;
 document.body.classList.toggle('calm',calm());
 function vib(p){if(save.set.vib&&navigator.vibrate)try{navigator.vibrate(p)}catch(e){}}
 if(!save.st.runs&&(save.best>0||save.total>0)) save.st.runs=1; // ya había jugado antes de los logros
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}}
+function persist(){save.mod=Date.now();try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}stored={total:save.total|0,spent:save.spent|0,mod:save.mod};cloudSoon()} // con cuenta de Google, también sube a la nube (ver ☁️ nube)
 if(!Array.isArray(save.owned)) save.owned=['sofi'];
 const charUnlocked=c=>!c.need||save.owned.includes(c.id); // los personajes se compran con frutillas (500 cada uno)
 if(!Array.isArray(save.cosm)){ // 0.2 o antes: los outfits que ya tenía por frutillas juntadas se conservan
@@ -1544,6 +1580,7 @@ function layout(){
   stage.classList.toggle('low',cssH<600); // compu o celular acostado: pantallas compactas
   stage.classList.toggle('tiny',cssH<380||(cssH>cssW&&cssH<640)); // muy bajito (o celular parado chico)
   stage.classList.toggle('narrow',cssW<380);
+  stage.classList.toggle('slim',cssW<480); // barra del menú sin lugar para "☁️ Entrar": queda solo la nube
   // celular parado: mundo un poco más angosto (personajes más grandes) y el piso más arriba
   const tall=cssH>cssW;
   const minVW=tall?560:720;
@@ -2648,6 +2685,7 @@ window.addEventListener('keydown',e=>{
   if(!$('help').hidden){ if(e.code==='Escape'||e.code==='Enter'){e.preventDefault();show('help',false)} return }
   if(!$('cards').hidden){ const n={Digit1:0,Digit2:1,Digit3:2,Numpad1:0,Numpad2:1,Numpad3:2}[e.code]; if(n!==undefined) pickCard(n); e.preventDefault(); return }
   if(!$('shop').hidden){ if(e.code==='Escape') closeShop(); return }
+  if(!$('acct').hidden){ if(e.code==='Escape') $('acctBack').click(); return }
   if(!$('settings').hidden){ if(e.code==='Escape') $('setBack').click(); return }
   if(e.target&&e.target.tagName==='INPUT') return; // escribiendo un nombre
   if(!$('rank').hidden){ if(e.code==='Escape') show('rank',false); return }
@@ -2698,12 +2736,13 @@ function musicLabel(){for(const id of ['musicHud','musicMenu']){$(id).classList.
 function toggleMusic(){musicOn=!musicOn;try{localStorage.setItem('sofiRunner.music',musicOn?'on':'off')}catch(e){}musicLabel();refreshMusic()}
 $('musicHud').onclick=toggleMusic;$('musicMenu').onclick=toggleMusic;
 musicLabel();
-$('resetBtn').onclick=()=>{show('resetAsk',true);$('resetBtn').hidden=true};
+$('resetBtn').onclick=()=>{$('resetTxt').textContent=cloud.google?'¿Seguro? Se borra de este teléfono y salís de tu cuenta (lo de la nube queda guardado).':'¿Seguro? Se pierden las frutillas, las compras y los logros.';show('resetAsk',true);$('resetBtn').hidden=true};
 $('resetNo').onclick=()=>{show('resetAsk',false);$('resetBtn').hidden=false};
-$('resetYes').onclick=()=>{
+$('resetYes').onclick=async()=>{
+  const conCuenta=cloud.google; if(conCuenta) await cloudOut(); // lo de tu cuenta queda a salvo en la nube
   Object.assign(save,{total:0,spent:0,up:{},owned:['sofi'],cosm:['default','none'],trail:'none',best:0,char:'sofi',outfit:'default',outfits:{},dinaLooks:[],pass:null,seen:['sofi','default'],ach:{},st:ST0(),tips:{}});persist();
   show('resetAsk',false);$('resetBtn').hidden=false;renderMenu();
-  toast('Progreso borrado. ¡A empezar de nuevo!');
+  toast(conCuenta?'Progreso borrado de este teléfono. Lo de tu cuenta sigue en la nube.':'Progreso borrado. ¡A empezar de nuevo!');
 };
 
 /* ---------- música suave durante la partida (composición propia) ---------- */
@@ -2974,7 +3013,7 @@ function openSettings(){
   $('setVib').disabled=!canVib;$('setVibNote').textContent=canVib?'al saltar y al chocar':'este dispositivo no vibra (iPhone y compu)';
   setTog('setSeason',save.set.seasonal);
   const t=seasonNow();$('seasonNote').textContent=t?`${t.name}: ${seasonFmt(t)}${save.set.seasonal?'':' (apagado)'}`:'Halloween, del 15/10 al 2/11 (ahora no hay ninguno)';
-  show('settings',true);
+  acctUi();show('settings',true);
 }
 $('setBtn').onclick=openSettings;
 $('setBack').onclick=()=>{show('settings',false);renderMenu()};
@@ -3032,11 +3071,185 @@ rollWeek();
 applyTheme();renderMenu();layout();
 requestAnimationFrame(loop);
 ready.then(()=>{$('loadPill').textContent='Listo ✓';layout();});
+
+/* ---------- ☁️ nube (Firebase de Kiut Studio Games, el mismo de Dina Beat) ----------
+   Con cuenta de Google, el progreso se guarda también en la nube: frutillas, personajes, cosméticos, mejoras,
+   récords, logros, pase y ranking de este aparato. Lo propio de cada teléfono no viaja (sonido, ajustes,
+   novedades vistas, ranking en línea pendiente). Comparte el documento jugadores/{uid} con Dina Beat: Dina Run
+   escribe SOLO sus campos {run, runAt} (mergeFields), así nunca borra los de Dina Beat {beat, beatAt, nombre, personaje}.
+   La sesión de Google es la misma en los dos juegos (mismo sitio): si entraste en Dina Beat, acá entra solo.
+   Todo pasa por cloud.api, así las pruebas usan una nube falsa (window.CLOUD_MOCK, ver pruebas/nube.py). */
+const FB_CFG={apiKey:'AIzaSyC0VN0oTjpSSfoWg0iwV_KK574WrRdeqz8',authDomain:'kiut-studio.firebaseapp.com',projectId:'kiut-studio',storageBucket:'kiut-studio.firebasestorage.app',messagingSenderId:'463755551393',appId:'1:463755551393:web:335beb376a0282f12e06e0'};
+const FBV='12.10.0';
+cloud={ready:null,user:null,google:false,api:null,lastSync:0,err:'',syncing:false,merging:false};
+const clean=x=>JSON.parse(JSON.stringify(x==null?null:x)); // la nube no acepta "undefined"
+const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('tiempo')),ms))]);
+const mapUser=u=>u?{uid:u.uid,anon:!!u.isAnonymous,name:u.displayName||'',email:u.email||'',photo:u.photoURL||''}:null;
+function cloudLoad(){ // carga Firebase una vez; si no hay internet, el juego sigue igual y se reintenta después
+  if(cloud.ready) return cloud.ready;
+  cloud.ready=withTimeout((async()=>{
+    if(window.CLOUD_MOCK) cloud.api=window.CLOUD_MOCK;
+    else{
+      const base='https://www.gstatic.com/firebasejs/'+FBV+'/';
+      const [A,U,F]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
+      const app=A.initializeApp(FB_CFG),auth=U.getAuth(app),db=F.getFirestore(app);
+      cloud.api={
+        onUser:cb=>U.onAuthStateChanged(auth,u=>cb(mapUser(u))),
+        google:async()=>{const p=new U.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});const cu=auth.currentUser;
+          if(cu&&cu.isAnonymous){ // si ya tenía una sesión anónima (desafíos de Dina Beat), se conserva el mismo jugador
+            try{const r=await U.linkWithPopup(cu,p);return mapUser(r.user)}
+            catch(e){const cr=U.GoogleAuthProvider.credentialFromError(e);if(cr&&/already-in-use/.test(e.code||'')){const r=await U.signInWithCredential(auth,cr);return mapUser(r.user)}throw e}}
+          const r=await U.signInWithPopup(auth,p);return mapUser(r.user)},
+        out:()=>U.signOut(auth),
+        get:async path=>{const d=await F.getDoc(F.doc(db,path));return d.exists()?d.data():null},
+        // fields: lista de campos que se reemplazan enteros; los demás campos del documento no se tocan
+        set:(path,data,fields)=>F.setDoc(F.doc(db,path),data,fields?{mergeFields:fields}:{}),
+      };
+    }
+    await new Promise(res=>{let first=true;cloud.api.onUser(u=>{setUser(u);if(first){first=false;res()}})});
+    return cloud.api;
+  })(),15000).catch(e=>{console.warn('nube',e);cloud.ready=null;cloud.err='No se pudo conectar con la nube (¿sin internet?).';renderAcct();return null});
+  return cloud.ready;
+}
+function setUser(u){
+  const was=cloud.user&&cloud.user.uid;cloud.user=u;cloud.google=!!(u&&!u.anon);
+  if(cloud.google&&!save.cloud){save.cloud=1;persist()}
+  if(cloud.google&&(!was||was!==u.uid)) cloudSyncAll();
+  renderAcct();
+}
+const cloudReady=()=>cloud.google&&cloud.api&&!simulating;
+function cloudSoon(){if(typeof cloud==='undefined'||!cloud||!cloud.google||cloud.merging||simulating)return;clearTimeout(cloudPushT);cloudPushT=setTimeout(cloudPushSave,3000)}
+const DEVICE_ONLY=['muted','set','seenVersion','pending','lastTop','lastWeek','champs','prevWin','anonBest','cloud'];
+function saveForCloud(){const o=clean(save);for(const k of DEVICE_ONLY) delete o[k];return o}
+async function cloudPushSave(){
+  if(!cloudReady()) return;
+  try{await cloud.api.set('jugadores/'+cloud.user.uid,{run:saveForCloud(),runAt:Date.now()},['run','runAt']);cloud.lastSync=Date.now();cloud.err=''}
+  catch(e){console.warn('nube',e);cloud.err='No se pudo guardar en la nube (¿sin internet?). Se reintenta solo.'}
+  renderAcct();
+}
+/* juntar dos guardados (este teléfono L y otro C: la nube u otra pestaña). De lo que se gana, lo mejor de cada uno:
+   nada se pierde. Personaje, accesorios, confeti y nombre: del que se cambió último (mod). */
+function mergeSave(L,C){
+  const o=clean(L),newer=(C.mod||0)>(L.mod||0),mx=(a,b)=>Math.max(+a||0,+b||0);
+  const uni=(a,b)=>[...new Set([...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])])];
+  const maxMap=(a,b)=>{const r=Object.assign({},a||{});for(const k in b||{}) r[k]=mx(r[k],b[k]);return r};
+  for(const k of ['total','spent','best','mig07']) o[k]=mx(L[k],C[k]);
+  for(const k of ['owned','cosm','seen','dinaLooks']) o[k]=uni(L[k],C[k]);
+  o.up=maxMap(L.up,C.up);o.logrosBy=maxMap(L.logrosBy,C.logrosBy);o.champsLocal=maxMap(L.champsLocal,C.champsLocal);
+  o.ach=Object.assign({},C.ach||{},L.ach||{});for(const k in C.ach||{}) if(L.ach&&L.ach[k]&&C.ach[k]) o.ach[k]=Math.min(L.ach[k],C.ach[k]);
+  o.tips=Object.assign({},C.tips||{},L.tips||{});
+  o.st=Object.assign({},L.st||{});
+  for(const k in C.st||{}){const a=o.st[k],b=C.st[k];o.st[k]=Array.isArray(a)||Array.isArray(b)?uni(a,b):mx(a,b)}
+  const pL=L.pass,pC=C.pass; // pase: por año; metros el máximo, premios reclamados juntados
+  if(pL&&pC&&pL.key===pC.key){const p=clean(pL);p.m=mx(pL.m,pC.m);p.got=uni(pL.got,pC.got);
+    if(pL.day===pC.day) p.dm=mx(pL.dm,pC.dm); else if(newer){p.day=pC.day;p.dm=pC.dm} o.pass=p}
+  else if(pC&&(!pL||String(pC.key)>String(pL.key))) o.pass=clean(pC);
+  const best={}; // ranking de este aparato: el mejor de cada nombre
+  for(const r of [...(L.runs||[]),...(C.runs||[])]){if(!r||!r.nombre)continue;const k=r.nombre.toLowerCase();if(!best[k]||r.metros>best[k].metros)best[k]=r}
+  o.runs=Object.values(best).sort((a,b)=>b.metros-a.metros).slice(0,20);
+  o.avatars=newer?Object.assign({},L.avatars,C.avatars):Object.assign({},C.avatars,L.avatars);
+  const wL=L.wk||{key:'',rows:{}},wC=C.wk||{key:'',rows:{}}; // desafío de la semana
+  if(wL.key&&wL.key===wC.key&&wL.reto===wC.reto){const rows=Object.assign({},wC.rows||{});
+    for(const k in wL.rows||{}) if(!rows[k]||(wL.rows[k].valor|0)>=(rows[k].valor|0)) rows[k]=wL.rows[k];o.wk={key:wL.key,reto:wL.reto,rows}}
+  else if(wC.key&&String(wC.key)>String(wL.key||'')) o.wk=clean(wC);
+  if(C.prevWinLocal&&(!L.prevWinLocal||String(C.prevWinLocal.key)>String(L.prevWinLocal.key))) o.prevWinLocal=clean(C.prevWinLocal);
+  if(newer){for(const k of ['char','outfit','trail','name']) if(C[k]!=null&&C[k]!=='') o[k]=C[k];
+    o.outfits=Object.assign({},L.outfits,C.outfits)}
+  else o.outfits=Object.assign({},C.outfits,L.outfits);
+  if(!o.name&&C.name) o.name=C.name;
+  o.mod=mx(L.mod,C.mod);return o;
+}
+function replaceSave(o,write=true){ // pone el guardado juntado y lo guarda en el teléfono (sin volver a subirlo solo)
+  cloud.merging=true;const mod=o.mod;
+  for(const k of Object.keys(save)) delete save[k];Object.assign(save,o);
+  save.st=Object.assign(ST0(),save.st);
+  if(!Array.isArray(save.owned)) save.owned=['sofi'];if(!Array.isArray(save.cosm)) save.cosm=['default','none'];
+  if(!save.outfits||typeof save.outfits!=='object') save.outfits={};if(!Array.isArray(save.dinaLooks)) save.dinaLooks=[];
+  if(!save.wk||!save.wk.rows) save.wk={key:'',rows:{}};if(!Array.isArray(save.runs)) save.runs=[];
+  if(!charUnlocked(CHARS.find(c=>c.id===save.char)||{need:1})) save.char='sofi';
+  if(!cosmOwned(save.outfit)) save.outfit='default';if(!cosmOwned(save.trail)) save.trail='none';
+  if(write){try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}stored={total:save.total|0,spent:save.spent|0,mod:save.mod||0}}save.mod=mod;
+  cloud.merging=false;
+}
+const idle=()=>state==='menu'||state==='over';
+function whenIdle(fn){if(idle()) fn(); else setTimeout(()=>whenIdle(fn),1000)} // nunca cambia el guardado en medio de una partida
+function afterMerge(){if(state==='menu'&&!$('menu').hidden){applyTheme();renderMenu()}else if(state==='over') $('oTotal').textContent=pocket()}
+/* sincronizar: lee la nube, junta con lo de este teléfono y vuelve a subir */
+async function cloudSyncAll(){
+  if(!cloudReady()||cloud.syncing) return;cloud.syncing=true;renderAcct();
+  await new Promise(r=>whenIdle(r));
+  try{
+    const d=await withTimeout(cloud.api.get('jugadores/'+cloud.user.uid),12000);
+    if(d&&d.run){replaceSave(mergeSave(save,d.run));afterMerge()}
+    cloud.syncing=false;await cloudPushSave();
+  }catch(e){console.warn('nube',e);cloud.err='No se pudo sincronizar (¿sin internet?). Se reintenta solo.'}
+  cloud.syncing=false;renderAcct();
+}
+async function cloudOut(){try{if(cloud.api) await cloud.api.out()}catch(e){}cloud.user=null;cloud.google=false;delete save.cloud;persist();renderAcct()}
+/* si Dina Beat (o Dina Run en otra pestaña) guarda frutillas mientras este está abierto, se juntan acá
+   en vez de pisarlas en el próximo guardado */
+addEventListener('storage',e=>{
+  if(e.key!==KEY||!e.newValue||simulating) return;
+  let o;try{o=JSON.parse(e.newValue)}catch(_){return}
+  // Dina Beat solo suma frutillas y no cambia la fecha (mod): eso se suma, así no se pierde si acá también jugaste.
+  // Si lo guardó otra pestaña de Dina Run (fecha nueva), se junta como con la nube.
+  const beat=(o.mod||0)===(stored.mod||0),dT=beat?(o.total|0)-stored.total:0;
+  stored={total:o.total|0,spent:o.spent|0,mod:o.mod||0};
+  whenIdle(()=>{const m=mergeSave(save,o);if(dT>0)m.total=Math.max(m.total,(save.total|0)+dT);
+    replaceSave(m,false);afterMerge();
+    if((save.total|0)!==stored.total||(save.spent|0)!==stored.spent) persist(); else cloudSoon()});
+});
+/* pantalla de cuenta */
+const G_LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 6.9-10.3 6.9-17.7z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.1 1.4-4.9 2.3-8.2 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
+let acctFrom='menu';
+function openAcct(from){acctFrom=from;if(from==='set') show('settings',false);acctMsg('');show('acct',true);renderAcct();cloudLoad()}
+function acctMsg(t){$('acctMsg').textContent=t;$('acctMsg').hidden=!t}
+function renderAcct(){
+  acctUi();
+  if($('acct').hidden) return;const u=cloud.user;
+  if(cloud.google){
+    const ago=cloud.lastSync?Math.max(0,Math.round((Date.now()-cloud.lastSync)/60000)):null;
+    $('acctBody').innerHTML=`<div class="acctWho">${u.photo?`<img src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:'<span class="ph">🙂</span>'}<span>${esc(u.name||'Tu cuenta')}<small>${esc(u.email)}</small></span></div>
+      <p style="text-align:center">${cloud.syncing?'🔄 Sincronizando…':cloud.err?'⚠️ '+esc(cloud.err):ago==null?'☁️ Conectado':'✔️ Guardado en la nube'+(ago<1?' recién':' hace '+ago+' min')}</p>
+      <div class="acctRow"><button class="setGo" id="acctSync">🔄 Sincronizar ahora</button><button class="setGo" id="acctOut">Salir</button></div>
+      <p class="small">Se guardan tus frutillas, personajes, cosméticos, mejoras, récords, logros y el pase. Es la misma cuenta de Dina Beat.</p>`;
+    $('acctSync').onclick=()=>{acctMsg('');cloudSyncAll()};
+    $('acctOut').onclick=async()=>{await cloudOut();acctMsg('Saliste de tu cuenta. Tu progreso sigue guardado en este teléfono.')};
+  }else{
+    $('acctBody').innerHTML=`<p>Entrá con tu cuenta de Google para guardar tu progreso en la nube: frutillas, personajes, cosméticos, mejoras, récords y el pase. Así no se pierde si cambiás de teléfono o se borra el navegador.</p>
+      <p class="small">Lo que ya jugaste en este teléfono se junta con lo de tu cuenta: queda lo mejor de cada uno. Es la misma cuenta de Dina Beat.</p>
+      <div class="acctRow"><button class="gbtn" id="gIn">${G_LOGO}Entrar con Google</button></div>
+      ${cloud.err?'<p class="small" style="text-align:center">⚠️ '+esc(cloud.err)+'</p>':''}`;
+    $('gIn').onclick=async()=>{acctMsg('⏳ Abriendo Google…');const api=await cloudLoad();if(!api){acctMsg('😿 No se pudo conectar. Revisá tu internet y probá de nuevo.');return}
+      if(cloud.google){acctMsg('');return} // ya había entrado (por ejemplo, en Dina Beat)
+      try{setUser(await api.google());acctMsg('')}
+      catch(e){console.warn(e);acctMsg(/popup-closed|cancelled/.test(e.code||'')?'':/popup-blocked/.test(e.code||'')?'😿 El navegador bloqueó la ventana de Google. Permití las ventanas emergentes y probá de nuevo.':'😿 No se pudo entrar ('+(e.code||e.message||'error')+').')}};
+  }
+}
+/* botón de cuenta arriba en el menú: "☁️ Entrar" si no entraste; tu foto si ya entraste */
+function acctUi(){
+  const b=$('acctBtn'),u=cloud.google?cloud.user:null;b.classList.toggle('in',!!u);
+  b.innerHTML=u?(u.photo?`<img src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:'🙂'):'☁️<span class="acL">Entrar</span>';
+  b.setAttribute('aria-label',u?'Tu cuenta':'Entrar con Google para guardar en la nube');b.title=u?'Tu cuenta: '+(u.name||u.email):'Guardar en la nube';
+  if($('chipSave')) $('chipSave').textContent=u?'Progreso guardado en la nube ☁️':'Progreso guardado en este dispositivo';
+  $('acctSet').textContent=u?'Ver':'Entrar';$('acctNote').textContent=u?(u.email||'guardado en la nube'):'guardá tu progreso en la nube';
+}
+$('acctBtn').onclick=()=>openAcct('menu');$('acctSet').onclick=()=>openAcct('set');
+$('acctBack').onclick=()=>{show('acct',false);if(acctFrom==='set') openSettings();else renderMenu()};
+acctUi();
+// al abrir: si ya usaste la cuenta acá o en Dina Beat, se conecta solo (sin trabar el arranque)
+const usedCloud=()=>{if(save.cloud) return true;try{return !!(JSON.parse(localStorage.getItem('sofiSilbato.v1')||'{}').cloud)}catch(e){return false}};
+if(location.hash!=='#prueba'||window.CLOUD_MOCK) setTimeout(()=>{if(usedCloud()) cloudLoad()},1200);
+addEventListener('online',()=>{if(usedCloud()){cloudLoad();cloudSyncAll()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloud.google&&Date.now()-cloud.lastSync>5*60000) cloudSyncAll()});
+
 /* ---------- simulador de partidas (solo con #prueba) ----------
    Un jugador automático con "manos humanas": calcula cuándo conviene saltar y después le erra
    un poco al momento (sd, en cuadros) y a veces ni salta (miss). Sirve para medir la dificultad. */
 function simRun(cfg){
   cfg=Object.assign({sd:4,miss:.015,pay:false,max:216000,char:'sofi',up:{},hearts:0},cfg);
+  simulating=true;
   const keep={up:save.up,char:save.char,owned:save.owned,tips:save.tips,total:save.total,spent:save.spent,outfit:save.outfit,trail:save.trail};
   save.up=cfg.up;save.owned=CHARS.map(c=>c.id);save.char=cfg.char;save.tips={practica:1,jump:1,doble:1,pan:1,kamp_iman:1,kamp_doble:1,kamp_escudo:1,dina:1,dinaOver:1,dulces:1};
   save.total=1e6;save.spent=0; // para que siempre pueda pagar ¡Una más! si quiere
@@ -3091,14 +3304,14 @@ function simRun(cfg){
     update();n++;
   }
   const res={m:Math.floor(dist),fru:got,ticks:n,min:+(n/3600).toFixed(1),cards,paid,stumbles:R.stumbles,ms:Math.round(performance.now()-t0),speed:+speed.toFixed(2),timeout:n>=cfg.max};
-  Object.assign(save,keep);persist();
+  Object.assign(save,keep);simulating=false;persist();
   state='menu';show('over',false);show('hud',false);
   return res;
 }
 if(location.hash==='#prueba') window.TR={ // solo para pruebas automáticas
   get R(){return R},get pow(){return pow},get got(){return got},get state(){return state},get obs(){return obs},save,
   item(kind,dx,dy,flavor){fru.push({x:PX+pw()/2+dx,y:GROUND-dy,bob:0,kind,flavor})},cake(dx){obs.push({x:PX+dx,w:60,h:64})},
-  get dina(){return dina},passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,rollWeek,prevWinner,prevWeek,
+  get dina(){return dina},cloud:()=>cloud,cloudLoad,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,rollWeek,prevWinner,prevWeek,
   set got(v){got=v},die(){dina.caught=true;die()},newVersion(){updReady=true;showUpd()},get counting(){return counting}};
 if(window.PWA&&'serviceWorker' in navigator){
   const had=!!navigator.serviceWorker.controller; // la primera vez que se instala no es "versión nueva"

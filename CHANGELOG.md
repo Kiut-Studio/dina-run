@@ -1,5 +1,12 @@
 # Novedades de Dina Run
 
+## Versión 0.9 — octubre 2026: tu progreso en la nube
+
+- ☁️ **Cuenta de Google:** con el botón ☁️ Entrar (arriba en el menú, o en ⚙️ Ajustes) tus frutillas, personajes, cosméticos, mejoras, récords, logros y el pase de Halloween quedan guardados en la nube. Lo que ya jugaste en el teléfono se junta con lo de la cuenta: queda lo mejor de cada uno.
+- 🎵 Es la misma cuenta que Dina Beat: si ya entraste ahí, Dina Run entra solo.
+- 🍓 Si Dina Beat está abierto en otra pestaña, las frutillas que suma ya no se pisan.
+- 🗑️ "Borrar mi progreso" con cuenta borra solo el teléfono y sale de la cuenta: lo de la nube queda a salvo.
+
 ## Versión 0.8.1 — octubre 2026: Dina y la calabaza, de Sofía
 
 - 🎨 Sofía dibujó a Dina comiéndose la calabaza: ahora es el ícono del juego y aparece al final de las partidas de Halloween (antes era una versión hecha con ayuda de IA).

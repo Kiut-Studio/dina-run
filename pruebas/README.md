@@ -11,8 +11,9 @@ Se corren desde la carpeta del juego:
 
 | Prueba | Qué revisa |
 | --- | --- |
-| `python3 pruebas/tamanos.py` | 15 tamaños de pantalla (compu, tablet y celulares parados y acostados): que nada se encime, se corte ni haya que deslizar, en el menú, los ajustes, la ayuda, la Pastelería, los logros, el ranking, las novedades, los dulces, ¡Una más! y la pantalla de Dina. Las capturas quedan en `pruebas/capturas/`. |
+| `python3 pruebas/tamanos.py` | 15 tamaños de pantalla (compu, tablet y celulares parados y acostados): que nada se encime, se corte ni haya que deslizar, en el menú, los ajustes, la ayuda, la Pastelería, los logros, el ranking, las novedades, los dulces, ¡Una más!, la cuenta ☁️ y la pantalla de Dina. Las capturas quedan en `pruebas/capturas/`. |
 | `python3 pruebas/juego.py` | Compras, cosméticos, habilidades, corazones, escudo doble, dulces (en qué metros salen), Halloween y su ajuste. |
+| `python3 pruebas/nube.py` | La cuenta de Google con una nube falsa (varios "teléfonos" que comparten un diccionario de Python en vez de Firebase): que Dina Run escriba solo sus campos sin borrar los de Dina Beat, que dos teléfonos se junten sin perder nada, que entre solo si ya entraste en Dina Beat, que las frutillas de Dina Beat en otra pestaña no se pisen y que borrar con cuenta deje la nube a salvo. |
 | `python3 pruebas/simular.py 40` | Juega solo 40 partidas por perfil (novata, normal, buena, experta y experta con todo comprado) y resume metros, frutillas, minutos y dulces. Sirve para ajustar la dificultad y los precios. |
 
 `simular.py` acepta cambios de equilibrio para probar sin tocar el código, por ejemplo:

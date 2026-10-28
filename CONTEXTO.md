@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 28/10/2026 · versión 0.8.1
+Última actualización: 28/10/2026 · versión 0.9
 
 ## Qué es
 
@@ -27,8 +27,8 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 - **Instalación como app:** Torta Runner, Dina Run y Dina Beat están en el mismo sitio (`kiut-studio.github.io`, salvo Torta Runner, que quedó en `leandroacasco.github.io`), cada uno en su carpeta. Cada `manifest.json` tiene su propio `id` y `scope` (`./`) y su ícono, para que el teléfono los instale aparte. Hasta la 0.7 los tres usaban el mismo ícono de Torta Runner y parecían el mismo; desde la 0.7.2 Dina Run usa a Dina comiendo la calabaza en un círculo rosa claro sobre fondo rosa (Leandro la eligió); desde la 0.8.1 con el dibujo de Sofía (`favicon-32.png` va sin círculo para que se entienda chiquito).
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
-- Sin servidor: el progreso, el ranking y el desafío semanal se guardan solo en el dispositivo (`localStorage`, clave `sofiRunner.v1`).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v7`).
+- El progreso, el ranking y el desafío semanal se guardan en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, el progreso también va a la nube (ver **Cuenta de Google y nube**).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v8`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v7)
+sw.js             copia sin conexión (caché sofi-runner-v8)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -148,6 +148,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.7.3 | Arreglo para instalar (`id` absoluto) |
 | 0.8 | Mudanza a Kiut Studio con el progreso |
 | 0.8.1 | Dina con la calabaza dibujada por Sofía (ícono y pantalla final de Halloween) |
+| 0.9 | Cuenta de Google y progreso en la nube (la misma de Dina Beat); las frutillas de Dina Beat en otra pestaña ya no se pisan |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 
@@ -162,6 +163,19 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 - Las claves de guardado y el `id` de las apps (`/dina-run/`, `/dina-beat/`) no cambian. Al cambiar de dominio el teléfono las ve como apps nuevas: hay que instalarlas de nuevo desde la dirección nueva.
 - Desde ahora Claude sube las versiones directo a GitHub (app de Claude instalada).
 
+## Cuenta de Google y nube (versión 0.9)
+- Mismo Firebase que Dina Beat: proyecto `kiut-studio` ("Kiut Studio Games", plan Spark gratis), Authentication con Google, Firestore en `southamerica-east1`. Dina Run tiene su propia app web registrada (`appId …335beb…`, la que pasó Leandro); el resto de `FB_CFG` es igual. Reglas: cada jugador lee y escribe solo `jugadores/{uid}`; no hizo falta cambiarlas.
+- Código en `index.html`, bloque "☁️ nube" (antes del simulador). SDK 12.10.0 desde gstatic con `import()` dinámico: se carga solo al abrir ☁️ o al arrancar si ya usaste la cuenta (acá o en Dina Beat). Sin internet el juego sigue igual. Todo pasa por `cloud.api` {onUser, google, out, get, set}; las pruebas lo cambian por `window.CLOUD_MOCK`.
+- **Documento compartido** `jugadores/{uid}`: Dina Run escribe solo `run` (su guardado sin lo del aparato) y `runAt`, con `mergeFields` (reemplaza esos dos campos enteros y no toca `beat`, `beatAt`, `nombre`, `personaje` de Dina Beat).
+- **No viaja** (`DEVICE_ONLY`): `muted`, `set` (volúmenes, vibración, cuenta 3-2-1, temas, menos animaciones), `seenVersion`, el ranking en línea pendiente (`pending`, `lastTop`, `lastWeek`, `champs`, `prevWin`), `anonBest` y `cloud`.
+- **Cómo se juntan** (`mergeSave`): `total`, `spent`, `best` y mejoras (`up`) el máximo; personajes, cosméticos, disfraces de Dina, `seen` y consejos juntados; logros juntados (con la fecha más vieja); números de `st` el máximo; pase del mismo año: metros el máximo y premios reclamados juntados; ranking del aparato: el mejor de cada nombre; desafío de la semana: el mejor de cada nombre si es la misma semana. Personaje, accesorios, confeti y nombre: del guardado modificado último (`save.mod`, que se pone en cada `persist()`).
+- Límite conocido: con el máximo, si se juega **a la vez** en dos teléfonos sin conexión, se pueden perder las frutillas del que ganó menos. Para jugar en uno por vez no pasa nada.
+- **Cuándo sincroniza:** al entrar, al abrir el juego, al volver a la pestaña (si pasaron 5 min), al recuperar internet y con "🔄 Sincronizar ahora". Cada `persist()` sube a los 3 s. Nunca cambia el guardado en medio de una partida (`whenIdle`: espera al menú o la pantalla final). El simulador no sube nada (`simulating`).
+- **Otra pestaña (pendiente viejo, resuelto):** Dina Run escucha el evento `storage` de `sofiRunner.v1`. Si el cambio no trae fecha nueva (`mod` igual), vino de Dina Beat: se suma la diferencia de frutillas (así no se pierden si acá también jugaste). Si trae fecha nueva, es otra pestaña de Dina Run y se junta como con la nube. Lo juntado se guarda una sola vez (no rebota entre pestañas).
+- **Pantallas:** botón ☁️ arriba en el menú (primero del grupo de íconos): "☁️ Entrar" en pantallas de 480 px o más (clase `slim` debajo: solo ☁️) y la foto de la cuenta cuando entraste. Fila "☁️ Cuenta de Google" en ⚙️ Ajustes. Pantalla `#acct`: foto, nombre, correo, estado, "🔄 Sincronizar ahora" y "Salir" (el progreso sigue en el teléfono). El chip de abajo dice "Progreso guardado en la nube ☁️".
+- **Borrar mi progreso con cuenta:** sale de la cuenta y borra solo el teléfono; lo de la nube queda a salvo (si no, la próxima sincronización lo traería de vuelta).
+- Pruebas: `pruebas/nube.py` (nube falsa con varios teléfonos; 20 revisiones). `tamanos.py` también revisa la pantalla `#acct`.
+
 ## Pendientes e ideas
 
 1. **Dibujo de la calabaza de Sofía:** cuando llegue, guardarlo en `assets/calabaza.webp`, sumarlo a `IMG_FILES` y a `sw.js`, y usarlo en `pumpkinCv()`.
@@ -169,5 +183,5 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 3. Dulces que se desbloquean con frutillas en la Pastelería.
 4. Más temas de temporada (Navidad, verano, Pascua) y zonas nuevas, idealmente con fondos dibujados por Sofía.
 5. Un mosaico de fondo nuevo de Sofía para reemplazar el de letras que se quitó.
-6. Si crece: ranking en línea con un servidor de verdad y desafío semanal "sin mejoras" para que sea parejo.
+6. Si crece: ranking en línea en el mismo Firestore (por ejemplo `ranking/{semana}/filas/{uid}`; necesita reglas nuevas) y desafío semanal "sin mejoras" para que sea parejo.
 7. Play Store: envolver el HTML con Capacitor o TWA.
