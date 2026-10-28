@@ -2,11 +2,11 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 26/10/2026 · versión 0.7.3
+Última actualización: 28/10/2026 · versión 0.8
 
 ## Qué es
 
-**Nombre:** Dina Run (antes *Sofi Runner*, y antes de eso *Torta Runner+*). Leandro decidió centrar los juegos en la gata Dina, porque Sofi es solo uno de los personajes jugables. La serie es **Dina Run** (este runner) y **Dina Beat** (juego de ritmo, proyecto y repo aparte: `LeandroACasco/dina-beat`; lee los personajes y suma frutillas a la bolsa de Dina Run porque comparten sitio). Lo interno no cambia para no perder progreso ni cachés: clave de guardado `sofiRunner.v1`, música `sofiRunner.music`, prefijo de caché `sofi-runner-`.
+**Nombre:** Dina Run (antes *Sofi Runner*, y antes de eso *Torta Runner+*). Leandro decidió centrar los juegos en la gata Dina, porque Sofi es solo uno de los personajes jugables. La serie es **Dina Run** (este runner) y **Dina Beat** (juego de ritmo, proyecto y repo aparte: `Kiut-Studio/dina-beat`; lee los personajes y suma frutillas a la bolsa de Dina Run porque comparten sitio). Lo interno no cambia para no perder progreso ni cachés: clave de guardado `sofiRunner.v1`, música `sofiRunner.music`, prefijo de caché `sofi-runner-`.
 
 *Infinite runner* de un solo toque, cute, con estética de juego flash de chicas de los 2000. Se corre, se juntan frutillas, se esquivan porciones de torta y, si chocás, la gata **Dina** te persigue. Las frutillas se gastan en personajes, cosméticos y mejoras.
 
@@ -24,11 +24,11 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 ## Cómo está hecho
 
-- **Instalación como app:** Torta Runner, Dina Run y Dina Beat están en el mismo sitio (`leandroacasco.github.io`), cada uno en su carpeta. Cada `manifest.json` tiene su propio `id` y `scope` (`./`) y su ícono, para que el teléfono los instale aparte. Hasta la 0.7 los tres usaban el mismo ícono de Torta Runner y parecían el mismo; desde la 0.7.2 Dina Run usa a Dina comiendo la calabaza (`dina_calabaza.webp`, hecha con ayuda de IA sobre el dibujo de Sofía) en un círculo rosa claro sobre fondo rosa (Leandro la eligió).
+- **Instalación como app:** Torta Runner, Dina Run y Dina Beat están en el mismo sitio (`kiut-studio.github.io`, salvo Torta Runner, que quedó en `leandroacasco.github.io`), cada uno en su carpeta. Cada `manifest.json` tiene su propio `id` y `scope` (`./`) y su ícono, para que el teléfono los instale aparte. Hasta la 0.7 los tres usaban el mismo ícono de Torta Runner y parecían el mismo; desde la 0.7.2 Dina Run usa a Dina comiendo la calabaza (`dina_calabaza.webp`, hecha con ayuda de IA sobre el dibujo de Sofía) en un círculo rosa claro sobre fondo rosa (Leandro la eligió).
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - Sin servidor: el progreso, el ranking y el desafío semanal se guardan solo en el dispositivo (`localStorage`, clave `sofiRunner.v1`).
-- **Comparte sitio con el juego de la familia** (`leandroacasco.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (`sofi-runner-v1`, `v2`, `v3`, `v4`…).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v6`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v2)
+sw.js             copia sin conexión (caché sofi-runner-v6)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -143,11 +143,21 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.5 | Día y noche cada 1000 m; fondo sin el saludo de cumpleaños |
 | 0.6 | Nombre Sofi Runner, equilibrio con simulador, Halloween y temas de temporada |
 | 0.7 | Dina con la caminata de Sofía, Halloween completo (calabazas, pociones, golosinas, Dina con la calabaza, música) y Pase de Halloween con Alicia al final; accesorio por personaje |
-
 | 0.7.1 | Nombre nuevo: Dina Run |
 | 0.7.2 | Ícono propio (Dina comiendo la calabaza), `id` y `scope` propios para instalarse aparte; dirección nueva `/dina-run/` (sin redirección: Leandro les pasa el enlace nuevo a sus testers) |
+| 0.7.3 | Arreglo para instalar (`id` absoluto) |
+| 0.8 | Mudanza a Kiut Studio con el progreso |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
+
+## Kiut Studio y la mudanza (versión 0.8)
+- Los juegos de Sofía y Leandro ahora son de la organización de GitHub **Kiut Studio** (`Kiut-Studio`; "kiut" es como ellos dicen *cute*; Sofía aprobó el nombre). Hub: `kiut-studio.github.io` (repo `Kiut-Studio/kiut-studio.github.io`). Torta Runner queda en la cuenta de Leandro (`leandroacasco.github.io/torta-runner/`) y aparece en el hub como edición especial.
+- Repos: `Kiut-Studio/dina-run` y `Kiut-Studio/dina-beat`, publicados en `kiut-studio.github.io/dina-run/` y `/dina-beat/`. Como están en el mismo sitio, siguen compartiendo guardado (personajes y frutillas).
+- **Mudanza del progreso:** el guardado vive por dirección, así que en la dirección vieja (`leandroacasco.github.io/dina-run/` y `/dina-beat/`) quedan repos chicos de mudanza en la cuenta de Leandro (`LeandroACasco/dina-run` y `dina-beat`): leen `sofiRunner.v1`, `sofiRunner.music`, `sofiSilbato.v1` y `tortaRunnerPlus.v1` y redirigen a la dirección nueva con `#mudanza=` (JSON en base64url; no pasa por ningún servidor). No borran nada de la dirección vieja. Su `sw.js` borra la copia sin conexión vieja y se da de baja.
+- Al principio de `index.html` de cada juego (antes de cargar el guardado) hay un bloque que recibe `#mudanza=`; es el mismo en los dos juegos y trata las cuatro claves: Dina Run gana si trae más frutillas juntadas (`total`); Dina Beat gana si trae más estrellas, y las canciones compuestas se juntan por `id`; `sofiRunner.music` y `tortaRunnerPlus.v1` solo se escriben si no hay. Muestra un aviso arriba unos segundos y borra el `#` de la dirección. Repetir no duplica.
+- Ojo: las páginas de mudanza se subieron antes que el receptor, así que quien entró por la dirección vieja entre el 26 y el 28/10 llegó sin su progreso. No se perdió nada: con volver a abrir el enlace viejo se lo trae.
+- Las claves de guardado y el `id` de las apps (`/dina-run/`, `/dina-beat/`) no cambian. Al cambiar de dominio el teléfono las ve como apps nuevas: hay que instalarlas de nuevo desde la dirección nueva.
+- Desde ahora Claude sube las versiones directo a GitHub (app de Claude instalada).
 
 ## Pendientes e ideas
 

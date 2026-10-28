@@ -10,6 +10,41 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script>
+/* Mudanza a Kiut Studio: recibe el progreso que trae la dirección vieja (leandroacasco.github.io) en #mudanza=…
+   Va antes que el juego, así el guardado ya está en su lugar cuando el juego lo lee. No pasa por ningún servidor.
+   Es el mismo bloque en Dina Run y Dina Beat (comparten sitio y guardado). Repetir la mudanza no duplica nada. */
+(function(){
+  var m=/[#&]mudanza=([A-Za-z0-9_-]+)/.exec(location.hash);if(!m)return;
+  var msg='';
+  try{
+    var b=m[1].replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+    var bin=atob(b),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+    var d=JSON.parse(new TextDecoder().decode(u)),k=(d&&d.k)||{},trajo=false;
+    var get=function(x){try{return JSON.parse(localStorage.getItem(x)||'null')}catch(e){return null}};
+    var put=function(x,v){localStorage.setItem(x,typeof v==='string'?v:JSON.stringify(v));trajo=true};
+    // Dina Run: gana el que tenga más frutillas juntadas (total)
+    if(k['sofiRunner.v1']){var nr=JSON.parse(k['sofiRunner.v1']),cr=get('sofiRunner.v1');
+      if(!cr||(nr.total|0)>(cr.total|0))put('sofiRunner.v1',k['sofiRunner.v1'])}
+    // guardado de prueba de Torta Runner+ y ajuste de música: solo si acá no hay
+    ['tortaRunnerPlus.v1','sofiRunner.music'].forEach(function(x){if(k[x]!=null&&localStorage.getItem(x)==null)put(x,k[x])});
+    // Dina Beat: gana el que tenga más estrellas; las canciones compuestas se juntan
+    if(k['sofiSilbato.v1']){var nb=JSON.parse(k['sofiSilbato.v1']),cb=get('sofiSilbato.v1');
+      var st=function(s){return((s&&s.stars)||[]).reduce(function(a,n){return a+(n|0)},0)};
+      var base=(!cb||st(nb)>st(cb))?nb:cb,otro=base===nb?cb:nb,songs=(base.songs||[]).slice(),cambio=base!==cb;
+      ((otro&&otro.songs)||[]).forEach(function(s){if(s&&!songs.some(function(t){return t&&t.id===s.id})){songs.push(s);cambio=true}});
+      if(cambio){base.songs=songs;put('sofiSilbato.v1',base)}}
+    msg=trajo?'🐱 ¡Listo! Trajimos tus frutillas y tu progreso.':'🐱 Tu progreso ya estaba al día.';
+  }catch(e){msg='No se pudo traer el progreso. Tus frutillas siguen guardadas en la dirección vieja.'}
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  window.MUDANZA=msg;
+  addEventListener('DOMContentLoaded',function(){
+    var t=document.createElement('div');t.textContent=msg;t.setAttribute('role','status');
+    t.style.cssText='position:fixed;left:50%;top:max(14px,env(safe-area-inset-top));transform:translateX(-50%);z-index:9999;max-width:min(90vw,380px);padding:10px 16px;border-radius:14px;background:#fff;color:#3f2433;border:3px solid #3f2433;box-shadow:0 4px 0 #3f2433;font:600 15px/1.35 Fredoka,system-ui,sans-serif;text-align:center;transition:opacity .5s';
+    document.body.appendChild(t);setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove()},600)},4500);
+  });
+})();
+</script>
 <script>window.PWA=true</script>
 <title>Dina Run</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1287,6 +1322,10 @@ const POWERS={
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
 const VERSION='0.7';
 const NEWS=[
+  {v:'0.8',fecha:'octubre 2026',titulo:'¡Nos mudamos a Kiut Studio!',items:[
+    ['🏠','Dina Run ahora vive en Kiut Studio, el estudio de Sofía y Leandro: kiut-studio.github.io/dina-run'],
+    ['🐱','Si entrás por la dirección vieja, te trae solo con tus frutillas, tus personajes y tu pase de Halloween.'],
+  ]},
   {v:'0.7.3',fecha:'octubre 2026',titulo:'Arreglo para instalar',items:[
     ['📲','Arreglado: en algunos teléfonos decía "No se puede instalar esta app".'],
   ]},

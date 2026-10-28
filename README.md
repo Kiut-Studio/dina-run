@@ -6,7 +6,7 @@ Un *infinite runner* de un solo toque, con dibujos de Sofía. Corrés, juntás f
 
 Nació de [Torta Runner](https://github.com/LeandroACasco/torta-runner), el juego de cumpleaños que hicimos en familia. Esta versión es para cualquiera que quiera jugarlo.
 
-**▶ Jugar:** https://leandroacasco.github.io/dina-run/
+**▶ Jugar:** https://kiut-studio.github.io/dina-run/
 
 ![Partida en el celular: Dina persigue a Sofi con el poder de frutillas dobles, y adelante hay frutillas, un pancito y dos Kampitos](docs/juego.webp)
 

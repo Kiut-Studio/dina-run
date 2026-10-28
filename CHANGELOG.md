@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.8 — octubre 2026: ¡Nos mudamos a Kiut Studio!
+
+- 🏠 Dina Run ahora vive en **Kiut Studio**, el estudio de Sofía y Leandro: https://kiut-studio.github.io/dina-run/
+- 🐱 Si entrás por la dirección vieja, te trae solo con tus frutillas, tus personajes y tu pase de Halloween.
+
 ## Versión 0.7.3 — octubre 2026: arreglo para instalar
 
 - 📲 Arreglado: en algunos teléfonos Android, Chrome decía "No se puede instalar esta app".
