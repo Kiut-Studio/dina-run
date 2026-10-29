@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 28/10/2026 · versión 0.9
+Última actualización: 28/10/2026 · versión 0.9.1
 
 ## Qué es
 
@@ -27,8 +27,8 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 - **Instalación como app:** Torta Runner, Dina Run y Dina Beat están en el mismo sitio (`kiut-studio.github.io`, salvo Torta Runner, que quedó en `leandroacasco.github.io`), cada uno en su carpeta. Cada `manifest.json` tiene su propio `id` y `scope` (`./`) y su ícono, para que el teléfono los instale aparte. Hasta la 0.7 los tres usaban el mismo ícono de Torta Runner y parecían el mismo; desde la 0.7.2 Dina Run usa a Dina comiendo la calabaza en un círculo rosa claro sobre fondo rosa (Leandro la eligió); desde la 0.8.1 con el dibujo de Sofía (`favicon-32.png` va sin círculo para que se entienda chiquito).
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
-- El progreso, el ranking y el desafío semanal se guardan en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, el progreso también va a la nube (ver **Cuenta de Google y nube**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v8`).
+- El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v9`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v8)
+sw.js             copia sin conexión (caché sofi-runner-v9)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -149,6 +149,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.8 | Mudanza a Kiut Studio con el progreso |
 | 0.8.1 | Dina con la calabaza dibujada por Sofía (ícono y pantalla final de Halloween) |
 | 0.9 | Cuenta de Google y progreso en la nube (la misma de Dina Beat); las frutillas de Dina Beat en otra pestaña ya no se pisan |
+| 0.9.1 | Ranking y desafío de la semana de todos, en Firestore, con primer nombre y foto de Google; se quitó el ranking del dispositivo |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 
@@ -167,14 +168,51 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 - Mismo Firebase que Dina Beat: proyecto `kiut-studio` ("Kiut Studio Games", plan Spark gratis), Authentication con Google, Firestore en `southamerica-east1`. Dina Run tiene su propia app web registrada (`appId …335beb…`, la que pasó Leandro); el resto de `FB_CFG` es igual. Reglas: cada jugador lee y escribe solo `jugadores/{uid}`; no hizo falta cambiarlas.
 - Código en `index.html`, bloque "☁️ nube" (antes del simulador). SDK 12.10.0 desde gstatic con `import()` dinámico: se carga solo al abrir ☁️ o al arrancar si ya usaste la cuenta (acá o en Dina Beat). Sin internet el juego sigue igual. Todo pasa por `cloud.api` {onUser, google, out, get, set}; las pruebas lo cambian por `window.CLOUD_MOCK`.
 - **Documento compartido** `jugadores/{uid}`: Dina Run escribe solo `run` (su guardado sin lo del aparato) y `runAt`, con `mergeFields` (reemplaza esos dos campos enteros y no toca `beat`, `beatAt`, `nombre`, `personaje` de Dina Beat).
-- **No viaja** (`DEVICE_ONLY`): `muted`, `set` (volúmenes, vibración, cuenta 3-2-1, temas, menos animaciones), `seenVersion`, el ranking en línea pendiente (`pending`, `lastTop`, `lastWeek`, `champs`, `prevWin`), `anonBest` y `cloud`.
-- **Cómo se juntan** (`mergeSave`): `total`, `spent`, `best` y mejoras (`up`) el máximo; personajes, cosméticos, disfraces de Dina, `seen` y consejos juntados; logros juntados (con la fecha más vieja); números de `st` el máximo; pase del mismo año: metros el máximo y premios reclamados juntados; ranking del aparato: el mejor de cada nombre; desafío de la semana: el mejor de cada nombre si es la misma semana. Personaje, accesorios, confeti y nombre: del guardado modificado último (`save.mod`, que se pone en cada `persist()`).
+- **No viaja** (`DEVICE_ONLY`): `muted`, `set` (volúmenes, vibración, cuenta 3-2-1, temas, menos animaciones), `seenVersion`, `cloud`, y lo del ranking de este aparato: `rk` (lo último que se vio), `rkMine` y `wkSent` (lo que ya se subió desde acá).
+- **Cómo se juntan** (`mergeSave`): `total`, `spent`, `best` y mejoras (`up`) el máximo; personajes, cosméticos, disfraces de Dina, `seen` y consejos juntados; logros juntados (con la fecha más vieja); números de `st` el máximo; pase del mismo año: metros el máximo y premios reclamados juntados; desafíos ganados (`wins`) juntados; tu mejor del desafío (`wkMine`) el máximo si es la misma semana; `bestRun` el de más metros. Personaje, accesorios, confeti y nombre: del guardado modificado último (`save.mod`, que se pone en cada `persist()`).
 - Límite conocido: con el máximo, si se juega **a la vez** en dos teléfonos sin conexión, se pueden perder las frutillas del que ganó menos. Para jugar en uno por vez no pasa nada.
 - **Cuándo sincroniza:** al entrar, al abrir el juego, al volver a la pestaña (si pasaron 5 min), al recuperar internet y con "🔄 Sincronizar ahora". Cada `persist()` sube a los 3 s. Nunca cambia el guardado en medio de una partida (`whenIdle`: espera al menú o la pantalla final). El simulador no sube nada (`simulating`).
 - **Otra pestaña (pendiente viejo, resuelto):** Dina Run escucha el evento `storage` de `sofiRunner.v1`. Si el cambio no trae fecha nueva (`mod` igual), vino de Dina Beat: se suma la diferencia de frutillas (así no se pierden si acá también jugaste). Si trae fecha nueva, es otra pestaña de Dina Run y se junta como con la nube. Lo juntado se guarda una sola vez (no rebota entre pestañas).
 - **Pantallas:** botón ☁️ arriba en el menú (primero del grupo de íconos): "☁️ Entrar" en pantallas de 480 px o más (clase `slim` debajo: solo ☁️) y la foto de la cuenta cuando entraste. Fila "☁️ Cuenta de Google" en ⚙️ Ajustes. Pantalla `#acct`: foto, nombre, correo, estado, "🔄 Sincronizar ahora" y "Salir" (el progreso sigue en el teléfono). El chip de abajo dice "Progreso guardado en la nube ☁️".
 - **Borrar mi progreso con cuenta:** sale de la cuenta y borra solo el teléfono; lo de la nube queda a salvo (si no, la próxima sincronización lo traería de vuelta).
 - Pruebas: `pruebas/nube.py` (nube falsa con varios teléfonos; 20 revisiones). `tamanos.py` también revisa la pantalla `#acct`.
+
+## Ranking de todos (versión 0.9.1)
+- Pedido de Leandro (28/10): con la cuenta ya hay foto y nombre, así que no hace falta escribir el nombre ni elegir un personaje como ícono. El sistema viejo (nombre escrito, ícono, ranking por dispositivo, `RANKING_URL` para un servidor) queda solo en Torta Runner. Decisiones de Leandro: ranking **de todos en la nube**; se muestra **solo el primer nombre** (menos datos personales, juegan chicos); **sin cuenta no se aparece**, pero se puede ver.
+- **Lugares en Firestore:** `ranking/{uid}` {`n` primer nombre, `f` foto, `c` personaje del récord, `m` récord en metros, `fr` frutillas de esa partida, `l` logros, `g` desafíos ganados, `at`}; `semanas/{lunes, ej. S2026-10-26}/filas/{uid}` {`n`, `f`, `c`, `v` mejor valor de la semana, `r` id del desafío, `at`}.
+- **Código** (bloque "ranking" en `index.html`): `rankPublish()` sube el récord si cambió algo (`rkMine` guarda lo último subido, para no gastar escrituras) y la fila de la semana si mejoró (`wkSent`); `rankFetch()` baja los 20 primeros de cada lista y el 1.º de la semana anterior; `myPlace()` cuenta cuántos tienen más metros (`getCountFromServer`) para mostrar "🏆 #N" al terminar y tu fila aunque estés más abajo del 20. Sin cuenta, para ver el ranking se usa una sesión anónima (invisible).
+- **Quién ganó la semana:** el 1.º de `semanas/{anterior}`. Si sos vos, se anota en `save.wins` y sube a `g` ("🏆 ganó N desafíos"). Se marca con 👑 en las listas y en el cartel del desafío del menú (`save.rk.prev`).
+- Se sube: al terminar cada partida, al entrar y al sincronizar. Se baja: al abrir 🏆 y al sincronizar.
+- **Pantallas:** en la final, con cuenta, chip "🏆 #N" (tocándolo abre el ranking); sin cuenta, botón "☁️ Entrá con Google para aparecer en el ranking" (abre la cuenta y, al volver, sube y muestra el puesto). En 🏆, abajo: "Así aparecés: Nombre" con tu foto, o el botón Entrar con Google.
+- El récord de antes de la 0.9.1 sube igual al entrar (`save.best`; las frutillas de esa partida no se sabían y van en 0). Los datos viejos (`name`, `runs`, `avatars`, `wk`, `anonBest`, `logrosBy`, `champs…`, `prevWin…`, `pending`, `lastTop`, `lastWeek`) se borran al abrir.
+- **Reglas de Firestore** (las agrega Leandro en la consola de Firebase, debajo de las de Dina Beat, dentro de `match /databases/{database}/documents { … }`). Validan que cada uno escriba solo su fila, solo con cuenta de Google, con los campos y tipos de arriba y un máximo de 1.000.000; no impiden un récord falso de alguien que toque el código, pero sí basura:
+  ```
+    // 🏆 Dina Run: ranking de todos (desde la 0.9.1)
+    function esGoogle(uid) {
+      return request.auth != null && request.auth.uid == uid
+        && request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+    function filaOk(d) {
+      return d.n is string && d.n.size() > 0 && d.n.size() <= 20
+        && d.f is string && d.f.size() <= 600
+        && d.c is string && d.c.size() <= 20 && d.at is int;
+    }
+    match /ranking/{uid} {
+      allow read: if request.auth != null;
+      allow create, update: if esGoogle(uid) && filaOk(request.resource.data)
+        && request.resource.data.keys().hasOnly(['n','f','c','m','fr','l','g','at'])
+        && request.resource.data.m is int && request.resource.data.m >= 0 && request.resource.data.m <= 1000000
+        && request.resource.data.fr is int && request.resource.data.l is int && request.resource.data.g is int;
+    }
+    match /semanas/{semana}/filas/{uid} {
+      allow read: if request.auth != null;
+      allow create, update: if esGoogle(uid) && filaOk(request.resource.data)
+        && request.resource.data.keys().hasOnly(['n','f','c','v','r','at'])
+        && request.resource.data.v is int && request.resource.data.v >= 0 && request.resource.data.v <= 1000000
+        && request.resource.data.r is string;
+    }
+  ```
+- Pruebas: `pruebas/nube.py` (ranking con tres cuentas y una sin cuenta, primer nombre, foto, puesto, desafío de la semana, ganador de la semana pasada); `tamanos.py` abre 🏆 con 10 jugadores y el panel de entrar.
 
 ## Pendientes e ideas
 
@@ -183,5 +221,5 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 3. Dulces que se desbloquean con frutillas en la Pastelería.
 4. Más temas de temporada (Navidad, verano, Pascua) y zonas nuevas, idealmente con fondos dibujados por Sofía.
 5. Un mosaico de fondo nuevo de Sofía para reemplazar el de letras que se quitó.
-6. Si crece: ranking en línea en el mismo Firestore (por ejemplo `ranking/{semana}/filas/{uid}`; necesita reglas nuevas) y desafío semanal "sin mejoras" para que sea parejo.
+6. Desafío semanal "sin mejoras" para que sea parejo. Si aparecen récords falsos: validar en el servidor (Cloud Functions, que necesita plan de pago) o un botón para que Leandro borre filas.
 7. Play Store: envolver el HTML con Capacitor o TWA.

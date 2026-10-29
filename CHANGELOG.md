@@ -1,5 +1,12 @@
 # Novedades de Dina Run
 
+## Versión 0.9.1 — octubre 2026: ranking de todos
+
+- 🏆 El ranking y el desafío de la semana ahora son de todos los que juegan, en la nube (antes eran de cada teléfono).
+- ☁️ Aparecés con tu cuenta de Google: tu primer nombre y tu foto. Ya no se escribe el nombre ni se elige ícono (eso queda en Torta Runner). Sin cuenta se puede ver el ranking, y al terminar la partida aparece el botón para entrar.
+- 👑 Quien gana el desafío de la semana queda marcado, y cada uno suma sus desafíos ganados.
+- 🗑️ Se borró el ranking viejo de cada teléfono (nombres escritos e íconos).
+
 ## Versión 0.9 — octubre 2026: tu progreso en la nube
 
 - ☁️ **Cuenta de Google:** con el botón ☁️ Entrar (arriba en el menú, o en ⚙️ Ajustes) tus frutillas, personajes, cosméticos, mejoras, récords, logros y el pase de Halloween quedan guardados en la nube. Lo que ya jugaste en el teléfono se junta con lo de la cuenta: queda lo mejor de cada uno.

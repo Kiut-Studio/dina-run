@@ -39,7 +39,7 @@ try:
       probs+=['[bloqueado] '+x for x in pg.evaluate(MENU)]
       pg.screenshot(path=f'{OUT}/{w}x{h}_menu2.png')
       for ov,sel in [('#settings','#settings .goCard'),('#help','#help .goCard'),('#shop','#shop .goCard'),('#news','#news .goCard'),('#ach','#ach .goCard'),('#rank','#rank .goCard'),('#pass','#pass .goCard'),('#acct','#acct .goCard')]:
-        pg.evaluate("TR.openPass()" if ov=='#pass' else "TR.openAcct('menu')" if ov=='#acct' else f"document.querySelector('{ov}').hidden=false");pg.wait_for_timeout(150)
+        pg.evaluate("TR.openPass()" if ov=='#pass' else "TR.openAcct('menu')" if ov=='#acct' else "TR.save.rk.top=Array.from({length:10},(_,i)=>({id:'u'+i,n:['Sofía','Leandro','Maximiliana','Nora','Cinthia','Deisy','Bautista','Ana','Juan','Valentina'][i],f:'',c:'sofi',m:9000-i*700,fr:400-i*30,l:i+3,g:i%3}));document.querySelector('#rank').hidden=false;TR.renderRank()" if ov=='#rank' else f"document.querySelector('{ov}').hidden=false");pg.wait_for_timeout(150)
         probs+=pg.evaluate(FIT,sel)
         # nada del menú puede quedar por encima de la ventana: se mira qué elemento está arriba en varios puntos
         probs+=pg.evaluate('''(o=>{const ov=document.querySelector(o),r=ov.getBoundingClientRect(),P=[];

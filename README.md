@@ -130,7 +130,7 @@ Al lado del carrusel hay dos filas con flechitas: **accesorio** y **confeti**. C
 
 - **🏅 22 logros**, desde *Primera carrera* hasta *Golosa* (3 dulces en una partida). En la misma pantalla, 📊 *Mis números* muestra tus estadísticas.
 - **🎯 Desafío de la semana:** cambia todos los lunes.
-- **🏆 Ranking:** por ahora es el de cada dispositivo (varias personas pueden anotarse en el mismo).
+- **🏆 Ranking:** de todos los que juegan, en la nube: récords y desafío de la semana. Se aparece entrando con Google, con el primer nombre y la foto de la cuenta.
 
 El progreso se guarda en el dispositivo donde jugás. Con **☁️ Entrar** (arriba en el menú) y una cuenta de Google también queda guardado en la nube, con la misma cuenta que Dina Beat: no se pierde si cambiás de teléfono o se borra el navegador.
 

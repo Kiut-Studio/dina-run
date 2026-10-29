@@ -205,12 +205,14 @@ body.compact .card .lock span{font-size:11px;padding:0 5px;border-width:2px}
 .nameRow input{font:inherit;color:var(--ink);background:var(--white);border:3px solid var(--ink);border-radius:999px;padding:5px 12px;width:min(190px,60vw)}
 .nameRow button{border:3px solid var(--ink);border-radius:999px;padding:4px 14px;background:var(--sun)}
 .rankLine{margin-top:10px;font-size:14px}
-.avPick{margin-top:12px;font-size:14px}
-.avRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}
-.avBtn{width:52px;height:52px;border-radius:50%;border:3px solid var(--ink);background:var(--white);padding:3px;display:grid;place-items:center;overflow:hidden;transition:transform .1s}
-.avBtn img{width:100%;height:100%;object-fit:contain}
-.avBtn.sel{background:var(--sun);transform:scale(1.12)}
-.avBtn:disabled{opacity:.4;cursor:default}
+.rkMe{margin-top:12px;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.rkMe .me{display:flex;align-items:center;gap:10px;background:var(--cream);border:3px solid var(--ink);border-radius:999px;padding:4px 16px 4px 4px;text-align:left}
+.rkMe .me img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);background:var(--white)}
+.rkMe .me b{font-size:16px}.rkMe small{display:block;font-size:11px;opacity:.65}
+.rkMe p{margin:0;line-height:1.25}
+.rankList img.ph{border-radius:50%;object-fit:cover}
+.rankList li.gap{display:block;text-align:center;padding:0;border:0;background:none;font-size:14px;opacity:.6;line-height:.8}
+.rankJoin{margin-top:8px;border:3px solid var(--ink);border-radius:999px;background:var(--cream);font:inherit;font-size:14px;padding:5px 14px;cursor:pointer}
 .ibtn.off{opacity:.4}
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px;font-size:11px}
 .chips span{background:var(--white);border:2px solid var(--ink);border-radius:999px;padding:4px 12px}
@@ -996,11 +998,7 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
           <span class="chip" id="achLine" title="Logros"></span>
           <span class="chip sun passChip" id="passLine" role="button" tabindex="0" title="Pase de Halloween" hidden></span>
         </div>
-        <div class="nameRow mini" id="nameAsk" hidden>
-          <label for="goName" id="goNameLabel" title="Anotate en el ranking">🏆</label>
-          <input id="goName" maxlength="16" placeholder="Tu nombre" autocomplete="nickname">
-          <button id="goNameOk" aria-label="Guardar">✓</button>
-        </div>
+        <button class="rankJoin thick-sm" id="rankJoin" hidden>☁️ Entrá con Google para aparecer en el ranking</button>
         <div class="overBtns">
           <button class="btn bigBtn againBtn" id="againBtn">↻ ¡Otra vez!</button>
           <div class="row">
@@ -1032,19 +1030,11 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
           <button id="tabReto" role="tab">🎯 Desafío de la semana</button>
         </div>
         <div class="retoBox" id="retoBox" hidden></div>
-        <div class="rankMode" id="rankMode">Ranking de este dispositivo</div>
+        <div class="rankMode" id="rankMode">Récords de todos</div>
         <ol class="rankList" id="rankList"></ol>
         </div>
         <div class="rkR">
-        <div class="nameRow">
-          <label for="nameIn">Tu nombre:</label>
-          <input id="nameIn" maxlength="16" placeholder="Tu nombre" autocomplete="nickname">
-          <button id="nameSave">Guardar</button>
-        </div>
-        <div class="avPick">
-          <div id="avLabel">Elegí tu ícono: aparece al lado de tu nombre</div>
-          <div class="avRow" id="avRow"></div>
-        </div>
+        <div class="rkMe" id="rkMe"></div>
         <div class="goBtns"><button class="btn thick-sm" id="rankBack" style="background:var(--red);color:var(--white)">Volver</button></div>
         </div>
       </div>
@@ -1349,8 +1339,13 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.9';
+const VERSION='0.9.1';
 const NEWS=[
+  {v:'0.9.1',fecha:'octubre 2026',titulo:'Ranking de todos',items:[
+    ['🏆','El ranking ahora es de todos los que juegan Dina Run, no solo de tu teléfono: récords y desafío de la semana.'],
+    ['☁️','Para aparecer, entrá con tu cuenta de Google: se ve tu primer nombre y tu foto. Ya no hace falta escribir el nombre ni elegir ícono.'],
+    ['👑','Si ganás el desafío de la semana, queda anotado al lado de tu nombre.'],
+  ]},
   {v:'0.9',fecha:'octubre 2026',titulo:'Tu progreso en la nube',items:[
     ['☁️','Tocá ☁️ Entrar (arriba en el menú) y entrá con tu cuenta de Google: tus frutillas, personajes, cosméticos, mejoras, récords, logros y el pase quedan guardados en la nube. Así no se pierden si cambiás de teléfono o se borra el navegador.'],
     ['🎵','Es la misma cuenta de Dina Beat: si ya entraste ahí, acá entrás solo.'],
@@ -1475,8 +1470,8 @@ const whenNext=w=>w.daysLeft===1?'mañana':`en ${w.daysLeft} días`;
 var cloud=null,cloudPushT=0,simulating=false,stored={total:0,spent:0,mod:0}; // ☁️ nube: se arma más abajo
 const KEY='sofiRunner.v1'; // distinta de la del juego de la familia: comparten el mismo sitio (github.io)
 const OLD_KEY='tortaRunnerPlus.v1'; // si se jugó la versión de prueba como Torta Runner+, el progreso se trae una vez
-const save={total:0,best:0,char:'sofi',outfit:'default',muted:false,seen:['sofi','default'],name:'',runs:[],pending:[],avatars:{},anonBest:null,lastTop:[],
-  ach:{},st:{},wk:{key:'',rows:{}},lastWeek:{key:'',reto:'',top:[]},tips:{},set:{},spent:0,up:{},owned:['sofi'],cosm:null,trail:'none'};
+const save={total:0,best:0,char:'sofi',outfit:'default',muted:false,seen:['sofi','default'],
+  ach:{},st:{},tips:{},set:{},spent:0,up:{},owned:['sofi'],cosm:null,trail:'none'};
 try{
   const raw=localStorage.getItem(KEY)||localStorage.getItem(OLD_KEY);
   if(raw) Object.assign(save,JSON.parse(raw));
@@ -2345,8 +2340,8 @@ function gameOver(){
   const run={metros:m,frutillas:got,pans:R.pans,kamps:R.kamps,tortas:R.tortas,sinKamp:R.sinKamp===null?m:R.sinKamp};
   const wk=weekInfo();
   const val=wk.reto.val(run)|0;
-  const wbest=Math.max(val,(save.wk.key===wk.key&&save.name&&save.wk.rows[save.name.toLowerCase()]||{valor:0}).valor||0);
-  $('retoLine').textContent=`🎯 Desafío de la semana: ${val} ${wk.reto.unit}`;$('retoLine').title=`Desafío de la semana (${wk.reto.name.toLowerCase()}): ${val} ${wk.reto.unit}`+(save.name?`. Tu mejor de la semana: ${wbest} ${wk.reto.unit}`:'');
+  const wbest=Math.max(val,wkBest());
+  $('retoLine').textContent=`🎯 Desafío de la semana: ${val} ${wk.reto.unit}`;$('retoLine').title=`Desafío de la semana (${wk.reto.name.toLowerCase()}): ${val} ${wk.reto.unit}`+`. Tu mejor de la semana: ${wbest} ${wk.reto.unit}`;
   rankAfterRun({metros:m,frutillas:got,personaje:save.char,logros:nAch,semana:wk.key,reto:wk.reto.id,valor:val});
   // pase de Halloween: suma los metros y avisa si hay premios para reclamar (no se dan solos: se reclaman en el pase)
   const pn=passAdd(m);passLine();
@@ -2476,7 +2471,7 @@ function renderMenu(){
   $('setBtn').textContent=save.muted?'🔇':'⚙️';$('setBtn').title=save.muted?'Ajustes (sonido apagado)':'Ajustes';
   const wk=weekInfo();
   const pw=prevWinner();
-  $('retoPill').textContent=(pw&&wk.daysLeft>=5?`👑 ${cleanName(pw.nombre)} ganó la semana pasada · `:'')+`🎯 Desafío de la semana: ${wk.reto.name} · el próximo sale el lunes (${whenNext(wk)})`;
+  $('retoPill').textContent=(pw&&wk.daysLeft>=5?`👑 ${cleanName(pw.n)} ganó la semana pasada · `:'')+`🎯 Desafío de la semana: ${wk.reto.name} · el próximo sale el lunes (${whenNext(wk)})`;
   $('retoPill').title=`Desafío de la semana: ${wk.reto.name}. El próximo sale el lunes (${whenNext(wk)}).`;
   renderCarousel();
   const can=canBuyAny();show('shopBadge',can);show('shopDot',can);
@@ -2792,112 +2787,98 @@ function refreshMusic(){ // decide qué suena según la pantalla
   if(want==='run'&&!runGain) startRunMusic();
 }
 
-/* ---------- ranking ----------
-   Por ahora es el ranking de este dispositivo (varias personas pueden anotarse con su nombre).
-   El código del ranking en línea queda listo para cuando haya un servidor: basta con poner su dirección acá. */
-const RANKING_URL='';
+/* ---------- ranking (en la nube, desde la 0.9.1) ----------
+   Un ranking de todos los jugadores en el Firebase de Kiut Studio. Aparecen solo quienes entraron con Google,
+   con su PRIMER nombre y su foto de la cuenta (nada de escribir el nombre ni elegir ícono: eso queda en Torta Runner).
+   Para verlo sin cuenta alcanza una sesión anónima (invisible). Lugares:
+   ranking/{uid} {n nombre, f foto, c personaje, m récord en metros, fr frutillas de esa partida, l logros, g desafíos ganados, at}
+   semanas/{lunes}/filas/{uid} {n, f, c, v mejor valor del desafío, r id del desafío, at}. Reglas: ver CONTEXTO.md.
+   Lo último que se vio queda en save.rk (de este aparato) para mostrarlo sin conexión. */
 const MEDALS=['🥇','🥈','🥉'];
 const cleanName=s=>String(s||'').replace(/[<>"]/g,'').replace(/^[=+\-@\s]+/,'').replace(/\s+/g,' ').trim().slice(0,16);
-const sameName=(a,b)=>String(a).toLowerCase()===String(b).toLowerCase();
-const AVATARS=[{id:'sofi',img:'sofi',name:'Sofi'},{id:'deisy',img:'deisy',name:'Deisy'},{id:'leandro',img:'leandro',name:'Leandro'},
-  {id:'cinthia',img:'cinthia',name:'Cinthia'},{id:'nora',img:'nora',name:'Nora'},{id:'dina',img:'dina_avatar',name:'Dina'}];
-const avImg=id=>{const a=AVATARS.find(x=>x.id===id);return a?'assets/'+a.img+'.webp':''};
-const myAvatar=()=>(save.name&&save.avatars[save.name.toLowerCase()])||'';
-function localTop(){
-  const best={};
-  for(const r of save.runs){const k=r.nombre.toLowerCase();if(!best[k]||r.metros>best[k].metros)best[k]=r}
-  const lg=save.logrosBy||{};
-  return Object.values(best).map(r=>({...r,avatar:save.avatars[r.nombre.toLowerCase()]||r.avatar||'',logros:Math.max(r.logros|0,lg[r.nombre.toLowerCase()]|0)})).sort((a,b)=>b.metros-a.metros).slice(0,20);
-}
-// desafío de la semana guardado en este dispositivo (mejor valor de cada nombre)
-function localWeek(){
-  const wk=weekInfo();
-  if(save.wk.key!==wk.key||save.wk.reto!==wk.reto.id) return [];
-  return Object.values(save.wk.rows);
-}
-/* ganador del desafío: el de la semana pasada y cuántas semanas ganó cada uno */
+const firstName=u=>cleanName(String((u&&u.name)||'').trim().split(/\s+/)[0])||'Jugador';
+const charImg=c=>'assets/'+(CHARS.some(x=>x.id===c)?CHARS.find(x=>x.id===c).img||c:'sofi')+'.webp';
 const prevWeek=()=>weekInfo(new Date(Date.now()-7*86400000));
 const retoById=id=>RETOS.find(r=>r.id===id)||RETOS[0];
-function rollWeek(){ // cierra la semana guardada en este dispositivo y anota quién ganó
-  const old=save.wk; if(!old||!old.key||old.key===weekInfo().key) return;
-  let g=null;for(const r of Object.values(old.rows||{})) if((r.valor|0)>0&&(!g||r.valor>g.valor)) g=r;
-  if(g){save.champsLocal=save.champsLocal||{};const k=g.nombre.toLowerCase();save.champsLocal[k]=(save.champsLocal[k]|0)+1;
-    save.prevWinLocal={key:old.key,nombre:g.nombre,valor:g.valor|0,reto:old.reto,avatar:g.avatar||''}}
-  save.wk={key:'',rows:{}};persist();
+if(!save.rk||typeof save.rk!=='object') save.rk={top:[],wk:{key:'',rows:[]},prev:null};
+if(!Array.isArray(save.wins)) save.wins=[]; // semanas del desafío que ganaste
+if(!save.wkMine){ // tu mejor valor del desafío de esta semana (antes se guardaba por nombre en este aparato)
+  const wk=weekInfo(),o=save.wk&&save.wk.key===wk.key&&save.wk.reto===wk.reto.id&&save.name&&save.wk.rows&&save.wk.rows[save.name.toLowerCase()];
+  save.wkMine={key:wk.key,v:o?o.valor|0:0};
 }
-function prevWinner(){
-  const pk=prevWeek().key;
-  if(RANKING_URL&&save.prevWin&&save.prevWin.key===pk) return save.prevWin.nombre?save.prevWin:null;
-  return save.prevWinLocal&&save.prevWinLocal.key===pk?save.prevWinLocal:null;
+for(const k of ['name','runs','pending','avatars','anonBest','lastTop','wk','lastWeek','champs','champsLocal','prevWin','prevWinLocal','logrosBy']) delete save[k];
+const wkBest=()=>{const wk=weekInfo();return save.wkMine&&save.wkMine.key===wk.key?save.wkMine.v|0:0};
+function prevWinner(){const p=save.rk.prev;return p&&p.key===prevWeek().key&&p.n?p:null}
+const myUid=()=>cloud&&cloud.google&&cloud.user?cloud.user.uid:null;
+/* subir lo tuyo: el récord (si mejoró o cambió tu nombre, foto o logros) y el desafío de la semana */
+function myRow(){
+  const u=cloud.user,b=save.bestRun&&save.bestRun.m===save.best?save.bestRun:{m:save.best,fr:0,c:save.char};
+  return {n:firstName(u),f:String(u.photo||'').slice(0,500),c:b.c||save.char,m:Math.floor(save.best)|0,fr:b.fr|0,l:Object.keys(save.ach).length,g:save.wins.length};
 }
-function champsOf(name){
-  const k=String(name).toLowerCase();
-  const m=RANKING_URL&&save.champs?save.champs:(save.champsLocal||{});
-  return m[k]|0;
+async function rankPublish(){
+  if(!myUid()||simulating) return;const uid=myUid(),api=cloud.api;
+  try{
+    const r=myRow(),old=save.rkMine||{};
+    if(r.m>0&&['n','f','c','m','fr','l','g'].some(k=>r[k]!==old[k])){
+      await api.set('ranking/'+uid,Object.assign({},r,{at:Date.now()}));save.rkMine=r;persist()}
+    const wk=weekInfo(),v=wkBest();
+    if(v>0&&!(save.wkSent&&save.wkSent.key===wk.key&&save.wkSent.v>=v&&save.wkSent.n===r.n&&save.wkSent.f===r.f)){
+      await api.set('semanas/'+wk.key+'/filas/'+uid,{n:r.n,f:r.f,c:save.char,v,r:wk.reto.id,at:Date.now()});save.wkSent={key:wk.key,v,n:r.n,f:r.f};persist()}
+  }catch(e){console.warn('ranking',e)}
 }
-function knownWeek(){
-  const wk=weekInfo(),best={};
-  const srv=(save.lastWeek.key===wk.key&&save.lastWeek.reto===wk.reto.id)?save.lastWeek.top:[];
-  for(const r of [...srv,...localWeek()]){const k=String(r.nombre).toLowerCase();if(!best[k]||r.valor>best[k].valor)best[k]={...r}}
-  for(const k in best){const av=save.avatars[k];if(av)best[k].avatar=av}
-  return Object.values(best).sort((a,b)=>b.valor-a.valor);
+/* bajar el ranking: récords, desafío de esta semana y quién ganó la anterior (si ganaste vos, se anota) */
+async function rankFetch(){
+  const api=await cloudLoad();if(!api) return false;
+  if(!cloud.user){try{setUser(await api.anon())}catch(e){console.warn(e);return false}}
+  try{
+    const wk=weekInfo(),pk=prevWeek().key;
+    const [top,rows,prev]=await withTimeout(Promise.all([api.top('ranking','m',20),api.top('semanas/'+wk.key+'/filas','v',20),api.top('semanas/'+pk+'/filas','v',1)]),12000);
+    save.rk.top=top.map(x=>Object.assign({id:x.id},x.data));
+    save.rk.wk={key:wk.key,rows:rows.filter(x=>x.data.r===wk.reto.id).map(x=>Object.assign({id:x.id},x.data))};
+    const w=prev[0];save.rk.prev=w&&(w.data.v|0)>0?Object.assign({key:pk,id:w.id},w.data):{key:pk};
+    if(w&&w.id===myUid()&&!save.wins.includes(pk)){save.wins.push(pk);rankPublish()}
+    save.rk.at=Date.now();persist();return true;
+  }catch(e){console.warn('ranking',e);return false}
 }
-async function sendRun(run){
-  try{const r=await fetch(RANKING_URL,{method:'POST',body:JSON.stringify(run)});const j=await r.json();return !!(j&&j.ok)}catch(e){return false}
-}
-async function flushPending(){
-  if(!RANKING_URL||!save.pending.length) return;
-  const left=[];for(const r of save.pending.slice(0,20)){ if(!(await sendRun(r))) left.push(r) }
-  save.pending=left;persist();
-}
-async function submitRun(run){
-  const k=run.nombre.toLowerCase();
-  save.logrosBy=save.logrosBy||{};save.logrosBy[k]=Math.max(save.logrosBy[k]|0,run.logros|0);
-  const wk=weekInfo();
-  if(run.semana===wk.key&&run.reto===wk.reto.id){
-    if(save.wk.key!==wk.key||save.wk.reto!==wk.reto.id){rollWeek();save.wk={key:wk.key,reto:wk.reto.id,rows:{}};}
-    const o=save.wk.rows[k];
-    if(!o||run.valor>o.valor) save.wk.rows[k]={nombre:run.nombre,valor:run.valor|0,personaje:run.personaje,avatar:run.avatar||''};
-  }
-  save.runs.push(run);save.runs=localTop();persist();
-  if(RANKING_URL){save.pending.push(run);persist();await flushPending();}
-}
-async function fetchTop(){
-  if(!RANKING_URL) return {mode:'local',top:localTop()};
-  const wk=weekInfo();
-  try{const r=await fetch(RANKING_URL+(RANKING_URL.includes('?')?'&':'?')+'semana='+wk.key+'&reto='+wk.reto.id+'&anterior='+prevWeek().key+'&t='+Date.now());const j=await r.json();
-    if(j&&j.ok&&Array.isArray(j.top)){
-      if(j.campeones&&typeof j.campeones==='object') save.champs=j.campeones;
-      if('anterior' in j) save.prevWin=Object.assign({key:prevWeek().key,nombre:''},j.anterior||{});
-      save.lastTop=j.top.slice(0,20);
-      if(Array.isArray(j.semana)) save.lastWeek={key:wk.key,reto:wk.reto.id,top:j.semana.slice(0,20)};
-      persist();return {mode:'online',top:j.top}}}catch(e){}
-  return {mode:'offline',top:localTop()};
+async function myPlace(){ // tu puesto aunque no estés entre los 20 primeros
+  if(!myUid()||!(save.best>0)) return 0;
+  try{return 1+await withTimeout(cloud.api.above('ranking','m',Math.floor(save.best)),8000)}catch(e){return 0}
 }
 let rankTab='rec';
-function renderRank(top){
+function rowEl(r,i,reto){
+  const wk=weekInfo(),li=document.createElement('li'),me=r.id&&r.id===myUid();if(me) li.className='me';
+  const pos=document.createElement('span');pos.className='pos';pos.textContent=i<3?MEDALS[i]:(i+1);
+  const img=document.createElement('img');img.alt='';img.referrerPolicy='no-referrer';
+  if(r.f){img.src=r.f;img.className='ph';img.onerror=()=>{img.onerror=null;img.className='';img.src=charImg(r.c)}}else img.src=charImg(r.c);
+  const who=document.createElement('span');who.className='who';who.textContent=cleanName(r.n)||'Alguien';
+  const pw=prevWinner(),king=pw&&pw.id===r.id;
+  if(king){who.prepend('👑 ');li.classList.add('king')}
+  const top=save.rk.top.find(x=>x.id===r.id)||r,nl=top.l|0,nc=top.g|0;
+  if(nl||nc){const lg=document.createElement('small');
+    lg.textContent=[nl?`🏅 ${nl}/${ACH.length} logros`:'',nc?`🏆 ${nc===1?'ganó 1 desafío':'ganó '+nc+' desafíos'}`:''].filter(Boolean).join(' · ');who.appendChild(lg)}
+  const sc=document.createElement('span');sc.className='sc';
+  if(reto) sc.textContent=(r.v|0)+' '+wk.reto.unit;
+  else{sc.textContent=(r.m|0)+' m';const sm=document.createElement('small');sm.textContent=(r.fr|0)+' 🍓';sc.appendChild(sm)}
+  li.append(pos,img,who,sc);return li;
+}
+function renderRank(extra){
   const ol=$('rankList');ol.textContent='';
   const wk=weekInfo(),reto=rankTab==='reto';
-  if(reto) top=knownWeek();
-  if(!top.length){const li=document.createElement('li');li.className='empty';li.textContent=reto?'Nadie jugó el desafío todavía. ¡Sé la primera persona!':'Todavía no hay récords. ¡Jugá una partida y anotate!';ol.appendChild(li);return}
-  const myN=Object.keys(save.ach).length;
-  top.slice(0,10).forEach((r,i)=>{
-    const li=document.createElement('li'); if(save.name&&sameName(r.nombre,save.name)) li.className='me';
-    const pos=document.createElement('span');pos.className='pos';pos.textContent=MEDALS[i]||(i+1);
-    const img=document.createElement('img');img.alt='';img.src=avImg(r.avatar)||('assets/'+(CHARS.some(c=>c.id===r.personaje)?r.personaje:'sofi')+'.webp');
-    const who=document.createElement('span');who.className='who';who.textContent=cleanName(r.nombre)||'Alguien';
-    const me=save.name&&sameName(r.nombre,save.name);
-    const nl=Math.max(r.logros|0,me?myN:0);
-    const pw=prevWinner(),king=pw&&sameName(pw.nombre,r.nombre),nc=champsOf(r.nombre);
-    if(king) who.prepend('👑 ');
-    if(nl||me||nc){const lg=document.createElement('small');
-      lg.textContent=[nl||me?`🏅 ${nl}/${ACH.length} logros`:'',nc?`🏆 ${nc===1?'ganó 1 desafío':'ganó '+nc+' desafíos'}`:''].filter(Boolean).join(' · ');who.appendChild(lg)}
-    if(king) li.classList.add('king');
-    const sc=document.createElement('span');sc.className='sc';
-    if(reto){sc.textContent=(r.valor|0)+' '+wk.reto.unit;}
-    else{sc.textContent=(r.metros|0)+' m';const sm=document.createElement('small');sm.textContent=(r.frutillas|0)+' 🍓';sc.appendChild(sm);}
-    li.append(pos,img,who,sc);ol.appendChild(li);
-  });
+  const list=reto?(save.rk.wk.key===wk.key?save.rk.wk.rows:[]):save.rk.top;
+  if(!list.length){const li=document.createElement('li');li.className='empty';
+    li.textContent=reto?'Nadie jugó el desafío todavía. ¡Sé la primera persona!':'Todavía no hay récords. ¡Jugá una partida y anotate!';ol.appendChild(li)}
+  list.slice(0,20).forEach((r,i)=>ol.appendChild(rowEl(r,i,reto)));
+  if(!reto&&extra&&extra.pos>20&&myUid()&&!list.some(r=>r.id===myUid())){ // estás más abajo: se ve igual tu fila
+    const g=document.createElement('li');g.className='gap';g.textContent='⋮';ol.appendChild(g);
+    ol.appendChild(rowEl(Object.assign({id:myUid()},myRow()),extra.pos-1,false));
+  }
+  renderRkMe();
+}
+function renderRkMe(){
+  const b=$('rkMe'),u=myUid()?cloud.user:null;
+  if(u){b.innerHTML=`<div class="me">${u.photo?`<img src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<img src="${charImg(save.char)}" alt="">`}<span>Así aparecés: <b>${esc(firstName(u))}</b><small>con el nombre y la foto de tu cuenta de Google</small></span></div>`}
+  else{b.innerHTML=`<p>Para aparecer en el ranking, entrá con tu cuenta de Google: se ve tu primer nombre y tu foto.</p><button class="gbtn" id="rkIn">${G_LOGO}Entrar con Google</button>`;
+    $('rkIn').onclick=()=>openAcct('rank')}
 }
 function setRankTab(t){
   rankTab=t;$('tabRec').classList.toggle('sel',t==='rec');$('tabReto').classList.toggle('sel',t==='reto');
@@ -2907,99 +2888,45 @@ function setRankTab(t){
   if(t==='reto'){const b=document.createElement('b');b.textContent=wk.reto.em+' '+wk.reto.name;
     $('retoBox').append(b,`Vale tu mejor partida de esta semana. El próximo desafío sale el lunes (${whenNext(wk)}).`);
     const pw=prevWinner();
-    if(pw){const d=document.createElement('div');d.className='kingLine';const rt=retoById(pw.reto);
-      d.textContent=`👑 La semana pasada ganó ${cleanName(pw.nombre)} con ${pw.valor|0} ${rt.unit}`;$('retoBox').append(d)}}
+    if(pw){const d=document.createElement('div');d.className='kingLine';const rt=retoById(pw.r);
+      d.textContent=`👑 La semana pasada ganó ${cleanName(pw.n)} con ${pw.v|0} ${rt.unit}`;$('retoBox').append(d)}}
 }
-const modeTxt=()=>{const t=$('rankMode').textContent;if(t.startsWith('Récords de todos')||t.startsWith('Desafío de todos'))$('rankMode').textContent=rankTab==='reto'?'Desafío de todos':'Récords de todos'};
-$('tabRec').onclick=()=>{setRankTab('rec');modeTxt();renderRank(knownTop())};
-$('tabReto').onclick=()=>{setRankTab('reto');modeTxt();renderRank([])};
+let rankExtra=null,rankState='';
+const modeTxt=()=>{$('rankMode').textContent=rankState==='load'?'Actualizando…':rankState==='off'?'Sin conexión: lo último que se vio':rankTab==='reto'?'Desafío de todos':'Récords de todos'};
+$('tabRec').onclick=()=>{setRankTab('rec');modeTxt();renderRank(rankExtra)};
+$('tabReto').onclick=()=>{setRankTab('reto');modeTxt();renderRank(rankExtra)};
 async function openRank(tab){
-  setRankTab(tab==='reto'?'reto':'rec');
-  $('nameIn').value=save.name;show('rank',true);renderAvatars();
-  $('rankMode').textContent='Actualizando…';renderRank(knownTop());
-  const {mode,top}=await fetchTop();
-  $('rankMode').textContent=mode==='online'?(rankTab==='reto'?'Desafío de todos':'Récords de todos'):mode==='offline'?'Sin conexión: récords de este dispositivo':'Récords de este dispositivo';
-  renderRank(top);
+  setRankTab(tab==='reto'?'reto':'rec');show('rank',true);
+  rankState='load';modeTxt();renderRank(rankExtra);
+  if(myUid()) await rankPublish();
+  const ok=await rankFetch();rankState=ok?'':'off';
+  rankExtra={pos:await myPlace()};
+  if(!$('rank').hidden){modeTxt();renderRank(rankExtra)}
+  if(state==='menu'&&!$('menu').hidden) renderMenu();
 }
 let lastRun=null;
-// el último ranking conocido (de internet si lo hubo, si no el del dispositivo) + lo que este dispositivo ya sabe
-function knownTop(){
-  const base=(RANKING_URL&&save.lastTop.length)?save.lastTop:localTop();
-  const best={};
-  for(const r of [...base,...localTop()]){const k=r.nombre.toLowerCase();if(!best[k]||r.metros>best[k].metros)best[k]={...r}}
-  for(const k in best){const av=save.avatars[k];if(av)best[k].avatar=av}
-  return Object.values(best).sort((a,b)=>b.metros-a.metros);
-}
-function placeOf(top,name){const i=top.findIndex(r=>sameName(r.nombre,name));return i>=0?i+1:0}
-function bestOf(top,name){const r=top.find(x=>sameName(x.nombre,name));return r?r.metros:0}
+/* al terminar la partida: con cuenta, sube y muestra el puesto; sin cuenta, invita a entrar */
 async function rankAfterRun(run){
   lastRun=run;
-  if(!save.name){
-    // sin nombre todavía: se guarda la mejor partida para subirla cuando ponga su nombre
-    if(!save.anonBest||run.metros>save.anonBest.metros){save.anonBest={...run};persist()}
-    $('rankLine').textContent='';show('rankLine',false);$('goName').value='';
-    $('goNameLabel').title=`Anotate en el ranking (tu mejor: ${save.anonBest.metros} m)`;
-    show('nameAsk',true);return;
-  }
-  show('nameAsk',false);
-  const prev=bestOf(knownTop(),save.name);
-  await showPlace(run,prev);
+  if(run.metros>=save.best) save.bestRun={m:run.metros,fr:run.frutillas|0,c:run.personaje};
+  const wk=weekInfo();
+  if(run.semana===wk.key&&run.valor>wkBest()) save.wkMine={key:wk.key,v:run.valor|0};
+  persist();
+  if(!myUid()){show('rankLine',false);show('rankJoin',true);return}
+  show('rankJoin',false);
+  const tag=$('rankLine');tag.textContent='🏆 ⏳';tag.title='Tu puesto en el ranking';show('rankLine',true);
+  await rankPublish();
+  const pos=await myPlace();
+  if(lastRun!==run) return;
+  if(pos){tag.textContent=`🏆 #${pos}`;tag.title=`${firstName(cloud.user)}: puesto #${pos} en el ranking de todos · tu récord: ${save.best} m`}
+  else{tag.textContent='🏆 ⏳';tag.title='Se sube al ranking cuando haya internet'}
 }
-// muestra el puesto al instante con lo que se sabe y lo confirma cuando responde el ranking
-async function showPlace(run,prev){
-  const name=save.name;
-  const sub=submitRun({...run,nombre:name,avatar:myAvatar()});
-  const mine=Math.max(prev,run.metros);
-  const pos=placeOf(knownTop(),name);
-  $('rankLine').textContent=`🏆 #${pos}`;$('rankLine').title=`${name}: puesto #${pos} · tu mejor: ${mine} m`;show('rankLine',true);
-  await sub;
-  if(!RANKING_URL) return;
-  const {mode,top}=await fetchTop();
-  const p2=placeOf(mode==='online'?top:knownTop(),name)||pos;
-  $('rankLine').textContent=`🏆 #${p2}`+(mode==='online'&&!save.pending.length?' ✓':' ⏳');
-}
-let nameSync=Promise.resolve();
-function setName(v){
-  const n=cleanName(v); if(!n) return false;
-  save.name=n;persist();
-  // si jugó antes de poner el nombre, su mejor partida pasa a su nombre
-  nameSync=Promise.resolve();
-  if(save.anonBest){const r=save.anonBest;save.anonBest=null;persist();
-    nameSync=submitRun({...r,nombre:n,avatar:myAvatar()});}
-  return true;
-}
-$('goNameOk').onclick=async()=>{
-  const best=save.anonBest; // incluye la partida que acaba de terminar
-  save.anonBest=null;
-  if(!setName($('goName').value)){save.anonBest=best;return}
-  show('nameAsk',false);
-  if(best){lastRun=best;await showPlace(best,bestOf(knownTop(),save.name));}
-};
-$('goName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('goNameOk').click()}});
-$('nameSave').onclick=async()=>{ if(setName($('nameIn').value)){ $('nameIn').value=save.name; renderAvatars(); await nameSync; openRank(); } };
-function renderAvatars(){
-  const row=$('avRow');row.textContent='';const cur=myAvatar();
-  $('avLabel').textContent=save.name?'Elegí tu ícono: aparece al lado de tu nombre':'Poné tu nombre para elegir tu ícono';
-  for(const a of AVATARS){
-    const b=document.createElement('button');b.className='avBtn'+(cur===a.id?' sel':'');b.disabled=!save.name;
-    b.title=a.name;b.setAttribute('aria-label','Ícono: '+a.name);b.setAttribute('aria-pressed',cur===a.id);
-    const im=document.createElement('img');im.src='assets/'+a.img+'.webp';im.alt='';b.appendChild(im);
-    b.onclick=()=>chooseAvatar(a.id);row.appendChild(b);
-  }
-}
-async function chooseAvatar(id){
-  if(!save.name) return;
-  save.avatars[save.name.toLowerCase()]=id;persist();renderAvatars();
-  renderRank(localTop());
-  if(RANKING_URL){save.pending.push({tipo:'avatar',nombre:save.name,avatar:id});persist();await flushPending();
-    const {mode,top}=await fetchTop(); if(mode==='online') renderRank(top);}
-}
-$('nameIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('nameSave').click()}});
+$('rankJoin').onclick=()=>openAcct('over');
+$('rankLine').onclick=()=>openRank();
 $('rankBtn').onclick=()=>openRank();
 $('rankBtn2').onclick=()=>openRank();
 $('retoPill').onclick=()=>openRank('reto');
 $('rankBack').onclick=()=>show('rank',false);
-flushPending();
 
 const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
 
@@ -3066,8 +2993,6 @@ $('verLink').textContent=`Versión ${VERSION} · ver novedades`;
 if(save.seenVersion!==VERSION&&location.hash!=='#prueba') setTimeout(openNews,400);
 {const pre=achCheck(false,true); // logros que ya se habían ganado antes de esta versión
  if(pre) setTimeout(()=>toast(`¡Ya tenías ${pre} ${pre===1?'logro':'logros'}! Miralos en 🏅`),600);}
-rollWeek();
-
 applyTheme();renderMenu();layout();
 requestAnimationFrame(loop);
 ready.then(()=>{$('loadPill').textContent='Listo ✓';layout();});
@@ -3101,7 +3026,10 @@ function cloudLoad(){ // carga Firebase una vez; si no hay internet, el juego si
             try{const r=await U.linkWithPopup(cu,p);return mapUser(r.user)}
             catch(e){const cr=U.GoogleAuthProvider.credentialFromError(e);if(cr&&/already-in-use/.test(e.code||'')){const r=await U.signInWithCredential(auth,cr);return mapUser(r.user)}throw e}}
           const r=await U.signInWithPopup(auth,p);return mapUser(r.user)},
+        anon:async()=>mapUser((await U.signInAnonymously(auth)).user), // para ver el ranking sin cuenta
         out:()=>U.signOut(auth),
+        top:async(path,field,n)=>(await F.getDocs(F.query(F.collection(db,path),F.orderBy(field,'desc'),F.limit(n)))).docs.map(d=>({id:d.id,data:d.data()})),
+        above:async(path,field,v)=>(await F.getCountFromServer(F.query(F.collection(db,path),F.where(field,'>',v)))).data().count,
         get:async path=>{const d=await F.getDoc(F.doc(db,path));return d.exists()?d.data():null},
         // fields: lista de campos que se reemplazan enteros; los demás campos del documento no se tocan
         set:(path,data,fields)=>F.setDoc(F.doc(db,path),data,fields?{mergeFields:fields}:{}),
@@ -3113,14 +3041,14 @@ function cloudLoad(){ // carga Firebase una vez; si no hay internet, el juego si
   return cloud.ready;
 }
 function setUser(u){
-  const was=cloud.user&&cloud.user.uid;cloud.user=u;cloud.google=!!(u&&!u.anon);
+  const was=cloud.user&&cloud.user.uid,wasG=cloud.google;cloud.user=u;cloud.google=!!(u&&!u.anon);
   if(cloud.google&&!save.cloud){save.cloud=1;persist()}
-  if(cloud.google&&(!was||was!==u.uid)) cloudSyncAll();
+  if(cloud.google&&(!wasG||was!==u.uid)) cloudSyncAll(); // también si pasó de anónimo a Google (mismo uid)
   renderAcct();
 }
 const cloudReady=()=>cloud.google&&cloud.api&&!simulating;
 function cloudSoon(){if(typeof cloud==='undefined'||!cloud||!cloud.google||cloud.merging||simulating)return;clearTimeout(cloudPushT);cloudPushT=setTimeout(cloudPushSave,3000)}
-const DEVICE_ONLY=['muted','set','seenVersion','pending','lastTop','lastWeek','champs','prevWin','anonBest','cloud'];
+const DEVICE_ONLY=['muted','set','seenVersion','cloud','rk','rkMine','wkSent']; // rk: lo último que se vio del ranking; rkMine/wkSent: lo que ya se subió desde acá
 function saveForCloud(){const o=clean(save);for(const k of DEVICE_ONLY) delete o[k];return o}
 async function cloudPushSave(){
   if(!cloudReady()) return;
@@ -3136,7 +3064,7 @@ function mergeSave(L,C){
   const maxMap=(a,b)=>{const r=Object.assign({},a||{});for(const k in b||{}) r[k]=mx(r[k],b[k]);return r};
   for(const k of ['total','spent','best','mig07']) o[k]=mx(L[k],C[k]);
   for(const k of ['owned','cosm','seen','dinaLooks']) o[k]=uni(L[k],C[k]);
-  o.up=maxMap(L.up,C.up);o.logrosBy=maxMap(L.logrosBy,C.logrosBy);o.champsLocal=maxMap(L.champsLocal,C.champsLocal);
+  o.up=maxMap(L.up,C.up);o.wins=uni(L.wins,C.wins);
   o.ach=Object.assign({},C.ach||{},L.ach||{});for(const k in C.ach||{}) if(L.ach&&L.ach[k]&&C.ach[k]) o.ach[k]=Math.min(L.ach[k],C.ach[k]);
   o.tips=Object.assign({},C.tips||{},L.tips||{});
   o.st=Object.assign({},L.st||{});
@@ -3145,19 +3073,12 @@ function mergeSave(L,C){
   if(pL&&pC&&pL.key===pC.key){const p=clean(pL);p.m=mx(pL.m,pC.m);p.got=uni(pL.got,pC.got);
     if(pL.day===pC.day) p.dm=mx(pL.dm,pC.dm); else if(newer){p.day=pC.day;p.dm=pC.dm} o.pass=p}
   else if(pC&&(!pL||String(pC.key)>String(pL.key))) o.pass=clean(pC);
-  const best={}; // ranking de este aparato: el mejor de cada nombre
-  for(const r of [...(L.runs||[]),...(C.runs||[])]){if(!r||!r.nombre)continue;const k=r.nombre.toLowerCase();if(!best[k]||r.metros>best[k].metros)best[k]=r}
-  o.runs=Object.values(best).sort((a,b)=>b.metros-a.metros).slice(0,20);
-  o.avatars=newer?Object.assign({},L.avatars,C.avatars):Object.assign({},C.avatars,L.avatars);
-  const wL=L.wk||{key:'',rows:{}},wC=C.wk||{key:'',rows:{}}; // desafío de la semana
-  if(wL.key&&wL.key===wC.key&&wL.reto===wC.reto){const rows=Object.assign({},wC.rows||{});
-    for(const k in wL.rows||{}) if(!rows[k]||(wL.rows[k].valor|0)>=(rows[k].valor|0)) rows[k]=wL.rows[k];o.wk={key:wL.key,reto:wL.reto,rows}}
-  else if(wC.key&&String(wC.key)>String(wL.key||'')) o.wk=clean(wC);
-  if(C.prevWinLocal&&(!L.prevWinLocal||String(C.prevWinLocal.key)>String(L.prevWinLocal.key))) o.prevWinLocal=clean(C.prevWinLocal);
-  if(newer){for(const k of ['char','outfit','trail','name']) if(C[k]!=null&&C[k]!=='') o[k]=C[k];
+  const kL=L.wkMine||{},kC=C.wkMine||{}; // tu mejor del desafío de la semana
+  if(kC.key&&kC.key===kL.key) o.wkMine={key:kL.key,v:mx(kL.v,kC.v)}; else if(kC.key&&String(kC.key)>String(kL.key||'')) o.wkMine=clean(kC);
+  if(C.bestRun&&(!L.bestRun||(C.bestRun.m|0)>(L.bestRun.m|0))) o.bestRun=clean(C.bestRun);
+  if(newer){for(const k of ['char','outfit','trail']) if(C[k]!=null&&C[k]!=='') o[k]=C[k];
     o.outfits=Object.assign({},L.outfits,C.outfits)}
   else o.outfits=Object.assign({},C.outfits,L.outfits);
-  if(!o.name&&C.name) o.name=C.name;
   o.mod=mx(L.mod,C.mod);return o;
 }
 function replaceSave(o,write=true){ // pone el guardado juntado y lo guarda en el teléfono (sin volver a subirlo solo)
@@ -3166,7 +3087,7 @@ function replaceSave(o,write=true){ // pone el guardado juntado y lo guarda en e
   save.st=Object.assign(ST0(),save.st);
   if(!Array.isArray(save.owned)) save.owned=['sofi'];if(!Array.isArray(save.cosm)) save.cosm=['default','none'];
   if(!save.outfits||typeof save.outfits!=='object') save.outfits={};if(!Array.isArray(save.dinaLooks)) save.dinaLooks=[];
-  if(!save.wk||!save.wk.rows) save.wk={key:'',rows:{}};if(!Array.isArray(save.runs)) save.runs=[];
+  if(!Array.isArray(save.wins)) save.wins=[];if(!save.rk) save.rk={top:[],wk:{key:'',rows:[]},prev:null};
   if(!charUnlocked(CHARS.find(c=>c.id===save.char)||{need:1})) save.char='sofi';
   if(!cosmOwned(save.outfit)) save.outfit='default';if(!cosmOwned(save.trail)) save.trail='none';
   if(write){try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}stored={total:save.total|0,spent:save.spent|0,mod:save.mod||0}}save.mod=mod;
@@ -3183,6 +3104,7 @@ async function cloudSyncAll(){
     const d=await withTimeout(cloud.api.get('jugadores/'+cloud.user.uid),12000);
     if(d&&d.run){replaceSave(mergeSave(save,d.run));afterMerge()}
     cloud.syncing=false;await cloudPushSave();
+    await rankPublish();rankFetch().then(ok=>{if(ok&&state==='menu'&&!$('menu').hidden) renderMenu()});
   }catch(e){console.warn('nube',e);cloud.err='No se pudo sincronizar (¿sin internet?). Se reintenta solo.'}
   cloud.syncing=false;renderAcct();
 }
@@ -3203,7 +3125,7 @@ addEventListener('storage',e=>{
 /* pantalla de cuenta */
 const G_LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 6.9-10.3 6.9-17.7z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.1 1.4-4.9 2.3-8.2 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
 let acctFrom='menu';
-function openAcct(from){acctFrom=from;if(from==='set') show('settings',false);acctMsg('');show('acct',true);renderAcct();cloudLoad()}
+function openAcct(from){acctFrom=from;if(from==='set') show('settings',false);if(from==='rank') show('rank',false);if(from==='over') show('over',false);acctMsg('');show('acct',true);renderAcct();cloudLoad()}
 function acctMsg(t){$('acctMsg').textContent=t;$('acctMsg').hidden=!t}
 function renderAcct(){
   acctUi();
@@ -3236,7 +3158,9 @@ function acctUi(){
   $('acctSet').textContent=u?'Ver':'Entrar';$('acctNote').textContent=u?(u.email||'guardado en la nube'):'guardá tu progreso en la nube';
 }
 $('acctBtn').onclick=()=>openAcct('menu');$('acctSet').onclick=()=>openAcct('set');
-$('acctBack').onclick=()=>{show('acct',false);if(acctFrom==='set') openSettings();else renderMenu()};
+$('acctBack').onclick=()=>{show('acct',false);
+  if(acctFrom==='set') openSettings();else if(acctFrom==='rank') openRank();
+  else if(acctFrom==='over'){show('over',true);if(lastRun) rankAfterRun(lastRun)}else renderMenu()};
 acctUi();
 // al abrir: si ya usaste la cuenta acá o en Dina Beat, se conecta solo (sin trabar el arranque)
 const usedCloud=()=>{if(save.cloud) return true;try{return !!(JSON.parse(localStorage.getItem('sofiSilbato.v1')||'{}').cloud)}catch(e){return false}};
@@ -3311,7 +3235,7 @@ function simRun(cfg){
 if(location.hash==='#prueba') window.TR={ // solo para pruebas automáticas
   get R(){return R},get pow(){return pow},get got(){return got},get state(){return state},get obs(){return obs},save,
   item(kind,dx,dy,flavor){fru.push({x:PX+pw()/2+dx,y:GROUND-dy,bob:0,kind,flavor})},cake(dx){obs.push({x:PX+dx,w:60,h:64})},
-  get dina(){return dina},cloud:()=>cloud,cloudLoad,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,rollWeek,prevWinner,prevWeek,
+  get dina(){return dina},cloud:()=>cloud,cloudLoad,renderRank,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,prevWinner,prevWeek,
   set got(v){got=v},die(){dina.caught=true;die()},newVersion(){updReady=true;showUpd()},get counting(){return counting}};
 if(window.PWA&&'serviceWorker' in navigator){
   const had=!!navigator.serviceWorker.controller; // la primera vez que se instala no es "versión nueva"
