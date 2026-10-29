@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.9.2 — octubre 2026: arreglos del ranking
+
+- 🍓 Los récords de antes de la 0.9.1 ya no muestran "0 🍓" (no se sabía cuántas frutillas tuvo esa partida); aparece con el próximo récord.
+- 🖼️ Si la foto de Google no carga, se reintenta una vez antes de mostrar el dibujo del personaje.
+
 ## Versión 0.9.1 — octubre 2026: ranking de todos
 
 - 🏆 El ranking y el desafío de la semana ahora son de todos los que juegan, en la nube (antes eran de cada teléfono).
