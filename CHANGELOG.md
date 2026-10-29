@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.9.4 — octubre 2026: tu foto en el ranking
+
+- 🖼️ Arreglado: las fotos de Google con dirección larga (más de 500 letras) se guardaban cortadas y no se veían. Ahora van completas (hace falta la regla de Firebase con `d.f.size() <= 2048`); con la regla vieja, la fila sube sin foto y se reintenta cada hora.
+- 🛠️ Si el juego arranca en una pestaña oculta (tamaño cero), ya no se traba y la cuenta y el ranking funcionan igual.
+
 ## Versión 0.9.3 — octubre 2026: tu nombre y tu foto en el ranking
 
 - 🖼️ Arreglado: quien entraba con Google después de mirar el ranking sin cuenta aparecía como "Jugador" y sin foto. Ahora se toman del perfil de Google y se copian a la cuenta (también le sirve a Dina Beat). Se corrige solo la próxima vez que esa persona abre el juego.

@@ -8,6 +8,7 @@ import asyncio,json,os,subprocess,time,sys,datetime
 from playwright.async_api import async_playwright
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));OUT=os.path.join(ROOT,'pruebas','capturas');os.makedirs(OUT,exist_ok=True)
 PORT=8773
+REGLAS={'f':600} # largo máximo de la foto en las reglas de Firebase
 _hoy=datetime.date.today();_lun=_hoy-datetime.timedelta(days=_hoy.weekday())
 SEM='S'+_lun.strftime('%Y-%m-%d');SEM_ANT='S'+(_lun-datetime.timedelta(days=7)).strftime('%Y-%m-%d')
 NUBE={'semanas/'+SEM_ANT+'/filas/G2':{'n':'Sofía','f':'','c':'nora','v':30,'r':'x','at':1},
@@ -16,6 +17,7 @@ def mock(op,path,data):
   if op=='get': return NUBE.get(path)
   if op=='set':
     d=json.loads(json.dumps(data['d']))
+    if REGLAS['f']<len(d.get('f') or '') and (path.startswith('ranking/') or path.startswith('semanas/')): raise Exception('permission-denied')
     if data.get('f') and isinstance(NUBE.get(path),dict): NUBE[path]={**NUBE[path],**{k:d[k] for k in data['f']}}
     else: NUBE[path]=d
     return True
@@ -150,6 +152,16 @@ async def main():
     # cuenta que empezó anónima y se unió a Google: Firebase deja vacío el nombre y la foto; están en providerData
     mu=await e.evaluate('TR.mapUser({uid:"x",isAnonymous:false,displayName:null,photoURL:null,email:null,providerData:[{providerId:"google.com",displayName:"Ana Pérez",photoURL:"https://lh3.example/a.jpg",email:"ana@x.com"}]})')
     check(mu['name']=='Ana Pérez' and mu['photo'].endswith('a.jpg') and mu['email']=='ana@x.com','cuenta unida desde anónima: el nombre y la foto salen del perfil de Google (no "Jugador")')
+    # 🖼️ foto de Google con dirección larga (más de 500 letras): con las reglas viejas (600) va sin foto; con las nuevas, completa
+    LARGA='http://localhost:%d/assets/nora.webp?'%PORT+'x'*900
+    cf,ff=await phone(b,'G5',errs,{'total':0,'best':700,'tips':TIPS,'seenVersion':'9.9'},name='Nora Gómez',photo=LARGA)
+    await ff.click('#acctBtn');await ff.wait_for_timeout(200);await ff.click('#gIn');await ff.wait_for_timeout(1500)
+    r5=NUBE.get('ranking/G5',{})
+    check(r5.get('m')==700 and r5.get('f')=='','reglas viejas: la fila sube igual, sin foto')
+    REGLAS['f']=2048
+    await ff.evaluate('()=>{const s=JSON.parse(localStorage.getItem("sofiRunner.v1"));TR.save.rkMine.fNo=Date.now()-2*3600e3}')
+    await ff.evaluate('TR.cloudSyncAll()');await ff.wait_for_timeout(1200)
+    check(NUBE.get('ranking/G5',{}).get('f')==LARGA,'reglas nuevas: a la hora se reintenta y sube la foto completa (sin cortar)')
     check(not errs,'sin errores de JavaScript '+str(errs[:3]))
     await b.close()
   finally: srv.terminate()

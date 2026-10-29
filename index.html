@@ -1339,8 +1339,11 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.9.3';
+const VERSION='0.9.4';
 const NEWS=[
+  {v:'0.9.4',fecha:'octubre 2026',titulo:'Tu foto en el ranking',items:[
+    ['🖼️','Arreglado: algunas fotos de Google no se veían en el ranking (la dirección de la foto quedaba cortada).'],
+  ]},
   {v:'0.9.3',fecha:'octubre 2026',titulo:'Tu nombre y tu foto en el ranking',items:[
     ['🖼️','Arreglado: si entrabas con Google después de mirar el ranking, aparecías como "Jugador" y sin foto. Ahora salen tu nombre y tu foto de Google (se corrige solo la próxima vez que abrís el juego).'],
   ]},
@@ -2061,6 +2064,7 @@ function drawParts(){
   }
 }
 function draw(){
+  if(!(VW>0&&VH>0&&isFinite(GROUND))) return; // pantalla de tamaño cero (pestaña oculta al arrancar): no hay nada que dibujar
   ctx.setTransform(dpr*scale,0,0,dpr*scale,0,0);
   ctx.imageSmoothingQuality='high';
   drawBG();
@@ -2820,17 +2824,23 @@ const myUid=()=>cloud&&cloud.google&&cloud.user?cloud.user.uid:null;
 /* subir lo tuyo: el récord (si mejoró o cambió tu nombre, foto o logros) y el desafío de la semana */
 function myRow(){
   const u=cloud.user,b=save.bestRun&&save.bestRun.m===save.best?save.bestRun:{m:save.best,fr:0,c:save.char};
-  return {n:firstName(u),f:String(u.photo||'').slice(0,500),c:b.c||save.char,m:Math.floor(save.best)|0,fr:b.fr|0,l:Object.keys(save.ach).length,g:save.wins.length};
+  return {n:firstName(u),f:String(u.photo||'').length<=2000?String(u.photo||''):'',c:b.c||save.char,m:Math.floor(save.best)|0,fr:b.fr|0,l:Object.keys(save.ach).length,g:save.wins.length};
+}
+/* las fotos de Google pueden tener direcciones muy largas (más de 500 letras). Si las reglas de Firebase todavía
+   no las aceptan (versión de las reglas de antes de la 0.9.4: hasta 600), se sube la fila sin foto en vez de no subir nada */
+async function setRow(path,d){
+  try{await cloud.api.set(path,d);return true}
+  catch(e){if(!d.f)throw e;console.warn('ranking: la foto no entra en las reglas; va sin foto',e);await cloud.api.set(path,Object.assign({},d,{f:''}));return false}
 }
 async function rankPublish(){
   if(!myUid()||simulating) return;const uid=myUid(),api=cloud.api;
   try{
-    const r=myRow(),old=save.rkMine||{};
-    if(r.m>0&&['n','f','c','m','fr','l','g'].some(k=>r[k]!==old[k])){
-      await api.set('ranking/'+uid,Object.assign({},r,{at:Date.now()}));save.rkMine=r;persist()}
+    const r=myRow(),old=save.rkMine||{},retryF=old.fNo&&Date.now()-old.fNo>3600e3; // sin foto: se reintenta cada hora
+    if(r.m>0&&(retryF||['n','f','c','m','fr','l','g'].some(k=>r[k]!==old[k]))){
+      const okF=await setRow('ranking/'+uid,Object.assign({},r,{at:Date.now()}));save.rkMine=Object.assign({},r,okF?{}:{fNo:Date.now()});persist()}
     const wk=weekInfo(),v=wkBest();
     if(v>0&&!(save.wkSent&&save.wkSent.key===wk.key&&save.wkSent.v>=v&&save.wkSent.n===r.n&&save.wkSent.f===r.f)){
-      await api.set('semanas/'+wk.key+'/filas/'+uid,{n:r.n,f:r.f,c:save.char,v,r:wk.reto.id,at:Date.now()});save.wkSent={key:wk.key,v,n:r.n,f:r.f};persist()}
+      await setRow('semanas/'+wk.key+'/filas/'+uid,{n:r.n,f:r.f,c:save.char,v,r:wk.reto.id,at:Date.now()});save.wkSent={key:wk.key,v,n:r.n,f:r.f};persist()}
   }catch(e){console.warn('ranking',e)}
 }
 /* bajar el ranking: récords, desafío de esta semana y quién ganó la anterior (si ganaste vos, se anota) */
