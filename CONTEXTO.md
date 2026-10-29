@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 28/10/2026 · versión 0.9.2
+Última actualización: 28/10/2026 · versión 0.9.3
 
 ## Qué es
 
@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v10`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v11`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v10)
+sw.js             copia sin conexión (caché sofi-runner-v11)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -151,6 +151,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.9 | Cuenta de Google y progreso en la nube (la misma de Dina Beat); las frutillas de Dina Beat en otra pestaña ya no se pisan |
 | 0.9.1 | Ranking y desafío de la semana de todos, en Firestore, con primer nombre y foto de Google; se quitó el ranking del dispositivo |
 | 0.9.2 | Ranking: sin "0 🍓" en récords viejos; reintento de la foto de Google |
+| 0.9.3 | Nombre y foto de Google también en cuentas unidas desde anónimas (antes "Jugador") |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 
@@ -184,6 +185,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 - **Código** (bloque "ranking" en `index.html`): `rankPublish()` sube el récord si cambió algo (`rkMine` guarda lo último subido, para no gastar escrituras) y la fila de la semana si mejoró (`wkSent`); `rankFetch()` baja los 20 primeros de cada lista y el 1.º de la semana anterior; `myPlace()` cuenta cuántos tienen más metros (`getCountFromServer`) para mostrar "🏆 #N" al terminar y tu fila aunque estés más abajo del 20. Sin cuenta, para ver el ranking se usa una sesión anónima (invisible).
 - **Quién ganó la semana:** el 1.º de `semanas/{anterior}`. Si sos vos, se anota en `save.wins` y sube a `g` ("🏆 ganó N desafíos"). Se marca con 👑 en las listas y en el cartel del desafío del menú (`save.rk.prev`).
 - Se sube: al terminar cada partida, al entrar y al sincronizar. Se baja: al abrir 🏆 y al sincronizar.
+- **Ojo, cuentas que empezaron anónimas** (miraron el ranking sin cuenta o jugaron desafíos de Dina Beat y después entraron con Google con `linkWithPopup`): Firebase deja vacíos `displayName` y `photoURL`; el nombre y la foto están en `providerData` (google.com). `mapUser` los toma de ahí y `fixProfile` los copia a la cuenta con `updateProfile` (al entrar y cada vez que se abre), así también los ve Dina Beat. Antes de la 0.9.3 esas cuentas salían como "Jugador" sin foto; se corrigen solas al volver a abrir el juego (`rankPublish` ve el cambio y vuelve a subir la fila). Dina Beat tiene el mismo detalle en su `mapUser` (campo `nombre`).
 - **Pantallas:** en la final, con cuenta, chip "🏆 #N" (tocándolo abre el ranking); sin cuenta, botón "☁️ Entrá con Google para aparecer en el ranking" (abre la cuenta y, al volver, sube y muestra el puesto). En 🏆, abajo: "Así aparecés: Nombre" con tu foto, o el botón Entrar con Google.
 - El récord de antes de la 0.9.1 sube igual al entrar (`save.best`; las frutillas de esa partida no se sabían y van en 0, y desde la 0.9.2 no se muestran). Si la foto de Google no carga (Google a veces frena las fotos un momento), se reintenta una vez a los 1,2 s y después va el dibujo del personaje. Los datos viejos (`name`, `runs`, `avatars`, `wk`, `anonBest`, `logrosBy`, `champs…`, `prevWin…`, `pending`, `lastTop`, `lastWeek`) se borran al abrir.
 - **Reglas de Firestore** (las agrega Leandro en la consola de Firebase, debajo de las de Dina Beat, dentro de `match /databases/{database}/documents { … }`). Validan que cada uno escriba solo su fila, solo con cuenta de Google, con los campos y tipos de arriba y un máximo de 1.000.000; no impiden un récord falso de alguien que toque el código, pero sí basura:

@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.9.3 — octubre 2026: tu nombre y tu foto en el ranking
+
+- 🖼️ Arreglado: quien entraba con Google después de mirar el ranking sin cuenta aparecía como "Jugador" y sin foto. Ahora se toman del perfil de Google y se copian a la cuenta (también le sirve a Dina Beat). Se corrige solo la próxima vez que esa persona abre el juego.
+- Tu propia fila del ranking usa siempre la foto actual de tu cuenta.
+
 ## Versión 0.9.2 — octubre 2026: arreglos del ranking
 
 - 🍓 Los récords de antes de la 0.9.1 ya no muestran "0 🍓" (no se sabía cuántas frutillas tuvo esa partida); aparece con el próximo récord.

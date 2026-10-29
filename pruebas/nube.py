@@ -147,6 +147,9 @@ async def main():
     s=await c.evaluate('TR.save')
     check(s['total']==0 and not await c.evaluate('TR.cloud().google'),'borrar con cuenta: se borra del teléfono y sale de la cuenta')
     check(json.dumps(NUBE['jugadores/G1']['run'],sort_keys=True)==antes,'lo de la nube queda a salvo')
+    # cuenta que empezó anónima y se unió a Google: Firebase deja vacío el nombre y la foto; están en providerData
+    mu=await e.evaluate('TR.mapUser({uid:"x",isAnonymous:false,displayName:null,photoURL:null,email:null,providerData:[{providerId:"google.com",displayName:"Ana Pérez",photoURL:"https://lh3.example/a.jpg",email:"ana@x.com"}]})')
+    check(mu['name']=='Ana Pérez' and mu['photo'].endswith('a.jpg') and mu['email']=='ana@x.com','cuenta unida desde anónima: el nombre y la foto salen del perfil de Google (no "Jugador")')
     check(not errs,'sin errores de JavaScript '+str(errs[:3]))
     await b.close()
   finally: srv.terminate()

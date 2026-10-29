@@ -1339,8 +1339,11 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.9.2';
+const VERSION='0.9.3';
 const NEWS=[
+  {v:'0.9.3',fecha:'octubre 2026',titulo:'Tu nombre y tu foto en el ranking',items:[
+    ['🖼️','Arreglado: si entrabas con Google después de mirar el ranking, aparecías como "Jugador" y sin foto. Ahora salen tu nombre y tu foto de Google (se corrige solo la próxima vez que abrís el juego).'],
+  ]},
   {v:'0.9.2',fecha:'octubre 2026',titulo:'Arreglos del ranking',items:[
     ['🍓','Los récords de antes del ranking nuevo ya no muestran "0 🍓": se ve el número cuando hacés un récord nuevo.'],
     ['🖼️','Si tu foto de Google tarda en cargar, se vuelve a intentar antes de mostrar el dibujo del personaje.'],
@@ -2852,6 +2855,7 @@ let rankTab='rec';
 function rowEl(r,i,reto){
   const wk=weekInfo(),li=document.createElement('li'),me=r.id&&r.id===myUid();if(me) li.className='me';
   const pos=document.createElement('span');pos.className='pos';pos.textContent=i<3?MEDALS[i]:(i+1);
+  if(me&&cloud.user.photo&&r.f!==cloud.user.photo) r=Object.assign({},r,{f:cloud.user.photo}); // tu fila: tu foto de ahora
   const img=document.createElement('img');img.alt='';img.referrerPolicy='no-referrer';
   // foto de Google; si no carga (a veces Google la frena un momento) se reintenta una vez y después va el dibujo del personaje
   if(r.f){let tries=0;img.src=r.f;img.className='ph';
@@ -3017,7 +3021,11 @@ cloud={ready:null,user:null,google:false,api:null,lastSync:0,err:'',syncing:fals
 const clean=x=>JSON.parse(JSON.stringify(x==null?null:x)); // la nube no acepta "undefined"
 const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('tiempo')),ms))]);
-const mapUser=u=>u?{uid:u.uid,anon:!!u.isAnonymous,name:u.displayName||'',email:u.email||'',photo:u.photoURL||''}:null;
+/* nombre y foto: si la cuenta empezó anónima (ver el ranking sin cuenta, desafíos de Dina Beat) y después se unió a Google,
+   Firebase deja vacíos displayName y photoURL: están en el perfil de Google de la cuenta (providerData) */
+const gProf=u=>((u&&u.providerData)||[]).find(x=>x&&x.providerId==='google.com')||{};
+const mapUser=u=>{if(!u)return null;const g=gProf(u);
+  return {uid:u.uid,anon:!!u.isAnonymous,name:u.displayName||g.displayName||'',email:u.email||g.email||'',photo:u.photoURL||g.photoURL||''}};
 function cloudLoad(){ // carga Firebase una vez; si no hay internet, el juego sigue igual y se reintenta después
   if(cloud.ready) return cloud.ready;
   cloud.ready=withTimeout((async()=>{
@@ -3026,11 +3034,15 @@ function cloudLoad(){ // carga Firebase una vez; si no hay internet, el juego si
       const base='https://www.gstatic.com/firebasejs/'+FBV+'/';
       const [A,U,F]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
       const app=A.initializeApp(FB_CFG),auth=U.getAuth(app),db=F.getFirestore(app);
+      // copia el nombre y la foto de Google a la cuenta si faltan (así también los ve Dina Beat)
+      var fixProfile=async u=>{if(!u||u.isAnonymous||(u.displayName&&u.photoURL))return;const g=gProf(u);
+        const d={};if(!u.displayName&&g.displayName)d.displayName=g.displayName;if(!u.photoURL&&g.photoURL)d.photoURL=g.photoURL;
+        if(Object.keys(d).length)try{await U.updateProfile(u,d)}catch(e){console.warn('perfil',e)}};
       cloud.api={
-        onUser:cb=>U.onAuthStateChanged(auth,u=>cb(mapUser(u))),
+        onUser:cb=>U.onAuthStateChanged(auth,u=>{fixProfile(u);cb(mapUser(u))}),
         google:async()=>{const p=new U.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});const cu=auth.currentUser;
           if(cu&&cu.isAnonymous){ // si ya tenía una sesión anónima (desafíos de Dina Beat), se conserva el mismo jugador
-            try{const r=await U.linkWithPopup(cu,p);return mapUser(r.user)}
+            try{const r=await U.linkWithPopup(cu,p);await fixProfile(r.user);return mapUser(r.user)}
             catch(e){const cr=U.GoogleAuthProvider.credentialFromError(e);if(cr&&/already-in-use/.test(e.code||'')){const r=await U.signInWithCredential(auth,cr);return mapUser(r.user)}throw e}}
           const r=await U.signInWithPopup(auth,p);return mapUser(r.user)},
         anon:async()=>mapUser((await U.signInAnonymously(auth)).user), // para ver el ranking sin cuenta
@@ -3242,7 +3254,7 @@ function simRun(cfg){
 if(location.hash==='#prueba') window.TR={ // solo para pruebas automáticas
   get R(){return R},get pow(){return pow},get got(){return got},get state(){return state},get obs(){return obs},save,
   item(kind,dx,dy,flavor){fru.push({x:PX+pw()/2+dx,y:GROUND-dy,bob:0,kind,flavor})},cake(dx){obs.push({x:PX+dx,w:60,h:64})},
-  get dina(){return dina},cloud:()=>cloud,cloudLoad,renderRank,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,prevWinner,prevWeek,
+  get dina(){return dina},cloud:()=>cloud,cloudLoad,mapUser,renderRank,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,prevWinner,prevWeek,
   set got(v){got=v},die(){dina.caught=true;die()},newVersion(){updReady=true;showUpd()},get counting(){return counting}};
 if(window.PWA&&'serviceWorker' in navigator){
   const had=!!navigator.serviceWorker.controller; // la primera vez que se instala no es "versión nueva"
