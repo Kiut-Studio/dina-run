@@ -194,9 +194,10 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 - **Reglas de Firestore** (las agrega Leandro en la consola de Firebase, debajo de las de Dina Beat, dentro de `match /databases/{database}/documents { … }`). Validan que cada uno escriba solo su fila, solo con cuenta de Google, con los campos y tipos de arriba y un máximo de 1.000.000; no impiden un récord falso de alguien que toque el código, pero sí basura:
   ```
     // 🏆 Dina Run: ranking de todos (desde la 0.9.1)
-    function esGoogle(uid) {
+    // con Google, también si la cuenta empezó anónima (ahí sign_in_provider sigue diciendo 'anonymous')
+    function conGoogle(uid) {
       return request.auth != null && request.auth.uid == uid
-        && request.auth.token.firebase.sign_in_provider == 'google.com';
+        && 'google.com' in request.auth.token.firebase.identities;
     }
     function filaOk(d) {
       return d.n is string && d.n.size() > 0 && d.n.size() <= 20
@@ -205,19 +206,20 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
     }
     match /ranking/{uid} {
       allow read: if request.auth != null;
-      allow create, update: if esGoogle(uid) && filaOk(request.resource.data)
+      allow create, update: if conGoogle(uid) && filaOk(request.resource.data)
         && request.resource.data.keys().hasOnly(['n','f','c','m','fr','l','g','at'])
         && request.resource.data.m is int && request.resource.data.m >= 0 && request.resource.data.m <= 1000000
         && request.resource.data.fr is int && request.resource.data.l is int && request.resource.data.g is int;
     }
     match /semanas/{semana}/filas/{uid} {
       allow read: if request.auth != null;
-      allow create, update: if esGoogle(uid) && filaOk(request.resource.data)
+      allow create, update: if conGoogle(uid) && filaOk(request.resource.data)
         && request.resource.data.keys().hasOnly(['n','f','c','v','r','at'])
         && request.resource.data.v is int && request.resource.data.v >= 0 && request.resource.data.v <= 1000000
         && request.resource.data.r is string;
     }
   ```
+- Las reglas completas de los dos juegos (con las de Dina Beat) están en el proyecto **Kiut Studio Games** (CONTEXTO.md). Si las de Dina Beat ya definen `conGoogle`, no se repite.
 - Pruebas: `pruebas/nube.py` (ranking con tres cuentas y una sin cuenta, primer nombre, foto, puesto, desafío de la semana, ganador de la semana pasada); `tamanos.py` abre 🏆 con 10 jugadores y el panel de entrar.
 
 ## Pendientes e ideas
