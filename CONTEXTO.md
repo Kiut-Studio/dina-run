@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 28/10/2026 · versión 0.9.4
+Última actualización: 30/10/2026 · versión 0.9.5
 
 ## Qué es
 
@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v12`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v13`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v12)
+sw.js             copia sin conexión (caché sofi-runner-v13)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -118,6 +118,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 
 ### Temas de temporada
 - **Halloween** (15/10 al 2/11): fondo violeta y naranja, murciélagos, calabazas en el piso, luna llena naranja de noche, **calabazas en vez de tortas** (Sofía no quería sombreros sobre las tortas; misma caja de choque, así que la dificultad no cambia; la mitad de las segundas y terceras de un grupo van sin carita), **pociones en vez de Kampitos** (verde imán, violeta x2, naranja escudo; `HW_POTION`), **golosinas en vez de pancitos** que rotan (`HW_CANDY`), Dina comiendo una calabaza en la pantalla final con textos de Halloween ("miau… ¡la calabaza era mía!"; fuera de Halloween, los originales), colores de la página en naranja y violeta, y sus dos cosméticos.
+- **Textos de Halloween (0.9.5):** lo que nombra tortas, pancitos o Kampitos tiene su versión en el campo `hw` (dulces en `DULCES`, desafíos en `RETOS`) y se muestra con `hwV()` solo con el tema prendido; los nombres de siempre no cambian. La ayuda usa `HELP_TXT`/`helpTheme()`, ¡Una más! cambia el botón en `offerContinue()` y las migas del escudo salen de `crumbC()`. Quedan como siempre (a propósito) los logros, las estadísticas y las novedades viejas, porque se juntan en todo el año. Al agregar otro tema: sumar su variante o generalizar `hwV`.
 - Se activan solos por fecha y se pueden apagar en ⚙️ *Temas de temporada*.
 - Para agregar uno: sumar a `SEASONS` (id, nombre, fechas), dibujarlo en `drawBG` y marcar sus cosméticos con `season`.
 
@@ -153,6 +154,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.9.2 | Ranking: sin "0 🍓" en récords viejos; reintento de la foto de Google |
 | 0.9.3 | Nombre y foto de Google también en cuentas unidas desde anónimas (antes "Jugador") |
 | 0.9.4 | Foto de Google sin cortar (las direcciones pasan de 500 letras; regla `f` hasta 2048); arranque en pestaña oculta |
+| 0.9.5 | Halloween sin "tortas", "pancitos" ni "Kampitos" sueltos: dulces, desafío, ayuda, ¡Una más! y migas del escudo |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 

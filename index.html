@@ -961,10 +961,10 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="goTitle" style="font-size:36px">❓ Cómo se juega</div>
         <ul id="helpList">
           <li><span>👆</span><span><b>Saltar:</b> tocá la pantalla (o Espacio). Tocá otra vez en el aire para el doble salto.</span></li>
-          <li><span>🍰</span><span>Esquivá las tortas. Si chocás, tropezás y <b>Dina te persigue</b>: si chocás otra vez antes de que se canse, te alcanza.</span></li>
-          <li><span>🍓</span><span>Juntá frutillas y pancitos 🥪. Con ellas comprás personajes, cosméticos y mejoras.</span></li>
-          <li><span>🧃</span><span>Los <b>Kampitos</b> dan un poder por unos segundos: 🟢 imán, 🟡 frutillas dobles y 🟠 escudo.</span></li>
-          <li><span>🛡️</span><span><b>Escudo:</b> la burbuja azul. Dura unos segundos y rompe la torta que toques. Si aguanta dos choques, se ve con dos anillos.</span></li>
+          <li><span id="hlpObsEm">🍰</span><span><span id="hlpObs">Esquivá las tortas.</span> Si chocás, tropezás y <b>Dina te persigue</b>: si chocás otra vez antes de que se canse, te alcanza.</span></li>
+          <li><span>🍓</span><span><span id="hlpPan">Juntá frutillas y pancitos 🥪.</span> Con ellas comprás personajes, cosméticos y mejoras.</span></li>
+          <li><span id="hlpKampEm">🧃</span><span id="hlpKamp">Los <b>Kampitos</b> dan un poder por unos segundos: 🟢 imán, 🟡 frutillas dobles y 🟠 escudo.</span></li>
+          <li><span>🛡️</span><span><b>Escudo:</b> la burbuja azul. Dura unos segundos y rompe <span id="hlpBreak">la torta</span> que toques. Si aguanta dos choques, se ve con dos anillos.</span></li>
           <li><span>❤️</span><span><b>Corazones:</b> se guardan hasta que chocás. Cada choque gasta uno en vez de hacerte tropezar.</span></li>
           <li><span>🍭</span><span><b>Dulces:</b> cada 1000 m cambia el día y la noche. Al caer la primera noche y en cada amanecer elegís un dulce (hasta 8 por partida). Te ayudan hasta que termina la partida.</span></li>
           <li><span>💪</span><span><b>¡Una más!:</b> si Dina te alcanza, podés darle frutillas y seguir, una vez por partida.</span></li>
@@ -1290,13 +1290,13 @@ const CARD_FIRST=1000; // el primer dulce al caer la primera noche; después uno
 const CARDS_MAX=8;     // como mucho 8 dulces por partida
 const DULCES=[
   {id:'triple',    em:'🍭',name:'Triple salto',         desc:'Un salto más en el aire',                  fx:'🦘 +1 salto', max:1},
-  {id:'kamplong',  em:'⏳',name:'Kampito eterno',        desc:'Los poderes duran 50% más',                fx:'⏳ ×1,5', max:2},
-  {id:'kampmas',   em:'🧃',name:'Kampitos por doquier',  desc:'Aparecen el doble de Kampitos',            fx:'🧃 ×2', max:1},
+  {id:'kamplong',  em:'⏳',name:'Kampito eterno',        desc:'Los poderes duran 50% más',                fx:'⏳ ×1,5', max:2, hw:{name:'Poción eterna'}},
+  {id:'kampmas',   em:'🧃',name:'Kampitos por doquier',  desc:'Aparecen el doble de Kampitos',            fx:'🧃 ×2', max:1, hw:{em:'🧪',name:'Pociones por doquier',desc:'Aparecen el doble de pociones',fx:'🧪 ×2'}},
   {id:'corazon',   em:'❤️',name:'Corazón extra',         desc:'Se guarda hasta que chocás: te salva una vez', max:3},
-  {id:'pantortas', em:'🥪',name:'Tortas de pancito',     desc:'Algunas tortas se vuelven pancitos',       fx:'🍰 → 🥪', max:2},
+  {id:'pantortas', em:'🥪',name:'Tortas de pancito',     desc:'Algunas tortas se vuelven pancitos',       fx:'🍰 → 🥪', max:2, hw:{em:'🍬',name:'Calabazas de golosina',desc:'Algunas calabazas se vuelven golosinas',fx:'🎃 → 🍬'}},
   {id:'dinalenta', em:'😴',name:'Dina dormilona',        desc:'Dina se cansa más rápido',         fx:'🐱 −40%', max:1},
   {id:'imancito',  em:'🧲',name:'Imancito',              desc:'Atraés las frutillas cercanas, siempre',   fx:'🧲 siempre', max:2},
-  {id:'doblepan',  em:'🥖',name:'Pancito doble',         desc:'Los pancitos valen el doble',              fx:'🥪 ×2', max:1},
+  {id:'doblepan',  em:'🥖',name:'Pancito doble',         desc:'Los pancitos valen el doble',              fx:'🥪 ×2', max:1, hw:{em:'🍫',name:'Golosina doble',desc:'Las golosinas valen el doble',fx:'🍬 ×2'}},
   {id:'escudoya',  em:'🛡️',name:'Escudo ya',             desc:'Un escudo ahora mismo',                    fx:'🛡️ ¡ya!', max:2},
   {id:'picante',   em:'🌶️',name:'Picante',               desc:'Todo vale el doble… pero vas mucho más rápido',fx:'🍓×2 ⚡', max:1, trap:true},
   {id:'manzanilla',em:'🍵',name:'Manzanilla',            desc:'Bajás un poco la velocidad',               fx:'🐢 −vel.', max:2},
@@ -1341,6 +1341,10 @@ const POWERS={
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
 const VERSION='0.9.4';
 const NEWS=[
+  {v:'0.9.5',fecha:'octubre 2026',titulo:'Halloween más prolijo',items:[
+    ['🎃','En Halloween, los dulces, el desafío de la semana, la ayuda y ¡Una más! hablan de calabazas, golosinas y pociones (antes a veces decían tortas, pancitos o Kampitos).'],
+    ['🧡','Cuando el escudo rompe una calabaza, salen pedacitos de calabaza (antes eran migas de torta).'],
+  ]},
   {v:'0.9.4',fecha:'octubre 2026',titulo:'Tu foto en el ranking',items:[
     ['🖼️','Arreglado: algunas fotos de Google no se veían en el ranking (la dirección de la foto quedaba cortada).'],
   ]},
@@ -1457,12 +1461,12 @@ const ACH=[
 
 /* desafío de la semana: cambia todos los lunes a las 00:00 y van rotando */
 const RETOS=[
-  {id:'pancitos',  em:'🥪',name:'Más pancitos en una partida',          unit:'🥪',val:r=>r.pans},
+  {id:'pancitos',  em:'🥪',name:'Más pancitos en una partida',          unit:'🥪',val:r=>r.pans, hw:{em:'🍬',name:'Más golosinas en una partida',unit:'🍬'}},
   {id:'metros',    em:'👟',name:'Llegá lo más lejos posible',           unit:'m', val:r=>r.metros},
-  {id:'tortas',    em:'🍰',name:'Más tortas esquivadas en una partida', unit:'🍰',val:r=>r.tortas},
+  {id:'tortas',    em:'🍰',name:'Más tortas esquivadas en una partida', unit:'🍰',val:r=>r.tortas, hw:{em:'🎃',name:'Más calabazas esquivadas en una partida',unit:'🎃'}},
   {id:'frutillas', em:'🍓',name:'Más frutillas en una partida',         unit:'🍓',val:r=>r.frutillas},
-  {id:'sinkampito',em:'🚫',name:'Lo más lejos antes de tomar un Kampito',unit:'m',val:r=>r.sinKamp},
-  {id:'kampitos',  em:'🧃',name:'Más Kampitos en una partida',          unit:'🧃',val:r=>r.kamps},
+  {id:'sinkampito',em:'🚫',name:'Lo más lejos antes de tomar un Kampito',unit:'m',val:r=>r.sinKamp, hw:{name:'Lo más lejos antes de tomar una poción'}},
+  {id:'kampitos',  em:'🧃',name:'Más Kampitos en una partida',          unit:'🧃',val:r=>r.kamps, hw:{em:'🧪',name:'Más pociones en una partida',unit:'🧪'}},
 ];
 const pad2=n=>String(n).padStart(2,'0');
 function weekInfo(d=new Date()){
@@ -1471,7 +1475,7 @@ function weekInfo(d=new Date()){
   const idx=Math.round((mon-new Date(2026,9,19))/604800000);   // semana 0 = lunes 19/10/2026
   const next=new Date(mon);next.setDate(mon.getDate()+7);
   return {key:'S'+mon.getFullYear()+'-'+pad2(mon.getMonth()+1)+'-'+pad2(mon.getDate()),
-          reto:RETOS[((idx%RETOS.length)+RETOS.length)%RETOS.length],
+          reto:hwV(RETOS[((idx%RETOS.length)+RETOS.length)%RETOS.length]),
           daysLeft:Math.max(1,Math.ceil((next-d)/86400000))};
 }
 const whenNext=w=>w.daysLeft===1?'mañana':`en ${w.daysLeft} días`;
@@ -1702,7 +1706,7 @@ function say(t,x,y,life=1.5,vy=-.8){parts.push({x,y,vx:0,vy,life,type:'plus',txt
 function dinaAway(t){dina.stage=0;dina.calm=0;show('hDina',false);say(t,PX+60,P.y-PH-30)}
 function stumble(o){ // primer choque: tropezás, perdés velocidad y Dina se acerca
   o.gone=true;
-  for(let i=0;i<12;i++)parts.push({x:o.x+o.w/2,y:GROUND-o.h/2,vx:(Math.random()-.2)*6,vy:-Math.random()*5-1,life:1,type:'crumb',c:i%3?'#FFF0A0':'#FF9EBB'});
+  for(let i=0;i<12;i++)parts.push({x:o.x+o.w/2,y:GROUND-o.h/2,vx:(Math.random()-.2)*6,vy:-Math.random()*5-1,life:1,type:'crumb',c:crumbC(i)});
   const sb=Math.min(1.6,speed-5.5);speed-=sb;slowT=120;slowBack=sb;P.inv=50; // frena 1,6 y lo recupera en 2 sP.vy=Math.min(P.vy,-7);P.onG=false;
   // Dina se enoja: cada tropezón de la partida le suma 1 s más hasta que se cansa (al principio, en el calentamiento, se cansa enseguida)
   dina.calm=dist<BAL.warm?240:dinaCalmRun()+60*Math.min(BAL.angryMax,R.stumbles);dina.max=dina.calm;
@@ -1715,9 +1719,10 @@ function stumble(o){ // primer choque: tropezás, perdés velocidad y Dina se ac
   save.tips.dina=1;
   vib(40);
 }
+function crumbC(i){return theme()==='halloween'?(i%3?'#FF9A2E':'#6BAF4E'):(i%3?'#FFF0A0':'#FF9EBB')} // migas de torta, o de calabaza en Halloween
 function breakCake(o){ // el escudo rompe la torta en migas
   o.gone=true;R.escudos++;
-  for(let i=0;i<16;i++)parts.push({x:o.x+o.w/2,y:GROUND-o.h/2,vx:(Math.random()-.2)*7,vy:-Math.random()*6-1,life:1,type:'crumb',c:i%3?'#FFF0A0':'#FF9EBB'});
+  for(let i=0;i<16;i++)parts.push({x:o.x+o.w/2,y:GROUND-o.h/2,vx:(Math.random()-.2)*7,vy:-Math.random()*6-1,life:1,type:'crumb',c:crumbC(i)});
 }
 
 function update(){
@@ -1909,10 +1914,17 @@ function pumpkinCv(face){
 const HW_POTION={iman:'hw_pocion_verde',doble:'hw_pocion_violeta',escudo:'hw_pocion_naranja'};
 const HW_GLOW={iman:'#7BE08F',doble:'#B48CF2',escudo:'#FFB27A'};
 const HW_POW_NAME={iman:'Poción verde: ¡Imán!',doble:'Poción violeta: ¡Frutillas x2!',escudo:'Poción naranja: ¡Escudo!'};
+/* en Halloween, los dulces y el desafío que nombran tortas, pancitos o Kampitos se ven con su versión de Halloween (campo hw) */
+const hwV=o=>o&&o.hw&&theme()==='halloween'?Object.assign({},o,o.hw):o;
 const HW_CANDY=['hw_caramelo_verde','hw_chupetin','hw_candy_corn','hw_gomita','hw_bombon','hw_caramelo_violeta'];
 let candyN=0;
 // dibuja una imagen entrando en una caja de lado L, centrada en (x,y), sin deformarla
 function drawFit(im,x,y,L){const k=L/Math.max(im.naturalWidth,im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;ctx.drawImage(im,x-w/2,y-h/2,w,h)}
+const HELP_TXT={ // ayuda: los textos de siempre, y en Halloween lo que se ve en la pista
+  hlpObsEm:['🍰','🎃'],hlpObs:['Esquivá las tortas.','Esquivá las calabazas.'],hlpPan:['Juntá frutillas y pancitos 🥪.','Juntá frutillas y golosinas 🍬.'],
+  hlpKampEm:['🧃','🧪'],hlpBreak:['la torta','la calabaza'],
+  hlpKamp:['Los <b>Kampitos</b> dan un poder por unos segundos: 🟢 imán, 🟡 frutillas dobles y 🟠 escudo.','Las <b>pociones</b> dan un poder por unos segundos: 🟢 imán, 🟣 frutillas dobles y 🟠 escudo.']};
+function helpTheme(){const k=theme()==='halloween'?1:0;for(const id in HELP_TXT){const e=$(id);if(e)e.innerHTML=HELP_TXT[id][k]}}
 function halloweenOver(on){ // pantalla de Dina: con la calabaza y una golosina en Halloween
   const im=document.querySelector('.dinaRow .dinaImg');
   if(im){im.src=on?'assets/dina_calabaza.webp':'assets/dina.webp';im.alt=on?'Dina comiendo la calabaza':'Dina comiendo la torta'}
@@ -2195,6 +2207,7 @@ const offerUsed=()=>performance.now()-offerStart;
 const canContinue=()=>!R.cont&&!PR&&pocket()+got>=contCost();
 function offerContinue(){
   state='offer';refreshMusic();tipHide();
+  $('offerNo').textContent=theme()==='halloween'?'No, que se coma la calabaza':'No, que se coma la torta';
   const c=contCost();
   $('offerCost').textContent=c;$('offerLeft').textContent=pocket()+got;
   offerT0=offerStart=performance.now();
@@ -2453,7 +2466,7 @@ function openNews(){
 }
 function closeNews(){show('news',false);if(save.seenVersion!==VERSION){save.seenVersion=VERSION;persist()}}
 $('verLink').onclick=()=>{show('settings',false);openNews()};
-$('helpBtn').onclick=()=>show('help',true);$('helpBack').onclick=()=>show('help',false);$('newsOk').onclick=closeNews;
+$('helpBtn').onclick=()=>{helpTheme();show('help',true)};$('helpBack').onclick=()=>show('help',false);$('newsOk').onclick=closeNews;
 $('passBanner').onclick=openPass;$('passLine').onclick=openPass;$('passLine').onkeydown=e=>{if(e.key==='Enter')openPass()};$('passBack').onclick=()=>show('pass',false);
 $('achBtn').onclick=openAch;$('achBtn2').onclick=openAch;$('achBack').onclick=()=>show('ach',false);
 function pause(){if(state!=='playing')return;state='paused';show('pause',true);refreshMusic()}
@@ -2631,8 +2644,8 @@ function offerCards(){
   const row=$('dulceRow');row.textContent='';
   cardOpts.forEach((d,i)=>{
     const b=el('button','dulce'+(d.trap?' trap':''));
-    b.title=d.desc;b.setAttribute('aria-label',d.name+': '+d.desc);
-    b.append(el('span','dk',String(i+1)),el('span','de',d.em),el('span','dt',d.name),el('span','dd',d.desc),el('span','fx',d.fx));
+    const v=hwV(d);b.title=v.desc;b.setAttribute('aria-label',v.name+': '+v.desc);
+    b.append(el('span','dk',String(i+1)),el('span','de',v.em),el('span','dt',v.name),el('span','dd',v.desc),el('span','fx',v.fx));
     if(d.trap) b.appendChild(el('span','warn','⚠️'));
     else if(dn(d.id)) b.appendChild(el('span','cnt','×'+dn(d.id)));
     b.onclick=()=>pickCard(i);row.appendChild(b);
@@ -2649,14 +2662,14 @@ function pickCard(i){
   if(d.id==='corazon'){R.hearts++;heartHud()}
   if(d.id==='manzanilla') speed=Math.max(5.5,speed-1.2);
   show('cards',false);dulHud();
-  say(d.fx,PX+110,P.y-PH-40,1.6);
+  say(hwV(d).fx,PX+110,P.y-PH-40,1.6);
   sPan();achCheck(true);
   state='playing';last=performance.now();acc=0;refreshMusic();
 }
 function heartHud(){const h=$('hHeart');h.textContent='❤️'.repeat(R.hearts);show('hHeart',R.hearts>0)}
 function dulHud(){
   const box=$('hDul');box.textContent='';
-  for(const d of DULCES) if(dn(d.id)&&d.id!=='corazon'){const e=el('span','',d.em+(dn(d.id)>1?dn(d.id):''));e.title=d.name;box.appendChild(e)}
+  for(const d0 of DULCES) if(dn(d0.id)&&d0.id!=='corazon'){const d=hwV(d0),e=el('span','',d.em+(dn(d.id)>1?dn(d.id):''));e.title=d.name;box.appendChild(e)}
   show('hDul',box.children.length>0);
 }
 function overShop(){const can=canBuyAny();$('shopBtn3').classList.toggle('canBuy',can)}
@@ -3264,7 +3277,7 @@ function simRun(cfg){
 if(location.hash==='#prueba') window.TR={ // solo para pruebas automáticas
   get R(){return R},get pow(){return pow},get got(){return got},get state(){return state},get obs(){return obs},save,
   item(kind,dx,dy,flavor){fru.push({x:PX+pw()/2+dx,y:GROUND-dy,bob:0,kind,flavor})},cake(dx){obs.push({x:PX+dx,w:60,h:64})},
-  get dina(){return dina},cloud:()=>cloud,cloudLoad,mapUser,renderRank,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,prevWinner,prevWeek,
+  get dina(){return dina},cloud:()=>cloud,cloudLoad,mapUser,renderRank,cloudSyncAll,mergeSave,openAcct,passAdd,passData,openPass,setDist(v){dist=v},get tipWait(){return tipWait},get PR(){return PR},get timeScale(){return timeScale},power:setPower,simRun,BAL,DULCES,RETOS,hwV,helpTheme,offerContinue,offerNo,setSeason(id){seasonTest=id;applyTheme()},get hearts(){return R.hearts},set hearts(v){R.hearts=v;heartHud()},hold(){nextSpawn=1e9;kampIn=1e9},get D(){return D},cards:offerCards,pick:pickCard,get speed(){return speed},setNextCard(v){nextCard=v},weekInfo,prevWinner,prevWeek,
   set got(v){got=v},die(){dina.caught=true;die()},newVersion(){updReady=true;showUpd()},get counting(){return counting}};
 if(window.PWA&&'serviceWorker' in navigator){
   const had=!!navigator.serviceWorker.controller; // la primera vez que se instala no es "versión nueva"

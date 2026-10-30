@@ -1,5 +1,15 @@
 # Novedades de Dina Run
 
+## Versión 0.9.5 — octubre 2026: Halloween más prolijo
+
+- 🎃 En Halloween ya no se escapan "tortas", "pancitos" ni "Kampitos" donde se ven calabazas, golosinas y pociones:
+  - Dulces: *Poción eterna*, *Pociones por doquier* (🧪 ×2), *Calabazas de golosina* (🎃 → 🍬) y *Golosina doble* (🍬 ×2), también en la barra de arriba y en el cartelito al elegirlos.
+  - Desafío de la semana: golosinas, calabazas esquivadas y pociones (el ranking es el mismo, solo cambia el nombre).
+  - Ayuda ❓: calabazas, golosinas y pociones, con la de frutillas dobles en 🟣 (la poción es violeta; antes decía 🟡).
+  - ¡Una más!: "No, que se coma la calabaza".
+- 🧡 El escudo rompe las calabazas en pedacitos naranjas y verdes (antes, migas de torta).
+- Fuera de Halloween, o con *Temas de temporada* apagado, todo queda como siempre.
+
 ## Versión 0.9.4 — octubre 2026: tu foto en el ranking
 
 - 🖼️ Arreglado: las fotos de Google con dirección larga (más de 500 letras) se guardaban cortadas y no se veían. Ahora van completas (hace falta la regla de Firebase con `d.f.size() <= 2048`); con la regla vieja, la fila sube sin foto y se reintenta cada hora.
