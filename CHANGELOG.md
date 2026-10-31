@@ -1,5 +1,14 @@
 # Novedades de Dina Run
 
+## Versión 0.9.6 — octubre 2026: más cómodo
+
+- ⛶ **Pantalla completa siempre en la esquina** de arriba a la derecha. En el menú sigue en su barra; en la pausa, ¡Te alcanzó!, los dulces y la pantalla de Dina aparece flotando. Mientras corrés va al lado de la pausa cuando la pantalla tiene lugar (600 px o más); en celular parado esa esquina es de la pausa, y ⛶ aparece al pausar. Prendido, el botón se pone amarillo.
+- ⏸️ **Pausa con más opciones:** ⚙️ Ajustes (sin cuenta, sin "Borrar mi progreso" ni carrera de práctica, para no romper la partida), ❓ Ayuda y 🏳️ Terminar, que pide un segundo toque y termina como si te hubieras caído (las frutillas se guardan).
+- 💪 **¡Te alcanzó!:** "💪 ¡Una más!" y "🏳️ Me rindo" (con el "No, que se coma la torta" de siempre abajo) son del mismo tamaño, uno al lado del otro. Los dos esperan medio segundo antes de aceptar toques.
+- 🏠 **Pantalla de Dina:** los botones de abajo tienen su nombre (en pantallas muy bajitas quedan solo los íconos). ¡Otra vez! espera 0,6 s, así un toque de salto no arranca otra partida sin querer.
+- 🏅 **Logros:** el cartel ya no tapa los títulos de la pausa, los dulces, ¡Te alcanzó! ni la pantalla de Dina; espera a que sigas corriendo. En la pantalla de Dina el chip dice cuál ganaste ("¡Logro nuevo! …" o "+3 logros nuevos") y al tocarlo abre los logros.
+- 🧡 Las migas al pagar ¡Una más! en Halloween también son de calabaza.
+
 ## Versión 0.9.5 — octubre 2026: Halloween más prolijo
 
 - 🎃 En Halloween ya no se escapan "tortas", "pancitos" ni "Kampitos" donde se ven calabazas, golosinas y pociones:

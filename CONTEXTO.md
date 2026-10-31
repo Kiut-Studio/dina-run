@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 30/10/2026 · versión 0.9.5
+Última actualización: 30/10/2026 · versión 0.9.6
 
 ## Qué es
 
@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v13`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v14`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v13)
+sw.js             copia sin conexión (caché sofi-runner-v14)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -131,6 +131,10 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 ## Diseño de pantallas
 
 - Menú sin deslizar en ninguna pantalla: personaje al centro en un carrusel (los demás detrás, apagados), filas de accesorio 🎀 y confeti 🎊 con flechitas, ¡A CORRER! y la Pastelería. Ayuda en ❓; créditos, novedades, carrera de práctica y "Borrar mi progreso" en ⚙️.
+- **Pantalla completa (0.9.6):** `#fsBtn` en la barra del menú y `#fsCorner` flotando arriba a la derecha en todo lo demás. `fsSync()` (se llama desde `show()`, `layout()` y al cambiar la pantalla completa) decide si se ve: no en el menú ni con ajustes, tienda, ranking, logros, pase, novedades, cuenta, ayuda o desbloqueo abiertos (lista `SUBS`); mientras corrés, solo si el escenario mide 600 px o más (entonces `#stage.fsHud` corre la música y la pausa a la izquierda).
+- **Pausa (0.9.6):** Seguir, ⚙️ Ajustes (`#settings.inRun` esconde cuenta, novedades, práctica y borrar), ❓ Ayuda (con `z-index` por encima de la pausa) y 🏳️ Terminar (dos toques en 3 s → `die()`, como una caída normal).
+- **Toques sin querer (0.9.6):** `tapWait(id,ms)` desactiva los botones de una pantalla al aparecer (¡Te alcanzó! 0,45 s, pantalla de Dina 0,6 s). "Me rindo" y ¡Otra vez! (también con Espacio) respetan esa espera; el vencimiento de ¡Una más! a los 6 s no.
+- **Cartel de logro (0.9.6):** `nextAchPop()` solo muestra mientras `state==='playing'`; `achHold()` lo esconde al pausar, en dulces y en ¡Te alcanzó!, y la cola sigue al volver a correr. Al terminar la partida la cola se vacía y `#achLine` dice cuál se ganó (`achRunNames`).
 - Antes de cada entrega se corren `pruebas/tamanos.py` (15 tamaños, que nada se encime, corte ni haya que deslizar) y `pruebas/juego.py`.
 
 ## Historial
@@ -155,6 +159,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.9.3 | Nombre y foto de Google también en cuentas unidas desde anónimas (antes "Jugador") |
 | 0.9.4 | Foto de Google sin cortar (las direcciones pasan de 500 letras; regla `f` hasta 2048); arranque en pestaña oculta |
 | 0.9.5 | Halloween sin "tortas", "pancitos" ni "Kampitos" sueltos: dulces, desafío, ayuda, ¡Una más! y migas del escudo |
+| 0.9.6 | Más cómodo: ⛶ siempre en la esquina, pausa con Ajustes/Ayuda/Terminar, ¡Te alcanzó! con botones parejos, botones con nombre y logros que no tapan |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 

@@ -701,7 +701,7 @@ body.calm .carItem.pv img{visibility:visible}
 /* ¡Una más! */
 .offerBtns .linkBtn{font-size:14px;opacity:.75}
 /* pausa */
-#pause .card2{padding:16px 30px}
+#pause .card2{padding:16px 30px;max-width:calc(100% - 24px)}
 #pause .goTitle{font-size:56px!important;line-height:1}
 /* pastelería */
 .upg .fx{display:inline-block;margin-top:2px;background:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:0 9px;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -805,6 +805,52 @@ body.compact.short .shopBtn{font-size:14px;padding:5px 14px;border-width:3px;box
 .offerBtns .bigBtn{font-size:21px;padding:10px 26px}
 .offerBtns .linkBtn{font-size:14px;opacity:.75}
 body.calm .offerCard,body.calm .upg.bought{animation:none}
+
+/* ---------- 0.9.6: más cómodo ---------- */
+/* pantalla completa: siempre arriba a la derecha (en partida, al lado de la pausa si entra) */
+#fsCorner{position:absolute;z-index:46;top:15px;right:10px;width:44px;height:44px;font-size:20px}
+#fsCorner[hidden]{display:none}
+#stage.fsHud #hudBtns{right:64px}
+.fsOn #fsCorner,.fsOn #fsBtn{background:var(--sun)}
+/* botones con ícono y nombre (pausa y pantalla de Dina) */
+.lbRow{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.iconBtn.lb{width:auto;min-width:66px;height:auto;padding:5px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.1}
+.iconBtn.lb small{font-size:11px;font-weight:600;letter-spacing:.02em}
+#stage.low:not(.tall) .iconBtn.lb{width:auto;height:auto;min-width:58px;padding:3px 7px 3px;font-size:17px}
+#stage.low:not(.tall) .iconBtn.lb small{font-size:10px}
+#stage.narrow .lbRow{gap:6px}
+#stage.narrow .iconBtn.lb{min-width:0;padding:4px 5px 3px;font-size:19px}
+#stage.narrow .iconBtn.lb small{font-size:10px;letter-spacing:0}
+/* muy bajito y acostado: no hay lugar para los nombres, quedan los íconos como antes (el nombre sigue en title) */
+#stage.tiny:not(.tall) .iconBtn.lb{min-width:44px;height:38px;padding:0 6px;font-size:18px;justify-content:center}
+#stage.tiny:not(.tall) .iconBtn.lb small{display:none}
+#achLine .achShort{display:none}
+#stage.tiny #achLine .achLong{display:none}
+#stage.tiny #achLine .achShort{display:inline}
+#stage.tiny #fsCorner{top:4px;right:4px;width:34px;height:34px;font-size:16px}
+.pauseRow{margin-top:14px}
+.iconBtn.lb.ask{background:var(--sun)}
+/* ¡Una más!: los dos botones del mismo tamaño, uno al lado del otro */
+.offerBtns{flex-direction:row!important;align-items:stretch!important;justify-content:center;gap:10px!important}
+.oBtn{flex:1 1 0;min-width:0;border-radius:18px!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:4px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:8px 10px;line-height:1.15}
+.oBtn b{font-size:19px;font-weight:600;white-space:nowrap}
+.oBtn small{font-size:13px;opacity:.85}
+.oYes{background:var(--red);color:var(--white)}
+.oNo{background:var(--white);color:var(--ink)}
+#stage.low:not(.tall) .oBtn{padding:5px 8px}
+#stage.low:not(.tall) .oBtn b{font-size:16px}
+#stage.low:not(.tall) .oBtn small{font-size:12px}
+#stage.narrow .oBtn b{font-size:16px}
+/* un ratito sin aceptar toques al aparecer, para no elegir sin querer mientras saltabas */
+.tapWait{pointer-events:none}
+.tapWait button{opacity:.7}
+/* ayuda arriba de la pausa */
+#help{z-index:37}
+#settings{z-index:37}
+/* ajustes a mitad de partida: sin cuenta, sin borrar y sin carrera de práctica */
+.inRunNote{display:none;font-size:12px;opacity:.7;max-width:320px;margin:0 auto}
+#settings.inRun #setAcctRow,#settings.inRun #verLink,#settings.inRun #tutLink,#settings.inRun #resetBtn,#settings.inRun .resetAsk{display:none!important}
+#settings.inRun .inRunNote{display:block}
 
 /* barra de versión nueva */
 .updBar{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 10px;max-width:716px;width:100%;background:#C9F5D2;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:999px;padding:6px 14px;font-size:15px;animation:wiggle 1.6s ease-in-out infinite}
@@ -995,17 +1041,17 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
           <span class="chip" id="rankLine" hidden title="Tu puesto en el ranking"></span>
           <span class="chip cream" id="retoLine" title="Desafío de la semana"></span>
           <span class="chip pink" id="dulLine" hidden title="Dulces de esta partida"></span>
-          <span class="chip" id="achLine" title="Logros"></span>
+          <span class="chip" id="achLine" role="button" tabindex="0" title="Logros" style="cursor:pointer"></span>
           <span class="chip sun passChip" id="passLine" role="button" tabindex="0" title="Pase de Halloween" hidden></span>
         </div>
         <button class="rankJoin thick-sm" id="rankJoin" hidden>☁️ Entrá con Google para aparecer en el ranking</button>
         <div class="overBtns">
           <button class="btn bigBtn againBtn" id="againBtn">↻ ¡Otra vez!</button>
-          <div class="row">
-            <button class="iconBtn" id="menuBtn" aria-label="Menú" title="Menú">🏠</button>
-            <button class="iconBtn" id="shopBtn3" aria-label="Pastelería" title="Pastelería">🧁<span class="badge">🍓<span id="oTotal">0</span></span></button>
-            <button class="iconBtn" id="achBtn2" aria-label="Logros" title="Logros">🏅</button>
-            <button class="iconBtn" id="rankBtn2" aria-label="Ranking" title="Ranking">🏆</button>
+          <div class="row lbRow">
+            <button class="iconBtn lb" id="menuBtn" title="Menú">🏠<small>Menú</small></button>
+            <button class="iconBtn lb" id="shopBtn3" title="Pastelería">🧁<small>Pastelería</small><span class="badge">🍓<span id="oTotal">0</span></span></button>
+            <button class="iconBtn lb" id="achBtn2" title="Logros">🏅<small>Logros</small></button>
+            <button class="iconBtn lb" id="rankBtn2" title="Ranking">🏆<small>Ranking</small></button>
           </div>
         </div>
         <span id="oSaved" hidden></span>
@@ -1019,6 +1065,11 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="goTitle" style="font-size:38px!important">Pausa</div>
         <p style="margin:8px 0 12px">Tocá para seguir corriendo</p>
         <button class="btn bigBtn" id="resumeBtn" style="font-size:18px;padding:8px 26px">Seguir ▶</button>
+        <div class="lbRow pauseRow">
+          <button class="iconBtn lb" id="pSet">⚙️<small>Ajustes</small></button>
+          <button class="iconBtn lb" id="pHelp">❓<small>Ayuda</small></button>
+          <button class="iconBtn lb" id="pEnd">🏳️<small id="pEndT">Terminar</small></button>
+        </div>
       </div>
     </div>
     <div id="rank" class="overlay" hidden>
@@ -1078,7 +1129,7 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="goTitle">⚙️ Ajustes</div>
         <div class="setScroll">
         <div class="setRows">
-        <div class="setRow"><span class="e">☁️</span><span class="lbl">Cuenta de Google<small id="acctNote">guardá tu progreso en la nube</small></span><button class="setGo" id="acctSet">Entrar</button></div>
+        <div class="setRow" id="setAcctRow"><span class="e">☁️</span><span class="lbl">Cuenta de Google<small id="acctNote">guardá tu progreso en la nube</small></span><button class="setGo" id="acctSet">Entrar</button></div>
         <div class="setRow"><span class="e" id="soundEm">🔊</span><span class="lbl">Sonido<small>apaga todo: música y efectos</small></span><button class="tog" id="soundBtn" role="switch" aria-label="Sonido"></button></div>
         <label class="setRow"><span class="e">🎵</span><span class="lbl">Música</span><input type="range" id="setMusic" min="0" max="100" step="5"><span class="val" id="setMusicV"></span></label>
         <label class="setRow"><span class="e">🔊</span><span class="lbl">Efectos<small>saltos, frutillas, choques</small></span><input type="range" id="setSfx" min="0" max="100" step="5"><span class="val" id="setSfxV"></span></label>
@@ -1090,6 +1141,7 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="setLinks">
           <div class="credit">Dibujos y animación de Sofía 🎨</div>
           <div class="credit" style="font-size:.8em;opacity:.8">Vestido de Alicia, pociones y golosinas: hechos con ayuda de IA sobre los dibujos de Sofía · Calabazas: diseño provisorio hasta que llegue el dibujo de Sofía</div>
+          <div class="inRunNote">A mitad de partida no se puede cambiar la cuenta ni borrar el progreso: terminala y entrá a ⚙️ desde el menú.</div>
           <button class="verLink" id="verLink"></button>
           <button class="verLink" id="tutLink">Repetir la carrera de práctica</button>
           <div><button class="linkBtn" id="resetBtn">Borrar mi progreso</button>
@@ -1131,12 +1183,13 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="goSub">¿Le das frutillas a Dina y seguís corriendo?</div>
         <div class="offerRing"><svg viewBox="0 0 88 88"><circle cx="44" cy="44" r="40" fill="#FFF7FB" stroke="#000" stroke-width="4"/><circle id="offerArc" cx="44" cy="44" r="40" fill="none" stroke="#FF4D6D" stroke-width="8" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="0"/></svg><img src="assets/dina_avatar.webp" alt=""></div>
         <div class="offerBtns">
-          <button class="btn bigBtn" id="offerYes">💪 ¡Una más! · <span id="offerCost">25</span> 🍓</button>
-          <button class="linkBtn" id="offerNo">No, que se coma la torta</button>
+          <button class="btn oBtn oYes" id="offerYes"><b>💪 ¡Una más!</b><small><span id="offerCost">25</span> 🍓</small></button>
+          <button class="btn oBtn oNo" id="offerNo"><b>🏳️ Me rindo</b><small id="offerNoT">No, que se coma la torta</small></button>
         </div>
         <div class="note">Una vez por partida · te quedan <span id="offerLeft">0</span> 🍓</div>
       </div>
     </div>
+    <button class="ibtn thick-sm" id="fsCorner" aria-label="Pantalla completa" title="Pantalla completa" hidden>⛶</button>
     <div id="count" hidden><b id="countN">3</b></div>
     <div id="tip" hidden></div>
         <div id="achPop" hidden><span class="e" id="achPopEm"></span><span><small>¡NUEVO LOGRO!</small><b id="achPopNm"></b></span></div>
@@ -1341,6 +1394,13 @@ const POWERS={
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
 const VERSION='0.9.4';
 const NEWS=[
+  {v:'0.9.6',fecha:'octubre 2026',titulo:'Más cómodo',items:[
+    ['⛶','Pantalla completa siempre arriba a la derecha: en la pausa, en ¡Te alcanzó!, en los dulces, en la pantalla de Dina y, si entra, mientras corrés.'],
+    ['⏸️','En la pausa ahora hay ⚙️ Ajustes, ❓ Ayuda y 🏳️ Terminar (dos toques; las frutillas se guardan como siempre).'],
+    ['💪','¡Te alcanzó!: pagar y rendirte son dos botones iguales, uno al lado del otro. Y al aparecer esperan un ratito, para no tocar uno sin querer mientras saltabas.'],
+    ['🏠','Pantalla de Dina: los botones de abajo dicen qué son (Menú, Pastelería, Logros, Ranking) y el de ¡Otra vez! no se toca sin querer al caerte.'],
+    ['🏅','El cartel de logro nuevo ya no tapa los títulos: espera a que sigas corriendo, y en la pantalla de Dina dice cuál ganaste (tocalo para ver tus logros).'],
+  ]},
   {v:'0.9.5',fecha:'octubre 2026',titulo:'Halloween más prolijo',items:[
     ['🎃','En Halloween, los dulces, el desafío de la semana, la ayuda y ¡Una más! hablan de calabazas, golosinas y pociones (antes a veces decían tortas, pancitos o Kampitos).'],
     ['🧡','Cuando el escudo rompe una calabaza, salen pedacitos de calabaza (antes eran migas de torta).'],
@@ -1597,10 +1657,11 @@ function layout(){
   VW=cssW/scale; VH=cssH/scale;
   GROUND=tall?Math.round(Math.min(VH-72,VH*.66)):VH-72;
   PX=tall?118:150;
+  fsSync();
   draw();
 }
 window.addEventListener('resize',layout);
-document.addEventListener('fullscreenchange',layout);
+document.addEventListener('fullscreenchange',()=>{layout();fsSync()});
 
 /* ---------- estado del juego ---------- */
 const PH=112;                        // alto del personaje (unidades virtuales)
@@ -2207,12 +2268,12 @@ const offerUsed=()=>performance.now()-offerStart;
 const canContinue=()=>!R.cont&&!PR&&pocket()+got>=contCost();
 function offerContinue(){
   state='offer';refreshMusic();tipHide();
-  $('offerNo').textContent=theme()==='halloween'?'No, que se coma la calabaza':'No, que se coma la torta';
+  $('offerNoT').textContent=theme()==='halloween'?'No, que se coma la calabaza':'No, que se coma la torta';
   const c=contCost();
   $('offerCost').textContent=c;$('offerLeft').textContent=pocket()+got;
   offerT0=offerStart=performance.now();
   tone('sawtooth',260,150,.25,.22);vib([30,40]);
-  show('hud',false);show('offer',true);
+  show('hud',false);achHold();tapWait('offer');show('offer',true);
   cancelAnimationFrame(offerRAF);
   (function tick2(){
     if(state!=='offer') return;
@@ -2231,19 +2292,20 @@ function offerYes(){
   save.spent=(save.spent|0)+c;R.cont=1;R.paid+=c;persist();
   show('offer',false);show('hud',true);
   // se apartan las tortas que estaban encima, y un ratito de invulnerabilidad
-  for(const o of obs) if(o.x<PX+520){o.gone=true;for(let i=0;i<10;i++)parts.push({x:o.x+o.w/2,y:GROUND-o.h/2,vx:(Math.random()-.2)*6,vy:-Math.random()*5-1,life:1,type:'crumb',c:i%3?'#FFF0A0':'#FF9EBB'})}
+  for(const o of obs) if(o.x<PX+520){o.gone=true;for(let i=0;i<10;i++)parts.push({x:o.x+o.w/2,y:GROUND-o.h/2,vx:(Math.random()-.2)*6,vy:-Math.random()*5-1,life:1,type:'crumb',c:crumbC(i)})}
   dina.caught=false;dinaAway('💪 −'+c+' 🍓');
   P.inv=110;P.y=Math.min(P.y,GROUND);P.vy=-9;P.onG=false;P.jumps=1;
   sUnlock();vib(30);
   achCheck(true);
-  state='playing';last=performance.now();acc=0;refreshMusic();
+  state='playing';last=performance.now();acc=0;refreshMusic();nextAchPop();
 }
 function offerNo(){
   if(state!=='offer') return;
   cancelAnimationFrame(offerRAF);show('offer',false);show('hud',true);
   state='playing';dina.caught=true;die();
 }
-$('offerYes').onclick=offerYes;$('offerNo').onclick=offerNo;
+$('offerYes').onclick=offerYes;$('offerNo').onclick=()=>{if(performance.now()-offerT0>=400)offerNo()};
+function tapWait(id,ms=450){const e=$(id);e.classList.add('tapWait');clearTimeout(e._tw);e._tw=setTimeout(()=>e.classList.remove('tapWait'),ms)}
 
 /* ---------- Pastelería ---------- */
 function openShop(){renderShop();show('shop',true)}
@@ -2303,13 +2365,25 @@ function hud(){
   if(s===hudCache) return; hudCache=s;
   $('hFru').textContent=got;$('hDist').textContent=Math.floor(dist);$('hSpd').textContent=Math.round(speed*3);
 }
-function show(id,on){$(id).hidden=!on}
+function show(id,on){$(id).hidden=!on;if(id!=='fsCorner'&&id!=='achPop'&&id!=='toast')try{fsSync()}catch(e){}} // (al arrancar, antes de que exista todo, no hace nada)
+/* pantalla completa siempre arriba a la derecha: en el menú está en su barra; en el resto, flotando.
+   Mientras corrés va al lado de la pausa si hay lugar (en celular parado, la esquina es de la pausa y ⛶ está al pausar). */
+const SUBS=['settings','shop','rank','ach','pass','news','acct','help','unlock'];
+function fsSync(){
+  const c=$('fsCorner');if(!c||!stage) return;
+  const run=state==='playing'||state==='dying';
+  const sub=SUBS.some(id=>$(id)&&!$(id).hidden);
+  const vis=$('menu').hidden&&!sub&&(!run||cssW>=600);
+  c.hidden=!vis;stage.classList.toggle('fsHud',vis&&run);
+  const on=!!document.fullscreenElement||pseudoFS;document.body.classList.toggle('fsOn',on);
+  for(const b of [c,$('fsBtn')]){b.title=on?'Salir de pantalla completa':'Pantalla completa';b.setAttribute('aria-label',b.title)}
+}
 
 function start(){
   ac();
   if(!charUnlocked(CHARS.find(c=>c.id===save.char))) save.char='sofi';
   viewAcc=null;viewTrail=null;carIdx=-1;
-  reset();PR=null;state='playing';hudCache='';powCache=-1;achThisRun=0;hud();tipHide();
+  reset();PR=null;state='playing';hudCache='';powCache=-1;achThisRun=0;achRunNames.length=0;achQueue.length=0;hud();tipHide();
   if(!save.tips.practica) practiceStart(); // primera partida: carrera de práctica
   show('cards',false);show('toast',false);dulHud();
   show('menu',false);show('over',false);show('pause',false);show('rank',false);show('ach',false);show('pass',false);show('news',false);show('shop',false);show('offer',false);show('help',false);show('settings',false);show('hPow',false);show('hDina',false);show('hud',true);
@@ -2318,6 +2392,7 @@ function start(){
   refreshMusic();
   stage.focus?.();
 }
+let overT0=0;
 function die(){
   tipHide();state='dying';sHit();P.vy=-9;P.rot=0;dieT=0;pow.type='';pow.t=0;show('hDina',false);show('hPow',false);refreshMusic();
   vib([30,40,60]);
@@ -2359,8 +2434,11 @@ function gameOver(){
     $('dinaTxt').textContent='¡Te alcancé! 😼 Si te tropezás, corré un ratito sin chocar y me canso';
   }
   const nAch=Object.keys(save.ach).length,nNew=achThisRun;
-  $('achLine').textContent=nNew?`🏅 +${nNew}`:`🏅 ${nAch}/${ACH.length}`;$('achLine').classList.toggle('sun',nNew>0);
-  show('over',true);showUpd();
+  achHold();achQueue.length=0; // en la pantalla de Dina no tapan nada: se ven acá
+  { const al=$('achLine');al.textContent=nNew?'🏅 ':`🏅 ${nAch}/${ACH.length}`;
+    if(nNew) al.append(el('span','achLong',nNew===1?`¡Logro nuevo! ${achRunNames[0]}`:`+${nNew} logros nuevos`),el('span','achShort','+'+nNew)); }$('achLine').classList.toggle('sun',nNew>0);
+  $('achLine').title=nNew?'Logros nuevos: '+achRunNames.join(', '):'Logros';
+  tapWait('over',600);overT0=performance.now();show('over',true);showUpd();
   const run={metros:m,frutillas:got,pans:R.pans,kamps:R.kamps,tortas:R.tortas,sinKamp:R.sinKamp===null?m:R.sinKamp};
   const wk=weekInfo();
   const val=wk.reto.val(run)|0;
@@ -2405,7 +2483,7 @@ function openPass(){
 function toMenu(){showUpd();state='menu';reset();show('over',false);show('pause',false);show('hud',false);show('rank',false);show('ach',false);show('pass',false);renderMenu();show('menu',true);refreshMusic()}
 
 /* ---------- logros ---------- */
-let achThisRun=0;const achQueue=[];let achT=0;
+let achThisRun=0;const achQueue=[];let achT=0;const achRunNames=[];
 function achCheck(live,silent){
   const S=save.st,l=!!live;
   const tot=save.total+(l?got:0);
@@ -2426,12 +2504,13 @@ function achCheck(live,silent){
     limpia:Math.max(S.cleanBest,(l&&!R.stumbles)?Math.floor(dist):0)>=500,
   };
   let n=0;
-  for(const a of ACH) if(cond[a.id]&&!save.ach[a.id]){save.ach[a.id]=Date.now();n++;if(!silent){achQueue.push(a);achThisRun++}}
+  for(const a of ACH) if(cond[a.id]&&!save.ach[a.id]){save.ach[a.id]=Date.now();n++;if(!silent){achQueue.push(a);achThisRun++;achRunNames.push(a.em+' '+a.name)}}
   if(n){persist();if(!silent)nextAchPop()}
   return n;
 }
+function achHold(){if(achT){clearTimeout(achT);achT=0}show('achPop',false)} // se guarda para cuando sigas corriendo
 function nextAchPop(){
-  if(achT) return;
+  if(achT||state!=='playing') return;
   const a=achQueue.shift(); if(!a){show('achPop',false);return}
   $('achPopEm').textContent=a.em;$('achPopNm').textContent=a.name;
   const el=$('achPop');el.hidden=true;void el.offsetWidth;el.hidden=false; // reinicia la animación
@@ -2468,8 +2547,17 @@ function closeNews(){show('news',false);if(save.seenVersion!==VERSION){save.seen
 $('verLink').onclick=()=>{show('settings',false);openNews()};
 $('helpBtn').onclick=()=>{helpTheme();show('help',true)};$('helpBack').onclick=()=>show('help',false);$('newsOk').onclick=closeNews;
 $('passBanner').onclick=openPass;$('passLine').onclick=openPass;$('passLine').onkeydown=e=>{if(e.key==='Enter')openPass()};$('passBack').onclick=()=>show('pass',false);
-$('achBtn').onclick=openAch;$('achBtn2').onclick=openAch;$('achBack').onclick=()=>show('ach',false);
-function pause(){if(state!=='playing')return;state='paused';show('pause',true);refreshMusic()}
+$('achBtn').onclick=openAch;$('achBtn2').onclick=openAch;$('achLine').onclick=openAch;$('achLine').onkeydown=e=>{if(e.key==='Enter')openAch()};$('achBack').onclick=()=>show('ach',false);
+function pause(){if(state!=='playing')return;state='paused';achHold();endAsk(false);show('pause',true);refreshMusic()}
+let endT=0;
+function endAsk(on){clearTimeout(endT);$('pEnd').classList.toggle('ask',on);$('pEndT').textContent=on?'¿Seguro?':'Terminar';if(on)endT=setTimeout(()=>endAsk(false),3000)}
+$('pEnd').onclick=()=>{ // dos toques: terminar la partida como si te hubieras caído (las frutillas se guardan)
+  if(state!=='paused') return;
+  if(!$('pEnd').classList.contains('ask')){endAsk(true);return}
+  endAsk(false);show('pause',false);state='playing';dina.caught=false;die();
+};
+$('pSet').onclick=()=>{if(state==='paused')openSettings()};
+$('pHelp').onclick=()=>{helpTheme();show('help',true)};
 let counting=0,countTimer=0;
 function resume(){
   if(state!=='paused'||counting)return;
@@ -2485,7 +2573,7 @@ function countStep(){
   counting--;countTimer=setTimeout(countStep,560);
 }
 function cancelCount(){clearTimeout(countTimer);counting=0;show('count',false);if(state==='paused')show('pause',true)}
-function goOn(){state='playing';last=performance.now();acc=0;refreshMusic()}
+function goOn(){state='playing';last=performance.now();acc=0;refreshMusic();fsSync();nextAchPop()}
 
 let toastT=0;
 function toast(msg){const t=$('toast');t.textContent='💬 '+msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200)}
@@ -2637,7 +2725,7 @@ function offerCards(){
   const pool=DULCES.filter(d=>dn(d.id)<d.max&&!(d.id==='corazon'&&R.hearts>=3)); // como mucho 3 corazones a la vez
   if(pool.length<3) return;
   cardOpts=[];while(cardOpts.length<3){const d=pool[Math.random()*pool.length|0];if(!cardOpts.includes(d))cardOpts.push(d)}
-  state='cards';refreshMusic();tipHide();cardsT0=performance.now();
+  state='cards';refreshMusic();tipHide();achHold();cardsT0=performance.now();
   const isNight=Math.floor((dist+5)/NIGHT_EVERY)%2===1;
   $('cardsDist').textContent=`${isNight?'🌙 Se hizo de noche':'☀️ ¡Amaneció!'} · 👟 ${Math.round(dist/100)*100} m · 🍬 ${R.cards}/${CARDS_MAX}`;
   $('cardsSub').textContent=save.tips.dulces?'':'Te dura toda la partida';show('cardsSub',!save.tips.dulces);
@@ -2663,8 +2751,8 @@ function pickCard(i){
   if(d.id==='manzanilla') speed=Math.max(5.5,speed-1.2);
   show('cards',false);dulHud();
   say(hwV(d).fx,PX+110,P.y-PH-40,1.6);
-  sPan();achCheck(true);
-  state='playing';last=performance.now();acc=0;refreshMusic();
+  sPan();
+  state='playing';last=performance.now();acc=0;refreshMusic();achCheck(true);nextAchPop();
 }
 function heartHud(){const h=$('hHeart');h.textContent='❤️'.repeat(R.hearts);show('hHeart',R.hearts>0)}
 function dulHud(){
@@ -2717,7 +2805,7 @@ window.addEventListener('keydown',e=>{
   if(k==='Space'||k==='ArrowUp'||k==='KeyW'){
     if(e.target.closest&&e.target.closest('button')&&state!=='playing') return; // deja que el botón haga lo suyo
     e.preventDefault();
-    if(state==='playing') jump(); else if(state==='menu') start(); else if(state==='over') start(); else if(state==='paused') resume();
+    if(state==='playing') jump(); else if(state==='menu') start(); else if(state==='over'){if(performance.now()-overT0>=600)start()} else if(state==='paused') resume();
   }else if(k==='KeyP'||k==='Escape'){ if(counting)cancelCount(); else state==='playing'?pause():resume() }
   else if(k==='Enter'&&state==='menu'){start()}
   else if(state==='menu'&&(k==='ArrowLeft'||k==='ArrowRight')){e.preventDefault();carGo(k==='ArrowLeft'?-1:1)}
@@ -2726,18 +2814,20 @@ document.addEventListener('visibilitychange',()=>{if(state==='offer'&&!document.
 window.addEventListener('blur',()=>{if(counting)cancelCount();pause()});
 
 $('playBtn').onclick=start;
-$('againBtn').onclick=start;
+$('againBtn').onclick=()=>{if(performance.now()-overT0>=600)start()};
 $('menuBtn').onclick=toMenu;
 $('pauseBtn').onclick=pause;
 $('resumeBtn').onclick=resume;
 $('soundBtn').onclick=()=>{save.muted=!save.muted;persist();setTog('soundBtn',!save.muted);$('soundEm').textContent=save.muted?'🔇':'🔊';refreshMusic();if(!save.muted)sFru()};
+$('fsCorner').onclick=e=>{e.stopPropagation();$('fsBtn').onclick()};
+$('fsCorner').addEventListener('pointerdown',e=>e.stopPropagation()); // en la pausa, tocar ⛶ no la cierra
 $('fsBtn').onclick=async()=>{
   try{
     if(document.fullscreenElement){await document.exitFullscreen();return}
-    if(pseudoFS){pseudoFS=false;layout();return}
+    if(pseudoFS){pseudoFS=false;layout();fsSync();return}
     await document.documentElement.requestFullscreen({navigationUI:'hide'});
     try{await screen.orientation.lock('landscape')}catch(e){}
-  }catch(e){ pseudoFS=true; layout(); } // iPhone: sin API de pantalla completa
+  }catch(e){ pseudoFS=true; layout(); fsSync(); } // iPhone: sin API de pantalla completa
 };
 
 /* ---------- música ---------- */
@@ -2974,10 +3064,10 @@ function openSettings(){
   $('setVib').disabled=!canVib;$('setVibNote').textContent=canVib?'al saltar y al chocar':'este dispositivo no vibra (iPhone y compu)';
   setTog('setSeason',save.set.seasonal);
   const t=seasonNow();$('seasonNote').textContent=t?`${t.name}: ${seasonFmt(t)}${save.set.seasonal?'':' (apagado)'}`:'Halloween, del 15/10 al 2/11 (ahora no hay ninguno)';
-  acctUi();show('settings',true);
+  acctUi();$('settings').classList.toggle('inRun',state==='paused');show('settings',true);
 }
 $('setBtn').onclick=openSettings;
-$('setBack').onclick=()=>{show('settings',false);renderMenu()};
+$('setBack').onclick=()=>{show('settings',false);if(state!=='paused')renderMenu()};
 $('setMusic').oninput=e=>{save.set.music=+e.target.value;$('setMusicV').textContent=save.set.music+'%';persist();setMusicVol();refreshMusic()};
 $('setSfx').oninput=e=>{save.set.sfx=+e.target.value;$('setSfxV').textContent=save.set.sfx+'%';persist()};
 $('setSfx').onchange=()=>sFru(); // para escuchar cómo quedó
