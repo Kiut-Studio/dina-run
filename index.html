@@ -1275,8 +1275,9 @@ const trailList=()=>TRAILS.filter(cosmVisible);
 /* ---------- Pase de Halloween ----------
    Gratis: se sube de nivel con los metros que corrés en Halloween (con el tema prendido). Cada nivel da un premio
    que se reclama en el pase y queda para siempre. Se reinicia cada año. El último premio es el vestido de Alicia de Sofi.
-   Tope diario: cada día suman como mucho PASS.daily metros, así el vestido de Alicia lleva por lo menos una semana. */
-const PASS={season:'halloween',name:'Pase de Halloween',em:'🎃',daily:2500,levels:[
+   Tope diario: cada día suman como mucho PASS.daily metros. Era 2500 (Alicia en una semana); en la 0.9.7 subió a 5000
+   para que quien arranque en los últimos días de Halloween (o venga a mitad de camino) llegue igual a Alicia: 16.000 m en 4 días. */
+const PASS={season:'halloween',name:'Pase de Halloween',em:'🎃',daily:5000,levels:[
   {m:400,  em:'🧙',name:'Dina: sombrero de bruja', kind:'dina', id:'bruja',  img:'dina_bruja'},
   {m:1500, em:'🍓',name:'100 frutillas',           kind:'fru',  n:100},
   {m:3000, em:'🎃',name:'Confeti calabaza',        kind:'trail',id:'calabaza'},
@@ -1394,6 +1395,9 @@ const POWERS={
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
 const VERSION='0.9.4';
 const NEWS=[
+  {v:'0.9.7',fecha:'octubre 2026',titulo:'Pase de Halloween: más metros por día',items:[
+    ['🎃','El Pase de Halloween suma hasta 5.000 m por día (antes 2.500), así se llega al vestido de Alicia antes de que termine Halloween, el 2/11.'],
+  ]},
   {v:'0.9.6',fecha:'octubre 2026',titulo:'Más cómodo',items:[
     ['⛶','Pantalla completa siempre arriba a la derecha: en la pausa, en ¡Te alcanzó!, en los dulces, en la pantalla de Dina y, si entra, mientras corrés.'],
     ['⏸️','En la pausa ahora hay ⚙️ Ajustes, ❓ Ayuda y 🏳️ Terminar (dos toques; las frutillas se guardan como siempre).'],

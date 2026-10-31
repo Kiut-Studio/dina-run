@@ -1,5 +1,9 @@
 # Novedades de Dina Run
 
+## Versión 0.9.7 — octubre 2026: pase de Halloween con más metros por día
+
+- 🎃 El tope diario del Pase de Halloween sube de 2.500 a 5.000 m. Con 2.500 no se llegaba a tiempo: el 30/10 quedaban 4 días de Halloween y como mucho se juntaban 10.000 m, y el vestido de Alicia pide 16.000. Con 5.000, el pase completo se hace en 4 días.
+
 ## Versión 0.9.6 — octubre 2026: más cómodo
 
 - ⛶ **Pantalla completa siempre en la esquina** de arriba a la derecha. En el menú sigue en su barra; en la pausa, ¡Te alcanzó!, los dulces y la pantalla de Dina aparece flotando. Mientras corrés va al lado de la pausa cuando la pantalla tiene lugar (600 px o más); en celular parado esa esquina es de la pausa, y ⛶ aparece al pausar. Prendido, el botón se pone amarillo.

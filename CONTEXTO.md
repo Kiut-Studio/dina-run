@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 30/10/2026 · versión 0.9.6
+Última actualización: 30/10/2026 · versión 0.9.7
 
 ## Qué es
 
@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v14`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v15`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v14)
+sw.js             copia sin conexión (caché sofi-runner-v15)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -80,7 +80,7 @@ Ninguna habilidad cambia la velocidad, para que los récords se comparen parejo.
 ### Pase de Halloween
 - Gratis. Suben de nivel los metros corridos en Halloween con el tema prendido (`passAdd` al terminar la partida). **Los premios no se dan solos:** al llegar a un nivel aparece un aviso y la etiqueta "🎁 ¡Premio en el pase!", y se reclaman con el botón ¡Reclamar! en la pantalla del pase (`passClaim`), que muestra el cartel de ¡Felicitaciones!. Se guarda en `save.pass` (`key` = halloween-año, `m`, `got`), así que vuelve a empezar cada año.
 - 8 niveles (`PASS` en `index.html`): 400 m Dina bruja · 1500 m 100 🍓 · 3000 m confeti calabaza · 5000 m Dina brujito · 7500 m 200 🍓 · 10.000 m sombrero de bruja · 13.000 m Dina vampiro · 16.000 m vestido de Alicia.
-- **Tope diario de 2500 m** (`PASS.daily`, `save.pass.day/dm`): el vestido de Alicia lleva como mínimo 7 días (Leandro pidió que lleve por lo menos una semana). Una jugadora normal (mediana 1332 m por partida, simulación de la 0.6) llega al tope en 2 o 3 partidas por día. Halloween dura del 15/10 al 2/11, así que hay que empezar a más tardar el 27/10 para completarlo.
+- **Tope diario de 5000 m** (`PASS.daily`, `save.pass.day/dm`; el día cambia a la medianoche). Era 2500 (Alicia en 7 días, como pidió Leandro al principio), pero el 30/10 se vio que así ya no se llegaba: quedaban 4 días y como mucho 10.000 m. Leandro pidió subirlo en la 0.9.7: con 5000, el pase completo (16.000 m) se hace en 4 días. Una jugadora normal (mediana 1332 m por partida, simulación de la 0.6) llega al tope en 3 o 4 partidas. **Para las próximas temporadas:** calcular el tope con los días que quedan, para que siempre se pueda completar a tiempo.
 - Migración 0.7 (`save.mig07`): si alguien tenía comprados el sombrero de bruja, el confeti calabaza o el vestido de Alicia (0.6 o versiones de prueba) sin haberlos reclamado en el pase, se le sacan y se le devuelven las frutillas.
 - Se abre con el cartel naranja **Pase de Halloween** del menú, al lado del desafío de la semana (late, y salta cuando hay premio), o con la etiqueta en la pantalla de Dina.
 
@@ -160,6 +160,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.9.4 | Foto de Google sin cortar (las direcciones pasan de 500 letras; regla `f` hasta 2048); arranque en pestaña oculta |
 | 0.9.5 | Halloween sin "tortas", "pancitos" ni "Kampitos" sueltos: dulces, desafío, ayuda, ¡Una más! y migas del escudo |
 | 0.9.6 | Más cómodo: ⛶ siempre en la esquina, pausa con Ajustes/Ayuda/Terminar, ¡Te alcanzó! con botones parejos, botones con nombre y logros que no tapan |
+| 0.9.7 | Pase de Halloween: tope diario de 2.500 a 5.000 m, para llegar a Alicia antes del 2/11 |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 
