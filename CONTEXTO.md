@@ -234,6 +234,29 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 - Las reglas completas de los dos juegos (con las de Dina Beat) están en el proyecto **Kiut Studio Games** (CONTEXTO.md). Si las de Dina Beat ya definen `conGoogle`, no se repite.
 - Pruebas: `pruebas/nube.py` (ranking con tres cuentas y una sin cuenta, primer nombre, foto, puesto, desafío de la semana, ganador de la semana pasada); `tamanos.py` abre 🏆 con 10 jugadores y el panel de entrar.
 
+## Navidad: qué ya tenemos y qué falta
+
+**Ya está hecho (sirve de Halloween):**
+- Temas por fecha (`SEASONS`), se apagan en Ajustes, y `#tema=` para probarlos antes.
+- Cosméticos que solo se compran en su temporada y después quedan para siempre (`season:`).
+- Pase de temporada con niveles, premios y tope diario de metros (`PASS`).
+- Cambiar música, fondo, cosas de la pista, textos de ayuda y la pantalla de Dina según el tema.
+- Disfraces de Dina como filas del dibujo animado de Sofía (`DINA_LOOKS`).
+
+**Falta en el código:**
+- `PASS` sirve para una sola temporada (Halloween): pasarlo a un pase por tema, con el tope diario calculado con los días que quedan.
+- Lo de Halloween está escrito "a mano" (`hw`, `hwV`, `HW_CANDY`, `HW_POTION`, `HW_POW_NAME`, `HELP_TXT`, `halloweenOver`, `drawHalloween`): generalizarlo para que cada tema traiga sus cosas.
+- Melodía navideña para la cajita (villancico de dominio público o composición propia).
+- Fondo navideño con código (luces, guirnaldas, nieve de noche) como provisorio.
+
+**Falta de Sofía (dibujos):**
+- Dina navideña (gorro de Papá Noel o cuernitos de reno), como fila nueva del dibujo animado.
+- Lo que se esquiva en vez de las tortas (regalitos o arbolitos).
+- Lo que se junta en vez de las frutillas o los pancitos (bastones de caramelo, galletitas de jengibre, esferitas).
+- Las 3 pociones o adornos de los poderes.
+- El premio grande del pase (un disfraz para Sofi, como el vestido de Alicia).
+- Opcional: un fondo de Navidad de verano.
+
 ## Pendientes e ideas
 
 1. **Dibujo de la calabaza de Sofía:** cuando llegue, guardarlo en `assets/calabaza.webp`, sumarlo a `IMG_FILES` y a `sw.js`, y usarlo en `pumpkinCv()`.
