@@ -1242,6 +1242,7 @@ const CHARS=[
    desde/hasta: [día, mes]. Cada tema puede traer cosméticos que solo se compran en su temporada (después quedan para siempre). */
 const SEASONS=[
   {id:'halloween',name:'Halloween',em:'🎃',desde:[15,10],hasta:[2,11]},
+  {id:'cumple',name:'Cumple de Leandro',em:'🎂',desde:[22,11],hasta:[28,11]}, // Leandro cumple el 25/11
 ];
 let seasonTest=null; // solo para pruebas
 function seasonOf(d=new Date()){
@@ -1258,6 +1259,7 @@ const ACCS=[
   {id:'hoodie', name:'Hoodie rosa',em:'💖',price:200,only:'sofi',img:'sofi_hoodie'},
   {id:'alicia', name:'Vestido de Alicia',em:'🐇',pass:8,only:'sofi',img:'sofi_alicia',season:'halloween'},
   {id:'bruja',  name:'Sombrero de bruja',em:'🧙',pass:6,season:'halloween'},
+  {id:'gorrito',name:'Gorrito de fiesta',em:'🥳',price:150,season:'cumple'},
 ];
 const TRAILS=[
   {id:'none',    name:'Sin confeti',full:'Sin confeti',   em:'🤍',price:0},
@@ -1267,6 +1269,7 @@ const TRAILS=[
   {id:'dorado',  name:'Dorado',  full:'Confeti dorado',   em:'💛',price:200,cols:['#FFD93D','#FFB627','#FFF0A0']},
   {id:'arcoiris',name:'Arcoíris',full:'Confeti arcoíris', em:'🌈',price:250,cols:['#FF9EBB','#FFD93D','#4ADE80','#60A5FA','#FF4D6D','#B79CF7']},
   {id:'calabaza',name:'Calabaza',full:'Confeti calabaza', em:'🎃',pass:3,cols:['#FF8A1F','#8B5CF6','#2B2B2B','#FFB347'],season:'halloween'},
+  {id:'fiesta',  name:'Fiesta',  full:'Confeti de fiesta', em:'🎉',price:150,cols:['#FF4D6D','#FFD93D','#60A5FA','#4ADE80','#B79CF7'],season:'cumple'},
 ];
 // un cosmético de temporada se ve si es su temporada (y el tema está prendido) o si ya lo tenés
 const cosmVisible=o=>!o.season||cosmOwned(o.id)||theme()===o.season;
@@ -1378,7 +1381,7 @@ function magR(){                                              // radio del imán
 }
 const dinaCalmRun=()=>Math.max(240,Math.round((dinaCalm()-(isChar('sofi')?120:0))*(dn('dinalenta')?.6:1))); // Sofi: escurridiza · nunca menos de 4 s
 const CHAR_PRICE=500;
-const cheapest=()=>Math.min(...UPGRADES.filter(u=>upLv(u.id)<UP_MAX).map(u=>UP_COST[upLv(u.id)]),...CHARS.filter(c=>!charUnlocked(c)).map(c=>c.need),...[...ACCS,...TRAILS].filter(o=>!o.pass&&!cosmOwned(o.id)&&cosmVisible(o)).map(o=>o.price),1e9);
+const cheapest=()=>Math.min(...UPGRADES.filter(u=>upLv(u.id)<UP_MAX).map(u=>UP_COST[upLv(u.id)]),...CHARS.filter(c=>!charUnlocked(c)).map(c=>needOf(c)),...[...ACCS,...TRAILS].filter(o=>!o.pass&&!cosmOwned(o.id)&&cosmVisible(o)).map(o=>o.price),1e9);
 const canBuyAny=()=>pocket()>=cheapest();
 const upLv=id=>Math.min(UP_MAX,(save.up&&save.up[id])|0);
 const panValue=()=>[5,6,7,8,10][upLv('pan')];
@@ -1393,8 +1396,14 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.9.4';
+const VERSION='0.9.8';
 const NEWS=[
+  {v:'0.9.8',fecha:'noviembre 2026',titulo:'¡Semana del cumple de Leandro!',items:[
+    ['🎂','Del 22 al 28/11 se festeja el cumple de Leandro: tortas con velitas, globos y banderines, y el "Feliz cumpleaños" en la cajita musical.'],
+    ['🥳','De temporada: gorrito de fiesta (150 🍓) y confeti de fiesta (150 🍓). Si los comprás, quedan para siempre.'],
+    ['💘','Esa semana, Leandro cuesta la mitad: 250 🍓.'],
+    ['🎁','El 25/11 Leandro le regala 100 🍓 a cada jugador al abrir el juego.'],
+  ]},
   {v:'0.9.7',fecha:'octubre 2026',titulo:'Pase de Halloween: más metros por día',items:[
     ['🎃','El Pase de Halloween suma hasta 5.000 m por día (antes 2.500), así se llega al vestido de Alicia antes de que termine Halloween, el 2/11.'],
   ]},
@@ -1566,6 +1575,7 @@ function vib(p){if(save.set.vib&&navigator.vibrate)try{navigator.vibrate(p)}catc
 if(!save.st.runs&&(save.best>0||save.total>0)) save.st.runs=1; // ya había jugado antes de los logros
 function persist(){save.mod=Date.now();try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}stored={total:save.total|0,spent:save.spent|0,mod:save.mod};cloudSoon()} // con cuenta de Google, también sube a la nube (ver ☁️ nube)
 if(!Array.isArray(save.owned)) save.owned=['sofi'];
+const needOf=c=>c.id==='leandro'&&seasonNow()&&seasonNow().id==='cumple'?Math.round(c.need/2):c.need; // Leandro a mitad de precio en la semana de su cumple
 const charUnlocked=c=>!c.need||save.owned.includes(c.id); // los personajes se compran con frutillas (500 cada uno)
 if(!Array.isArray(save.cosm)){ // 0.2 o antes: los outfits que ya tenía por frutillas juntadas se conservan
   save.cosm=['default','none'];
@@ -1902,6 +1912,29 @@ function heartPath(x,y,s){
   ctx.bezierCurveTo(x-s*.9,y-s*.25,x-s*.35,y-s*.95,x,y-s*.4);
   ctx.bezierCurveTo(x+s*.35,y-s*.95,x+s*.9,y-s*.25,x,y+s*.35);ctx.closePath();
 }
+// semana del cumple de Leandro: banderines arriba y globos que suben
+const GLOBOS=['#FF4D6D','#FFD93D','#60A5FA','#4ADE80','#B79CF7','#FF9EBB'];
+function drawCumple(){
+  ctx.save();ctx.beginPath();ctx.rect(0,0,VW,GROUND);ctx.clip();ctx.lineWidth=2;ctx.strokeStyle='#000';
+  const sx=nubesX*.5,f0=Math.floor(-sx/60); // banderines que corren con las nubes
+  ctx.beginPath();ctx.moveTo(0,8);ctx.lineTo(VW,8);ctx.stroke();
+  for(let j=f0-1;j*60+sx<VW+60;j++){const x=j*60+sx;ctx.fillStyle=GLOBOS[((j%6)+6)%6];ctx.beginPath();ctx.moveTo(x,8);ctx.lineTo(x+40,8);ctx.lineTo(x+20,34);ctx.closePath();ctx.fill();ctx.stroke()}
+  for(let i=0;i<6;i++){
+    const sp=.35+(i%3)*.12,x=((i*173+tick*.4)%(VW+80))-40+Math.sin(tick*.02+i)*12;
+    const y=GROUND*1.1-((tick*sp+i*97)%(GROUND*1.3));
+    ctx.strokeStyle='rgba(0,0,0,.5)';ctx.beginPath();ctx.moveTo(x,y+22);ctx.quadraticCurveTo(x+6,y+40,x,y+58);ctx.stroke();
+    ctx.globalAlpha=.85;ctx.fillStyle=GLOBOS[i];ctx.strokeStyle='#000';ctx.beginPath();ctx.ellipse(x,y,16,21,0,0,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.ellipse(x-6,y-8,4,6,-.4,0,7);ctx.fill();ctx.globalAlpha=1;
+  }
+  ctx.restore();
+}
+// velitas sobre las tortas en la semana del cumple (la torta es el dibujo de Sofía; las velas, código)
+function candles(x,y,w,h){
+  for(const f of [.3,.7]){const cx=x+w*f,cy=y+h*.36;
+    ctx.fillStyle=f<.5?'#60A5FA':'#FF9EBB';ctx.strokeStyle='#000';ctx.lineWidth=2;ctx.fillRect(cx-3,cy-h*.26,6,h*.26);ctx.strokeRect(cx-3,cy-h*.26,6,h*.26);
+    const fl=1+Math.sin(tick*.4+f*9)*.15;ctx.fillStyle='#FFB627';ctx.beginPath();ctx.ellipse(cx,cy-h*.26-7*fl,4,7*fl,0,0,7);ctx.fill();
+    ctx.fillStyle='#FFF0A0';ctx.beginPath();ctx.ellipse(cx,cy-h*.26-5,2,4,0,0,7);ctx.fill()}
+}
 function drawBG(){
   const hw=theme()==='halloween';
   ctx.fillStyle=hw?'#FFF1E4':'#FFF7FB';ctx.fillRect(0,0,VW,GROUND);
@@ -1921,6 +1954,7 @@ function drawBG(){
   for(let x=-off;x<VW;x+=44){ctx.beginPath();ctx.arc(x,GROUND+24,3,0,7);ctx.fill();ctx.beginPath();ctx.arc(x+22,GROUND+46,2.5,0,7);ctx.fill()}
   if(night>.01) drawNight(night);
   if(hw) drawHalloween();
+  if(theme()==='cumple') drawCumple();
 }
 /* ---------- Halloween ---------- */
 const BATS=Array.from({length:7},()=>({x:Math.random(),y:.08+Math.random()*.45,ph:Math.random()*7,s:.7+Math.random()*.6,v:.3+Math.random()*.5}));
@@ -2103,6 +2137,13 @@ function drawAcc(c,acc,w,h,t){
     c.moveTo(-cw/2,cy);c.lineTo(-cw/2,cy-18*k);c.lineTo(-cw/4,cy-8*k);c.lineTo(0,cy-24*k);c.lineTo(cw/4,cy-8*k);c.lineTo(cw/2,cy-18*k);c.lineTo(cw/2,cy);c.closePath();c.fill();c.stroke();
     c.fillStyle='#FF4D6D';for(const dx of[-cw/4,0,cw/4]){c.beginPath();c.arc(dx,cy-5*k,3*k,0,7);c.fill()}
   }
+  if(acc==='gorrito'){ // gorrito de cumpleaños (hecho con código)
+    const gw=w*.36,gy=-h+14*k,gx=w*.04;
+    c.fillStyle='#60A5FA';c.strokeStyle='#000';c.lineWidth=3*k;c.lineJoin='round';
+    c.beginPath();c.moveTo(gx-gw/2,gy);c.lineTo(gx,gy-gw*1.15);c.lineTo(gx+gw/2,gy);c.closePath();c.fill();c.stroke();
+    c.save();c.clip();c.fillStyle='#FFD93D';for(let i=1;i<4;i++){c.beginPath();c.arc(gx+(i%2?-1:1)*gw*.12,gy-gw*.27*i,4*k,0,7);c.fill()}c.restore();
+    c.fillStyle='#FF4D6D';c.beginPath();c.arc(gx,gy-gw*1.15,6*k,0,7);c.fill();c.stroke();
+  }
   if(acc==='bruja') witchHat(c,w*.02,-h+10*k,w*.62,k,t);
 }
 // sombrero de bruja: ala ancha, punta doblada y una cinta naranja (cosmético de Halloween)
@@ -2146,7 +2187,7 @@ function draw(){
   ctx.imageSmoothingQuality='high';
   drawBG();
   const ti=IMG.torta,fi=IMG.frutilla,pi=IMG.pancito;
-  const hw=theme()==='halloween';
+  const hw=theme()==='halloween',cu=theme()==='cumple';
   for(const o of obs){
     if(hw){ // Halloween: calabazas en vez de tortas (misma caja, así el juego no cambia)
       if(o.tower){ctx.drawImage(pumpkinCv(0),o.x+4,GROUND-o.h+4,o.w-8,(o.h+10)/2);ctx.drawImage(pumpkinCv(1),o.x,GROUND-(o.h+10)/2+4,o.w,(o.h+10)/2)}
@@ -2154,7 +2195,8 @@ function draw(){
       continue }
     if(!ok(ti)) continue;
     if(o.tower){ctx.drawImage(ti,o.x+4,GROUND-o.h+4,o.w-8,(o.h+10)/2);ctx.drawImage(ti,o.x,GROUND-(o.h+10)/2+4,o.w,(o.h+10)/2)} // torre: una torta arriba de otra
-    else ctx.drawImage(ti,o.x,GROUND-o.h+4,o.w,o.h); }
+    else ctx.drawImage(ti,o.x,GROUND-o.h+4,o.w,o.h);
+    if(cu){ if(o.tower) candles(o.x+4,GROUND-o.h+4,o.w-8,(o.h+10)/2); else candles(o.x,GROUND-o.h+4,o.w,o.h) } }
   for(const f of fru){
     const fy=f.mag?f.y:f.y+Math.sin(tick*.12+f.bob)*5;
     if(f.kind==='pan'){
@@ -2580,9 +2622,13 @@ function cancelCount(){clearTimeout(countTimer);counting=0;show('count',false);i
 function goOn(){state='playing';last=performance.now();acc=0;refreshMusic();fsSync();nextAchPop()}
 
 let toastT=0;
+// 25/11: Leandro regala 100 🍓 una vez por año (aunque los temas estén apagados)
+function bdayGift(){const d=new Date(),y=d.getFullYear();if(d.getMonth()!==10||d.getDate()!==25||(save.bday|0)>=y||simulating)return;
+  save.bday=y;save.total=(save.total|0)+100;persist();setTimeout(()=>toast('🎂 ¡Hoy cumple Leandro! Te regala 100 🍓'),400)}
 function toast(msg){const t=$('toast');t.textContent='💬 '+msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200)}
 
 function renderMenu(){
+  bdayGift();
   $('mTotal').textContent=pocket();$('shopPocket').textContent=pocket();$('mBest').textContent=save.best;passLine();
   $('setBtn').textContent=save.muted?'🔇':'⚙️';$('setBtn').title=save.muted?'Ajustes (sonido apagado)':'Ajustes';
   const wk=weekInfo();
@@ -2618,7 +2664,7 @@ function renderCarousel(){
     b.style.zIndex=10-a;b.tabIndex=a===0?-1:0;
     b.setAttribute('aria-label',a===0?c.name:`Ver a ${c.name}`);
     b.querySelectorAll('.lockTag,.selTag').forEach(x=>x.remove());
-    if(!un&&a===0) b.appendChild(el('span','lockTag',`🔒 ${c.need} 🍓`));
+    if(!un&&a===0) b.appendChild(el('span','lockTag',`🔒 ${needOf(c)} 🍓`));
     if(save.char===c.id&&a===0) b.appendChild(el('span','selTag','✓'));
     b.classList.toggle('pv',a===0);
     if(a===0) b.appendChild(prevCv);
@@ -2629,18 +2675,18 @@ function renderCarousel(){
   const abd=el('div','abDesc',c.ab.desc.charAt(0).toUpperCase()+c.ab.desc.slice(1));
   const act=el('div','carAct');
   if(!un){ // botón de compra con una barrita de cuánto te falta
-    const can=pocket()>=c.need,w=el('div','buyWrap');
-    const b=el('button','buyChar',(can?'🔓 ':'🔒 ')+c.need+' 🍓');b.disabled=!can;b.onclick=()=>buyChar(c.id);
-    b.setAttribute('aria-label',`Comprar a ${c.name} por ${c.need} frutillas`);
+    const can=pocket()>=needOf(c),w=el('div','buyWrap');
+    const b=el('button','buyChar',(can?'🔓 ':'🔒 ')+needOf(c)+' 🍓');b.disabled=!can;b.onclick=()=>buyChar(c.id);
+    b.setAttribute('aria-label',`Comprar a ${c.name} por ${needOf(c)} frutillas`);
     w.appendChild(b);
-    if(!can){const bar=el('div','buyBar');bar.title=`Tenés ${pocket()} de ${c.need} 🍓`;const f=el('i');f.style.width=Math.round(pocket()/c.need*100)+'%';bar.appendChild(f);w.appendChild(bar)}
+    if(!can){const bar=el('div','buyBar');bar.title=`Tenés ${pocket()} de ${needOf(c)} 🍓`;const f=el('i');f.style.width=Math.round(pocket()/needOf(c)*100)+'%';bar.appendChild(f);w.appendChild(bar)}
     act.appendChild(w);
   }
   box.append(el('div','carName',c.name),ab,abd,act);
 }
 function buyChar(id){
-  const c=CHARS.find(x=>x.id===id); if(!c||charUnlocked(c)||pocket()<c.need) return;
-  save.spent=(save.spent|0)+c.need;save.owned.push(id);save.char=id;
+  const c=CHARS.find(x=>x.id===id); if(!c||charUnlocked(c)||pocket()<needOf(c)) return;
+  save.spent=(save.spent|0)+needOf(c);save.owned.push(id);save.char=id;
   if(!save.seen.includes(id)) save.seen.push(id);
   persist();achCheck(false);renderMenu();
   unlockQueue.push({k:'char',...c,desc:c.ab.em+' '+c.ab.name+': '+c.ab.desc});nextUnlock();
@@ -2870,6 +2916,12 @@ const HW_MEL=['A4','','C5','','E5','','D#5','E5',  'F5','','E5','','C5','','A4',
               'E5','','A5','','C6','B5','A5','',   'F5','','A5','','C6','','A5','F5',
               'D5','','F5','E5','D5','','B4','G#4', 'A4','','E4','','A4','','',''];
 const HW_BASS=['A2','F2','D2','E2','A2','F2','D2','E2'];
+// semana del cumple: "Feliz cumpleaños" (melodía de dominio público) en la cajita
+const BDAY_MEL=['G4','G4','A4','','G4','','C5','',  'B4','','','','','','','',
+                'G4','G4','A4','','G4','','D5','',  'C5','','','','','','','',
+                'G4','G4','G5','','E5','','C5','',  'B4','','A4','','','','','',
+                'F5','F5','E5','','C5','','D5','',  'C5','','','','','','',''];
+const BDAY_BASS=['C3','G2','G2','C3','C3','F2','G2','C3'];
 let runMel=RUN_MEL,runBass=RUN_BASS,runSlow=1;
 let runT=0,runStep=0,runNext=0,runGain=null;
 function noteF(n){const m=n.match(/^([A-G])(#?)(\d)$/);const st={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]]+(m[2]?1:0);return 440*Math.pow(2,(st+12*(+m[3]+1)-69)/12)}
@@ -2885,7 +2937,7 @@ function schedRun(){
 }
 function startRunMusic(){
   stopRunMusic(); const a=ac(); if(!a) return;
-  const hw=theme()==='halloween';runMel=hw?HW_MEL:RUN_MEL;runBass=hw?HW_BASS:RUN_BASS;runSlow=hw?1.1:1;runStep=0;
+  const hw=theme()==='halloween';const cu=theme()==='cumple';runMel=hw?HW_MEL:cu?BDAY_MEL:RUN_MEL;runBass=hw?HW_BASS:cu?BDAY_BASS:RUN_BASS;runSlow=hw?1.1:cu?1.15:1;runStep=0;
   runGain=a.createGain();runGain.gain.setValueAtTime(0,a.currentTime);runGain.gain.linearRampToValueAtTime(.38*musicVol(),a.currentTime+.8);runGain.connect(a.destination);
   runNext=a.currentTime+.08; schedRun(); runT=setInterval(schedRun,80);
 }
@@ -3103,7 +3155,7 @@ function applyTheme(){
   const t=theme();
   document.body.dataset.season=t;
   const e=document.querySelector('.hero .eyebrow');
-  if(e) e.textContent=t==='halloween'?'🎃 Infinite Runner · Halloween 🦇':'Infinite Runner';
+  if(e) e.textContent=t==='halloween'?'🎃 Infinite Runner · Halloween 🦇':t==='cumple'?'🎂 Infinite Runner · ¡Cumple de Leandro! 🎈':'Infinite Runner';
   viewAcc=null;viewTrail=null;
   if(!$('menu').hidden) renderMenu();
 }
@@ -3198,7 +3250,7 @@ function mergeSave(L,C){
   const o=clean(L),newer=(C.mod||0)>(L.mod||0),mx=(a,b)=>Math.max(+a||0,+b||0);
   const uni=(a,b)=>[...new Set([...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])])];
   const maxMap=(a,b)=>{const r=Object.assign({},a||{});for(const k in b||{}) r[k]=mx(r[k],b[k]);return r};
-  for(const k of ['total','spent','best','mig07']) o[k]=mx(L[k],C[k]);
+  for(const k of ['total','spent','best','mig07','bday']) o[k]=mx(L[k],C[k]);
   for(const k of ['owned','cosm','seen','dinaLooks']) o[k]=uni(L[k],C[k]);
   o.up=maxMap(L.up,C.up);o.wins=uni(L.wins,C.wins);
   o.ach=Object.assign({},C.ach||{},L.ach||{});for(const k in C.ach||{}) if(L.ach&&L.ach[k]&&C.ach[k]) o.ach[k]=Math.min(L.ach[k],C.ach[k]);

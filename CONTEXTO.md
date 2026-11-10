@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 30/10/2026 · versión 0.9.7
+Última actualización: 10/11/2026 · versión 0.9.8
 
 ## Qué es
 
@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v15`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v16`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v15)
+sw.js             copia sin conexión (caché sofi-runner-v16)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -119,6 +119,8 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 ### Temas de temporada
 - **Halloween** (15/10 al 2/11): fondo violeta y naranja, murciélagos, calabazas en el piso, luna llena naranja de noche, **calabazas en vez de tortas** (Sofía no quería sombreros sobre las tortas; misma caja de choque, así que la dificultad no cambia; la mitad de las segundas y terceras de un grupo van sin carita), **pociones en vez de Kampitos** (verde imán, violeta x2, naranja escudo; `HW_POTION`), **golosinas en vez de pancitos** que rotan (`HW_CANDY`), Dina comiendo una calabaza en la pantalla final con textos de Halloween ("miau… ¡la calabaza era mía!"; fuera de Halloween, los originales), colores de la página en naranja y violeta, y sus dos cosméticos.
 - **Textos de Halloween (0.9.5):** lo que nombra tortas, pancitos o Kampitos tiene su versión en el campo `hw` (dulces en `DULCES`, desafíos en `RETOS`) y se muestra con `hwV()` solo con el tema prendido; los nombres de siempre no cambian. La ayuda usa `HELP_TXT`/`helpTheme()`, ¡Una más! cambia el botón en `offerContinue()` y las migas del escudo salen de `crumbC()`. Quedan como siempre (a propósito) los logros, las estadísticas y las novedades viejas, porque se juntan en todo el año. Al agregar otro tema: sumar su variante o generalizar `hwV`.
+- **Cumple de Leandro (0.9.8, 22 al 28/11; Leandro cumple el 25):** velitas sobre las tortas (`candles()`, código sobre el dibujo de Sofía), globos y banderines (`drawCumple()`), "Feliz cumpleaños" en la cajita (`BDAY_MEL`, dominio público), gorrito de fiesta y confeti de fiesta (150 🍓 cada uno, `season:'cumple'`), Leandro a mitad de precio (`needOf()`). El 25/11 `bdayGift()` regala 100 🍓 una vez por año (`save.bday`, se junta con el máximo en la nube; va aunque los temas estén apagados). Sin pase ni textos propios. Si Sofía dibuja un gorrito, reemplaza al de código.
+- `VERSION` (la que se ve en Ajustes y dispara el aviso de novedades) había quedado en 0.9.4; desde la 0.9.8 se sube con cada versión.
 - Se activan solos por fecha y se pueden apagar en ⚙️ *Temas de temporada*.
 - Para agregar uno: sumar a `SEASONS` (id, nombre, fechas), dibujarlo en `drawBG` y marcar sus cosméticos con `season`.
 
@@ -161,6 +163,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.9.5 | Halloween sin "tortas", "pancitos" ni "Kampitos" sueltos: dulces, desafío, ayuda, ¡Una más! y migas del escudo |
 | 0.9.6 | Más cómodo: ⛶ siempre en la esquina, pausa con Ajustes/Ayuda/Terminar, ¡Te alcanzó! con botones parejos, botones con nombre y logros que no tapan |
 | 0.9.7 | Pase de Halloween: tope diario de 2.500 a 5.000 m, para llegar a Alicia antes del 2/11 |
+| 0.9.8 | Semana del cumple de Leandro (22 al 28/11) |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 
@@ -235,7 +238,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 1. **Dibujo de la calabaza de Sofía:** cuando llegue, guardarlo en `assets/calabaza.webp`, sumarlo a `IMG_FILES` y a `sw.js`, y usarlo en `pumpkinCv()`.
 2. Probarlo con amigos y ajustar precios y dificultad con lo que digan.
 3. Dulces que se desbloquean con frutillas en la Pastelería.
-4. Más temas de temporada (Navidad, verano, Pascua) y zonas nuevas, idealmente con fondos dibujados por Sofía.
+4. Más temas de temporada (Navidad del 1/12 al 6/1 con su pase, verano, Pascua) y zonas nuevas, idealmente con fondos dibujados por Sofía.
 5. Un mosaico de fondo nuevo de Sofía para reemplazar el de letras que se quitó.
 6. Desafío semanal "sin mejoras" para que sea parejo. Si aparecen récords falsos: validar en el servidor (Cloud Functions, que necesita plan de pago) o un botón para que Leandro borre filas.
 7. Play Store: envolver el HTML con Capacitor o TWA.

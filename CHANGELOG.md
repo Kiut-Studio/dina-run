@@ -1,5 +1,13 @@
 # Novedades de Dina Run
 
+## Versión 0.9.8 — noviembre 2026: semana del cumple de Leandro
+
+- 🎂 Tema nuevo **Cumple de Leandro** (22 al 28/11): velitas sobre las tortas de Sofía, globos que suben y banderines arriba, y el "Feliz cumpleaños" (dominio público) en la cajita musical. Se apaga con *Temas de temporada*.
+- 🥳 Cosméticos de temporada: gorrito de fiesta (150 🍓) y confeti de fiesta (150 🍓), hechos con código.
+- 💘 Leandro a mitad de precio esa semana (250 🍓).
+- 🎁 El 25/11, 100 🍓 de regalo al abrir el juego, una vez por año.
+- La versión que se muestra (y el aviso de novedades) pasa de 0.9.4, que había quedado sin subir, a 0.9.8.
+
 ## Versión 0.9.7 — octubre 2026: pase de Halloween con más metros por día
 
 - 🎃 El tope diario del Pase de Halloween sube de 2.500 a 5.000 m. Con 2.500 no se llegaba a tiempo: el 30/10 quedaban 4 días de Halloween y como mucho se juntaban 10.000 m, y el vestido de Alicia pide 16.000. Con 5.000, el pase completo se hace en 4 días.
