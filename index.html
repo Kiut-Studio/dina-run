@@ -1038,6 +1038,7 @@ body.calm .goCard,body.calm #unlock .box,body.calm .dinaRow .dinaImg,body.calm #
         <div class="goR">
         <div class="chipRow">
           <span class="chip sun" id="recBadge" hidden>⭐ ¡Récord!</span>
+          <span class="chip pink" id="giftLine" hidden title="Regalo de la primera partida del día; si volvés mañana, es más"></span>
           <span class="chip" id="rankLine" hidden title="Tu puesto en el ranking"></span>
           <span class="chip cream" id="retoLine" title="Desafío de la semana"></span>
           <span class="chip pink" id="dulLine" hidden title="Dulces de esta partida"></span>
@@ -1396,8 +1397,12 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.9.8';
+const VERSION='0.9.9';
 const NEWS=[
+  {v:'0.9.9',fecha:'noviembre 2026',titulo:'Más frutillas para todos',items:[
+    ['🛍️','Los personajes salen más baratos al principio: el primero que comprás cuesta 200 🍓, el segundo 300, el tercero 400 y el último 500.'],
+    ['🎁','Regalo del día: la primera partida de cada día suma frutillas extra. Si volvés días seguidos, el regalo crece: 20, 30, 40… hasta 70 🍓.'],
+  ]},
   {v:'0.9.8',fecha:'noviembre 2026',titulo:'¡Semana del cumple de Leandro!',items:[
     ['🎂','Del 22 al 28/11 se festeja el cumple de Leandro: tortas con velitas, globos y banderines, y el "Feliz cumpleaños" en la cajita musical.'],
     ['🥳','De temporada: gorrito de fiesta (150 🍓) y confeti de fiesta (150 🍓). Si los comprás, quedan para siempre.'],
@@ -1575,8 +1580,10 @@ function vib(p){if(save.set.vib&&navigator.vibrate)try{navigator.vibrate(p)}catc
 if(!save.st.runs&&(save.best>0||save.total>0)) save.st.runs=1; // ya había jugado antes de los logros
 function persist(){save.mod=Date.now();try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}stored={total:save.total|0,spent:save.spent|0,mod:save.mod};cloudSoon()} // con cuenta de Google, también sube a la nube (ver ☁️ nube)
 if(!Array.isArray(save.owned)) save.owned=['sofi'];
-const needOf=c=>c.id==='leandro'&&(seasonOf()||{}).id==='cumple'?Math.round(c.need/2):c.need; // Leandro a mitad de precio en la semana de su cumple
-const charUnlocked=c=>!c.need||save.owned.includes(c.id); // los personajes se compran con frutillas (500 cada uno)
+const CHAR_LADDER=[200,300,400,500]; // el primer personaje que comprás cuesta 200, el segundo 300… (antes todos 500)
+const needOf=c=>{if(!c.need)return 0;const n=Math.max(0,save.owned.filter(id=>id!=='sofi').length),p=CHAR_LADDER[Math.min(n,CHAR_LADDER.length-1)];
+  return c.id==='leandro'&&(seasonOf()||{}).id==='cumple'?Math.round(p/2):p}; // Leandro a mitad de precio en la semana de su cumple
+const charUnlocked=c=>!c.need||save.owned.includes(c.id); // los personajes se compran con frutillas (200, 300, 400 y 500: ver CHAR_LADDER)
 if(!Array.isArray(save.cosm)){ // 0.2 o antes: los outfits que ya tenía por frutillas juntadas se conservan
   save.cosm=['default','none'];
   for(const [id,need] of [['hoodie',20],['corazon',45],['corona',90]]) if(save.total>=need&&save.total>0) save.cosm.push(id);
@@ -2443,11 +2450,22 @@ function die(){
   tipHide();state='dying';sHit();P.vy=-9;P.rot=0;dieT=0;pow.type='';pow.t=0;show('hDina',false);show('hPow',false);refreshMusic();
   vib([30,40,60]);
 }
+// regalo diario: la primera partida de cada día suma frutillas extra; si volvés días seguidos, sube (20, 30… hasta 70)
+const DAILY_MIN=20,DAILY_STEP=10,DAILY_MAX=70;
+function dailyGift(){
+  if(simulating) return 0;
+  const hoy=dayKey(),ayer=dayKey(new Date(Date.now()-864e5)),d=save.daily||{};
+  if(d.day===hoy) return 0;
+  const racha=d.day===ayer?(d.racha|0)+1:1,n=Math.min(DAILY_MAX,DAILY_MIN+DAILY_STEP*(racha-1));
+  save.daily={day:hoy,racha};save.total+=n;
+  return n;
+}
 function gameOver(){
   state='over';show('hud',false);
   const m=Math.floor(dist);
   const before=save.total;
   save.total+=got;
+  const gift=dailyGift(); // regalo de la primera partida del día
   const rec=m>save.best; if(rec) save.best=m;
   // estadísticas para los logros
   const S=save.st;
@@ -2464,7 +2482,7 @@ function gameOver(){
   const dl=DULCES.filter(d=>dn(d.id)).map(d=>d.em+(dn(d.id)>1?'×'+dn(d.id):''));
   $('dulLine').textContent=dl.join(' ');show('dulLine',dl.length>0);
   overShop();
-  show('recBadge',rec);
+  show('recBadge',rec);$('giftLine').textContent=gift?`🎁 Regalo del día +${gift} 🍓`+(save.daily.racha>1?` · ${save.daily.racha} días seguidos`:''):'';show('giftLine',!!gift);
   // a veces Dina también se come el pancito
   const panDina=R.pans>0?Math.random()<.6:Math.random()<.15;
   show('dinaPan',panDina);halloweenOver(theme()==='halloween');
@@ -3255,6 +3273,7 @@ function mergeSave(L,C){
   o.up=maxMap(L.up,C.up);o.wins=uni(L.wins,C.wins);
   o.ach=Object.assign({},C.ach||{},L.ach||{});for(const k in C.ach||{}) if(L.ach&&L.ach[k]&&C.ach[k]) o.ach[k]=Math.min(L.ach[k],C.ach[k]);
   o.tips=Object.assign({},C.tips||{},L.tips||{});
+  { const a=L.daily||{},b=C.daily||{}; o.daily=(b.day&&(!a.day||(+new Date(b.day.replace(/-/g,'/'))>+new Date(a.day.replace(/-/g,'/'))))?b:a)||{} } // el regalo diario más reciente
   o.st=Object.assign({},L.st||{});
   for(const k in C.st||{}){const a=o.st[k],b=C.st[k];o.st[k]=Array.isArray(a)||Array.isArray(b)?uni(a,b):mx(a,b)}
   const pL=L.pass,pC=C.pass; // pase: por año; metros el máximo, premios reclamados juntados

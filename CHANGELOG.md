@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.9.9 — noviembre 2026: más frutillas para todos
+
+- 🛍️ **Personajes en escalera:** el primero que comprás cuesta 200 🍓, después 300, 400 y 500 (antes todos 500). En total 1.400 en vez de 2.000. Leandro sigue a mitad del precio que toque en la semana de su cumple.
+- 🎁 **Regalo del día:** la primera partida de cada día suma 20 🍓, y si volvés días seguidos sube de a 10 hasta 70. Se ve en "¡Uy! Te caíste" como "🎁 Regalo del día +20 🍓". Si se saltea un día, vuelve a 20.
+
 ## Versión 0.9.8 — noviembre 2026: semana del cumple de Leandro
 
 - 🎂 Tema nuevo **Cumple de Leandro** (22 al 28/11): velitas sobre las tortas de Sofía, globos que suben y banderines arriba, y el "Feliz cumpleaños" (dominio público) en la cajita musical. Se apaga con *Temas de temporada*.

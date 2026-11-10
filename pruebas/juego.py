@@ -51,6 +51,7 @@ try:
     pg.click('#passBanner',force=True);pg.wait_for_timeout(200)
     check(pg.locator('#passGrid .passItem').count()==8 and pg.is_visible('#pass'),'la pantalla del pase muestra 8 niveles')
     pg.screenshot(path=f'{OUT}/07_pase.png');pg.click('#passBack')
+    pg.evaluate("TR.save.daily={day:new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate(),racha:1}") # sin regalo diario, para que las cuentas den justas
     pg.click('#playBtn');pg.wait_for_timeout(250);pg.evaluate('TR.hold()');pg.evaluate('TR.setNextCard(1e9)')
     pg.evaluate('TR.setDist(1200)');pg.evaluate('TR.die()');pg.wait_for_timeout(1800)
     sv=pg.evaluate('TR.save')

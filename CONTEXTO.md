@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en cualquier conversación. Resume qué es el juego, cómo está hecho, qué se decidió y por qué, y qué sigue. Actualizarlo con cada versión.
 
-Última actualización: 10/11/2026 · versión 0.9.8
+Última actualización: 10/11/2026 · versión 0.9.9
 
 ## Qué es
 
@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v17`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v18`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -58,7 +58,10 @@ README.md, CHANGELOG.md, LICENSE (MIT solo para el código; dibujos © Sofía), 
 ### Frutillas
 - Dos números que solo suben: `total` (todo lo juntado) y `spent` (lo gastado). Para gastar = total − spent.
 
-### Personajes (500 🍓 cada uno, Sofi gratis) y habilidades
+### Personajes (en escalera: 200, 300, 400 y 500 🍓 según cuántos tengas; Sofi gratis) y habilidades
+
+- **Por qué la escalera (0.9.9):** una jugadora novata junta unas 36 🍓 por partida (simulación) y a Cinthia se le hizo imposible juntar 500. `CHAR_LADDER` y `needOf()`.
+- **Regalo del día (0.9.9):** `dailyGift()` en `gameOver()`: la primera partida del día suma 20 🍓, +10 por cada día seguido, tope 70 (`DAILY_MIN/STEP/MAX`). Se guarda en `save.daily` {day, racha}; en la nube gana el día más reciente. Las pruebas del pase lo apagan para que las cuentas den justas.
 Ninguna habilidad cambia la velocidad, para que los récords se comparen parejo.
 
 | Personaje | Habilidad |
@@ -165,6 +168,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 | 0.9.6 | Más cómodo: ⛶ siempre en la esquina, pausa con Ajustes/Ayuda/Terminar, ¡Te alcanzó! con botones parejos, botones con nombre y logros que no tapan |
 | 0.9.7 | Pase de Halloween: tope diario de 2.500 a 5.000 m, para llegar a Alicia antes del 2/11 |
 | 0.9.8 | Semana del cumple de Leandro (22 al 28/11) |
+| 0.9.9 | Personajes en escalera (200 a 500) y regalo del día con racha |
 
 - **Instalación (0.7.3 / 0.8.4):** el `id` del manifest es una ruta absoluta (`/dina-run/`, `/dina-beat/`). Antes era `./?app=…`: Leandro vio en Android "No se puede instalar esta app" con Dina Run. La sospecha es que el `id` viejo seguía ligado a la instalación de Sofi Runner (misma cadena `?app=sofi-runner`) o que Chrome lo resolvía distinto; con la ruta absoluta no hay ambigüedad. Íconos separados en `any` y `maskable`. En Chromium de escritorio el juego daba "instalable" igual. Si vuelve a pasar: desinstalar los íconos viejos (Sofi Runner) y probar con ⋮ → Agregar a pantalla principal. **No** borrar los datos del sitio en Chrome: borraría las frutillas de todos los juegos.
 
@@ -261,7 +265,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 
 1. **Dibujo de la calabaza de Sofía:** cuando llegue, guardarlo en `assets/calabaza.webp`, sumarlo a `IMG_FILES` y a `sw.js`, y usarlo en `pumpkinCv()`.
 2. Probarlo con amigos y ajustar precios y dificultad con lo que digan.
-3. Dulces que se desbloquean con frutillas en la Pastelería.
+3. **Cosas para los que juntan muchas frutillas** (Leandro: "los que juntan muchas ya no tienen motivos para jugar"): dulces que se desbloquean en la Pastelería, mejoras con más niveles, cosméticos caros, logros nuevos.
 4. Más temas de temporada (Navidad del 1/12 al 6/1 con su pase, verano, Pascua) y zonas nuevas, idealmente con fondos dibujados por Sofía.
 5. Un mosaico de fondo nuevo de Sofía para reemplazar el de letras que se quitó.
 6. Desafío semanal "sin mejoras" para que sea parejo. Si aparecen récords falsos: validar en el servidor (Cloud Functions, que necesita plan de pago) o un botón para que Leandro borre filas.
