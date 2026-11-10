@@ -19,6 +19,8 @@ PERFILES = {
     'experta': dict(sd=1.8, miss=.002),
     'experta + todo': dict(sd=1.8, miss=.002, char='cinthia', pay=True,
                             up={'iman': 4, 'escudo': 4, 'pan': 4, 'dina': 4}),
+    'experta + dorado': dict(sd=1.8, miss=.002, char='cinthia', pay=True,
+                            up={'iman': 7, 'escudo': 7, 'pan': 7, 'dina': 7}),
 }
 
 def pct(v, p):

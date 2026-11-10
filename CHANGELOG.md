@@ -1,5 +1,11 @@
 # Novedades de Dina Run
 
+## Versión 0.10 — noviembre 2026: estrellas doradas y desafío parejo
+
+- ⭐ **Estrellas doradas:** cada mejora suma 3 niveles después del 4 (600, 1.000 y 1.500 🍓; 3.100 por mejora, 12.400 las cuatro). Imán 13,5 / 15 / 16,5 s y más alcance; escudo 16 / 18 / 20 s y 3 choques; pancito 11 / 12 / 14 🍓; Dina se cansa a los 4,5 / 4 / 3,5 s. Simulación: una experta con todo dorado corre parecido a una con todo al nivel 4 (mediana 15.254 m contra 18.561), así que no se vuelve fácil.
+- 🎯 **Desafío sin mejoras:** el desafío de la semana se juega aparte, desde el menú o el ranking, sin mejoras (los personajes y los dulces sí cuentan). Las partidas comunes ya no suman al desafío. Esta semana quedan los puntajes que ya estaban; desde el lunes 16/11 es todo parejo.
+- 🌟 Logro nuevo **Pastelera dorada** (una mejora con las 3 estrellas). *Maestra pastelera* ahora pide el nivel 4.
+
 ## Versión 0.9.9 — noviembre 2026: más frutillas para todos
 
 - 🛍️ **Personajes en escalera:** el primero que comprás cuesta 200 🍓, después 300, 400 y 500 (antes todos 500). En total 1.400 en vez de 2.000. Leandro sigue a mitad del precio que toque en la semana de su cumple.

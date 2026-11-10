@@ -664,6 +664,7 @@ body.calm .carItem.pv img{visibility:visible}
 .iconBtn .badge{position:absolute;top:-10px;right:-12px;background:var(--white);border:2px solid var(--ink);border-radius:999px;padding:0 6px;font-size:11px;line-height:1.4;white-space:nowrap;font-variant-numeric:tabular-nums}
 .iconBtn.canBuy .badge{background:var(--sun)}
 .againBtn{font-size:22px;padding:10px 34px}
+.retoGo{display:block;margin:8px auto 2px;font-size:18px;padding:8px 22px}
 #stage:not(.tall) #overCard .goTitle{font-size:40px}
 #stage.low:not(.tall) #overCard .goTitle{font-size:34px}
 #stage.low:not(.tall) .bs b{font-size:24px}
@@ -773,6 +774,9 @@ body.calm .dulce{animation:none}
 .upg .lv{display:flex;gap:4px;margin-top:4px}
 .upg .lv i{width:16px;height:9px;border:2px solid var(--ink);border-radius:999px;background:var(--white)}
 .upg .lv i.on{background:var(--red)}
+.upg .lv i.gold{width:13px;height:13px;border-radius:3px;clip-path:polygon(50% 0,63% 35%,100% 38%,71% 60%,80% 100%,50% 78%,20% 100%,29% 60%,0 38%,37% 35%);border:0;background:#C9C2B8}
+.upg .lv i.gold.on{background:#FFB627}
+.upg.golden{box-shadow:inset 0 0 0 2px #FFD93D}
 .upg .buy{border:3px solid var(--ink);border-radius:999px;background:var(--sun);padding:5px 12px;font-size:15px;white-space:nowrap;box-shadow:3px 3px 0 var(--ink);font-variant-numeric:tabular-nums}
 .upg .buy:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
 .upg .buy:disabled{background:var(--white);opacity:.55;cursor:default;box-shadow:none}
@@ -1329,16 +1333,17 @@ function outfitImg(charId,accId){const a=ACCS.find(o=>o.id===accId);return a&&a.
 const PAN_BASE=5;
 
 /* Pastelería: mejoras permanentes, de 4 niveles cada una, que se pagan con las frutillas del bolsillo */
-const UP_COST=[50,120,220,350];
+const UP_COST=[50,120,220,350,600,1000,1500]; // 4 niveles comunes y 3 estrellas doradas (0.10)
+const UP_GOLD=4; // desde este nivel, las estrellas doradas
 const UPGRADES=[
   {id:'iman',  em:'🧲',name:'Imán más largo',     desc:'El Kampito Green dura más',
-   fx:n=>`${6+1.5*n} s`.replace('.',',')},
-  {id:'escudo',em:'🛡️',name:'Escudo reforzado',   desc:'El Kampito Citrus dura más y, al final, aguanta 2 choques',
-   fx:n=>`${8+2*Math.min(n,3)} s`+(n>=4?' · 2 choques':'')},
+   fx:n=>`${6+1.5*n} s`.replace('.',',')+(n>=7?' · más alcance':'')},
+  {id:'escudo',em:'🛡️',name:'Escudo reforzado',   desc:'El Kampito Citrus dura más; en el nivel 4 aguanta 2 choques y con la tercera estrella, 3',
+   fx:n=>`${8+2*escLv(n)} s`+(n>=7?' · 3 choques':n===4?' · 2 choques':'')},
   {id:'pan',   em:'🥪',name:'Pancito más rico',   desc:'Cada pancito vale más frutillas',
-   fx:n=>`${[5,6,7,8,10][n]} 🍓`},
+   fx:n=>`${PAN_V[n]} 🍓`},
   {id:'dina',  em:'🐱',name:'Dina se cansa antes',desc:'Después de un tropezón, escapás más rápido',
-   fx:n=>`${9-n} s`},
+   fx:n=>`${calmS(n)} s`.replace('.',',')},
 ];
 const UP_MAX=UP_COST.length;
 
@@ -1375,7 +1380,7 @@ const jump2V=()=>isChar('deisy')?-15:JUMP2;
 const gravNow=()=>GRAV*(dn('globo')?.86:1);
 const kampMul=()=>(isChar('nora')?.7:1)*(dn('kampmas')?.5:1);  // Nora: más Kampitos
 function magR(){                                              // radio del imán (Leandro y el Imancito)
-  if(pow.type==='iman') return 300;
+  if(pow.type==='iman') return upFx('iman')>=7?380:300;
   let r=isChar('leandro')?130:0;
   if(dn('imancito')) r+=(r?60:130)+(dn('imancito')-1)*50;
   return Math.min(250,r);
@@ -1385,9 +1390,14 @@ const CHAR_PRICE=500;
 const cheapest=()=>Math.min(...UPGRADES.filter(u=>upLv(u.id)<UP_MAX).map(u=>UP_COST[upLv(u.id)]),...CHARS.filter(c=>!charUnlocked(c)).map(c=>needOf(c)),...[...ACCS,...TRAILS].filter(o=>!o.pass&&!cosmOwned(o.id)&&cosmVisible(o)).map(o=>o.price),1e9);
 const canBuyAny=()=>pocket()>=cheapest();
 const upLv=id=>Math.min(UP_MAX,(save.up&&save.up[id])|0);
-const panValue=()=>[5,6,7,8,10][upLv('pan')];
-const dinaCalm=()=>(9-upLv('dina'))*60;          // en cuadros (60 por segundo)
-const powDur=t=>Math.round((t==='iman'?360+90*upLv('iman'):t==='escudo'?480+120*Math.min(upLv('escudo'),3):POWERS[t].dur)*(1+.5*dn('kamplong')));
+let retoMode=false; // partida del desafío de la semana: se juega sin mejoras, así es parejo para todos
+const upFx=id=>retoMode?0:upLv(id); // el nivel que cuenta en la partida
+const PAN_V=[5,6,7,8,10,11,12,14];
+const escLv=n=>n<=UP_GOLD?Math.min(n,3):3+(n-UP_GOLD);      // escudo: 8 s +2 por nivel (el 4.º da 2 choques en vez de tiempo)
+const calmS=n=>n<=UP_GOLD?9-n:5-.5*(n-UP_GOLD);              // Dina: 9 s −1 por nivel, y −0,5 por estrella
+const panValue=()=>PAN_V[upFx('pan')];
+const dinaCalm=()=>Math.round(calmS(upFx('dina'))*60);          // en cuadros (60 por segundo)
+const powDur=t=>Math.round((t==='iman'?360+90*upFx('iman'):t==='escudo'?480+120*escLv(upFx('escudo')):POWERS[t].dur)*(1+.5*dn('kamplong')));
 const pocket=()=>Math.max(0,save.total-(save.spent|0)); // frutillas para gastar: todo lo juntado menos lo gastado
 const contCost=()=>Math.min(100,25+5*Math.floor(dist/100)); // ¡Una más!: más cara cuanto más lejos llegaste
 const POWERS={
@@ -1397,8 +1407,13 @@ const POWERS={
 };
 
 /* novedades: cada versión que ven los jugadores, la más nueva primero */
-const VERSION='0.9.9';
+const VERSION='0.10';
 const NEWS=[
+  {v:'0.10',fecha:'noviembre 2026',titulo:'Estrellas doradas y desafío parejo',items:[
+    ['⭐','Estrellas doradas en la Pastelería: cuando una mejora llega al nivel 4, aparecen 3 estrellas más (600, 1.000 y 1.500 🍓). La tercera trae un premio especial: el imán atrae desde más lejos y el escudo aguanta 3 choques.'],
+    ['🎯','El desafío de la semana ahora se juega sin mejoras, así es parejo para todos. Tocá el desafío en el menú (o el botón en el ranking 🏆) para jugarlo. Las partidas comunes siguen con tus mejoras.'],
+    ['🌟','Logro nuevo: Pastelera dorada.'],
+  ]},
   {v:'0.9.9',fecha:'noviembre 2026',titulo:'Más frutillas para todos',items:[
     ['🛍️','Los personajes salen más baratos al principio: el primero que comprás cuesta 200 🍓, el segundo 300, el tercero 400 y el último 500.'],
     ['🎁','Regalo del día: la primera partida de cada día suma frutillas extra. Si volvés días seguidos, el regalo crece: 20, 30, 40… hasta 70 🍓.'],
@@ -1528,7 +1543,8 @@ const ACH=[
   {id:'cuatro',  em:'👯',name:'Todo el equipo',       desc:'Jugá con los 5 personajes'},
   {id:'familia', em:'🔓',name:'Equipo completo',      desc:'Comprá a todos los personajes'},
   {id:'repostera',em:'🧁',name:'Repostera',           desc:'Comprá tu primera mejora en la Pastelería'},
-  {id:'maestra', em:'👩‍🍳',name:'Maestra pastelera',   desc:'Llevá una mejora al nivel máximo'},
+  {id:'maestra', em:'👩‍🍳',name:'Maestra pastelera',   desc:'Llevá una mejora al nivel 4'},
+  {id:'dorada',  em:'🌟',name:'Pastelera dorada',    desc:'Llevá una mejora a la tercera estrella dorada'},
   {id:'unamas',  em:'💪',name:'¡Una más!',            desc:'Seguí corriendo después de que Dina te alcance'},
   {id:'golosa',  em:'🍬',name:'Golosa',               desc:'Elegí 3 dulces en una sola partida'},
   {id:'casi',    em:'😅',name:'¡Casi!',               desc:'Escapate de Dina: que se canse después de un tropezón'},
@@ -1778,7 +1794,7 @@ function spawnChunk(){
   }
 }
 function setPower(type,free){
-  const p=POWERS[type],d=powDur(type);pow={type,t:d,max:d,hits:type==='escudo'&&upLv('escudo')>=UP_MAX?2:1};
+  const p=POWERS[type],d=powDur(type);pow={type,t:d,max:d,hits:type==='escudo'?(upFx('escudo')>=7?3:upFx('escudo')>=UP_GOLD?2:1):1};
   if(!free&&!R.powers.includes(type)) R.powers.push(type); // los gratis (Cinthia, dulce) no cuentan como Kampito
   if(type==='escudo'&&dina.stage){R.scared++;dinaAway('¡Fuera, Dina! 🛡️');}
   $('hPowEm').textContent=p.em+(pow.hits>1?'×2':'');show('hPow',true);
@@ -2369,10 +2385,11 @@ function renderShop(bought){
   for(const u of UPGRADES){
     const n=upLv(u.id),max=n>=UP_MAX,cost=UP_COST[n];
     const d=el('div','upg'+(max?' max':'')+(bought===u.id?' bought':''));
-    const lv=el('div','lv');for(let i=0;i<UP_MAX;i++)lv.appendChild(el('i',i<n?'on':''));
+    const lv=el('div','lv');for(let i=0;i<(n>=UP_GOLD?UP_MAX:UP_GOLD);i++)lv.appendChild(el('i',(i>=UP_GOLD?'gold ':'')+(i<n?'on':''))); // las estrellas doradas aparecen al llegar al nivel 4
+    if(n>=UP_GOLD) d.classList.add('golden');
     const mid=el('div');
     d.title=u.desc;
-    mid.append(el('div','t',u.name),el('span','fx'+(max?' maxTag':''),max?`${u.fx(n)} · MÁX`:`${u.fx(n)} → ${u.fx(n+1)}`),lv);
+    mid.append(el('div','t',u.name+(n>=UP_GOLD&&!max?' ⭐':'')),el('span','fx'+(max?' maxTag':''),max?`${u.fx(n)} · MÁX`:`${u.fx(n)} → ${u.fx(n+1)}`),lv);
     const b=el('button','buy'+(max?' done':''),max?'⭐':`${cost} 🍓`);
     b.disabled=max||pocket()<cost;
     b.setAttribute('aria-label',max?u.name+': al máximo':`Mejorar ${u.name} por ${cost} frutillas`);
@@ -2439,6 +2456,7 @@ function start(){
   reset();PR=null;state='playing';hudCache='';powCache=-1;achThisRun=0;achRunNames.length=0;achQueue.length=0;hud();tipHide();
   if(!save.tips.practica) practiceStart(); // primera partida: carrera de práctica
   show('cards',false);show('toast',false);dulHud();
+  if(retoMode) setTimeout(()=>toast('🎯 Desafío de la semana: sin mejoras, todos parejos'),300);
   show('menu',false);show('over',false);show('pause',false);show('rank',false);show('ach',false);show('pass',false);show('news',false);show('shop',false);show('offer',false);show('help',false);show('settings',false);show('hPow',false);show('hDina',false);show('hud',true);
   if(isChar('cinthia')) R.hearts=1; // Cinthia: fiestera, arranca con un corazón
   heartHud();
@@ -2505,9 +2523,10 @@ function gameOver(){
   tapWait('over',600);overT0=performance.now();show('over',true);showUpd();
   const run={metros:m,frutillas:got,pans:R.pans,kamps:R.kamps,tortas:R.tortas,sinKamp:R.sinKamp===null?m:R.sinKamp};
   const wk=weekInfo();
-  const val=wk.reto.val(run)|0;
+  const val=retoMode?wk.reto.val(run)|0:0; // solo cuentan las partidas del desafío (sin mejoras)
   const wbest=Math.max(val,wkBest());
-  $('retoLine').textContent=`🎯 Desafío de la semana: ${val} ${wk.reto.unit}`;$('retoLine').title=`Desafío de la semana (${wk.reto.name.toLowerCase()}): ${val} ${wk.reto.unit}`+`. Tu mejor de la semana: ${wbest} ${wk.reto.unit}`;
+  if(!retoMode){$('retoLine').textContent='🎯 Desafío: jugalo desde 🏆 (sin mejoras)';$('retoLine').title=`El desafío de la semana (${wk.reto.name.toLowerCase()}) se juega sin mejoras, para que sea parejo. Entrá desde el ranking 🏆 o tocando el desafío en el menú.`}
+  else{$('retoLine').textContent=`🎯 Desafío de la semana: ${val} ${wk.reto.unit}`;$('retoLine').title=`Desafío de la semana (${wk.reto.name.toLowerCase()}): ${val} ${wk.reto.unit}`+`. Tu mejor de la semana: ${wbest} ${wk.reto.unit}`}
   rankAfterRun({metros:m,frutillas:got,personaje:save.char,logros:nAch,semana:wk.key,reto:wk.reto.id,valor:val});
   // pase de Halloween: suma los metros y avisa si hay premios para reclamar (no se dan solos: se reclaman en el pase)
   const pn=passAdd(m);passLine();
@@ -2544,7 +2563,7 @@ function openPass(){
     g.appendChild(it)});
   show('pass',true);
 }
-function toMenu(){showUpd();state='menu';reset();show('over',false);show('pause',false);show('hud',false);show('rank',false);show('ach',false);show('pass',false);renderMenu();show('menu',true);refreshMusic()}
+function toMenu(){retoMode=false;showUpd();state='menu';reset();show('over',false);show('pause',false);show('hud',false);show('rank',false);show('ach',false);show('pass',false);renderMenu();show('menu',true);refreshMusic()}
 
 /* ---------- logros ---------- */
 let achThisRun=0;const achQueue=[];let achT=0;const achRunNames=[];
@@ -2561,7 +2580,7 @@ function achCheck(live,silent){
     tortas100:S.tortas+(l?R.tortas:0)>=100, cuatro:CHARS.every(c=>chars.has(c.id)),
     familia:CHARS.every(c=>charUnlocked(c)),
     golosa:Math.max(S.bestDulces|0,l?Object.values(D).reduce((a,b)=>a+b,0):0)>=3,
-    repostera:UPGRADES.some(u=>upLv(u.id)>0), maestra:UPGRADES.some(u=>upLv(u.id)>=UP_MAX),
+    repostera:UPGRADES.some(u=>upLv(u.id)>0), maestra:UPGRADES.some(u=>upLv(u.id)>=UP_GOLD),dorada:UPGRADES.some(u=>upLv(u.id)>=UP_MAX),
     unamas:(S.continues|0)+(l?R.cont:0)>=1,
     casi:S.escapes+(l?R.escapes:0)>=1, fuera:S.scared+(l?R.scared:0)>=1,
     escurridiza:Math.max(S.bestEscapes,l?R.escapes:0)>=3,
@@ -2651,7 +2670,7 @@ function renderMenu(){
   $('setBtn').textContent=save.muted?'🔇':'⚙️';$('setBtn').title=save.muted?'Ajustes (sonido apagado)':'Ajustes';
   const wk=weekInfo();
   const pw=prevWinner();
-  $('retoPill').textContent=(pw&&wk.daysLeft>=5?`👑 ${cleanName(pw.n)} ganó la semana pasada · `:'')+`🎯 Desafío de la semana: ${wk.reto.name} · el próximo sale el lunes (${whenNext(wk)})`;
+  $('retoPill').textContent=(pw&&wk.daysLeft>=5?`👑 ${cleanName(pw.n)} ganó la semana pasada · `:'')+`🎯 Desafío de la semana: ${wk.reto.name} · ▶ jugalo acá · el próximo sale el lunes (${whenNext(wk)})`;
   $('retoPill').title=`Desafío de la semana: ${wk.reto.name}. El próximo sale el lunes (${whenNext(wk)}).`;
   renderCarousel();
   const can=canBuyAny();show('shopBadge',can);show('shopDot',can);
@@ -2881,7 +2900,8 @@ window.addEventListener('keydown',e=>{
 document.addEventListener('visibilitychange',()=>{if(state==='offer'&&!document.hidden)offerStart=performance.now()-offerUsed0; if(document.hidden){if(counting)cancelCount();pause();stopRunMusic()}else{refreshMusic()}});
 window.addEventListener('blur',()=>{if(counting)cancelCount();pause()});
 
-$('playBtn').onclick=start;
+$('playBtn').onclick=()=>{retoMode=false;start()};
+function startReto(){retoMode=true;show('rank',false);show('menu',false);start()} // desafío de la semana: sin mejoras
 $('againBtn').onclick=()=>{if(performance.now()-overT0>=600)start()};
 $('menuBtn').onclick=toMenu;
 $('pauseBtn').onclick=pause;
@@ -3084,7 +3104,8 @@ function setRankTab(t){
   const wk=weekInfo();show('retoBox',t==='reto');
   $('retoBox').innerHTML='';
   if(t==='reto'){const b=document.createElement('b');b.textContent=wk.reto.em+' '+wk.reto.name;
-    $('retoBox').append(b,`Vale tu mejor partida de esta semana. El próximo desafío sale el lunes (${whenNext(wk)}).`);
+    $('retoBox').append(b,`Se juega sin mejoras, así es parejo para todos. Vale tu mejor partida de esta semana. El próximo desafío sale el lunes (${whenNext(wk)}).`);
+    const go=document.createElement('button');go.className='btn bigBtn retoGo';go.textContent='🎯 ¡Jugar el desafío!';go.onclick=startReto;$('retoBox').append(go);
     const pw=prevWinner();
     if(pw){const d=document.createElement('div');d.className='kingLine';const rt=retoById(pw.r);
       d.textContent=`👑 La semana pasada ganó ${cleanName(pw.n)} con ${pw.v|0} ${rt.unit}`;$('retoBox').append(d)}}
@@ -3123,7 +3144,7 @@ $('rankJoin').onclick=()=>openAcct('over');
 $('rankLine').onclick=()=>openRank();
 $('rankBtn').onclick=()=>openRank();
 $('rankBtn2').onclick=()=>openRank();
-$('retoPill').onclick=()=>openRank('reto');
+$('retoPill').onclick=startReto; // el desafío se juega directo desde el menú
 $('rankBack').onclick=()=>show('rank',false);
 
 const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
