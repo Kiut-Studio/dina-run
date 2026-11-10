@@ -6,6 +6,7 @@
 - 🥳 Cosméticos de temporada: gorrito de fiesta (150 🍓) y confeti de fiesta (150 🍓), hechos con código.
 - 💘 Leandro a mitad de precio esa semana (250 🍓).
 - 🎁 El 25/11, 100 🍓 de regalo al abrir el juego, una vez por año.
+- Para probar el tema antes de tiempo: agregar `#tema=cumple` al final de la dirección del juego.
 - La versión que se muestra (y el aviso de novedades) pasa de 0.9.4, que había quedado sin subir, a 0.9.8.
 
 ## Versión 0.9.7 — octubre 2026: pase de Halloween con más metros por día

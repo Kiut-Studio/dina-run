@@ -1244,7 +1244,7 @@ const SEASONS=[
   {id:'halloween',name:'Halloween',em:'🎃',desde:[15,10],hasta:[2,11]},
   {id:'cumple',name:'Cumple de Leandro',em:'🎂',desde:[22,11],hasta:[28,11]}, // Leandro cumple el 25/11
 ];
-let seasonTest=null; // solo para pruebas
+let seasonTest=(/[#&]tema=([a-z]+)/.exec(location.hash)||[])[1]||null; // para probar un tema antes de su fecha: index.html#tema=cumple (solo cambia cómo se ve y suena)
 function seasonOf(d=new Date()){
   const v=(d.getMonth()+1)*100+d.getDate();
   return SEASONS.find(t=>{const a=t.desde[1]*100+t.desde[0],b=t.hasta[1]*100+t.hasta[0];return a<=b?(v>=a&&v<=b):(v>=a||v<=b)})||null;
@@ -1575,7 +1575,7 @@ function vib(p){if(save.set.vib&&navigator.vibrate)try{navigator.vibrate(p)}catc
 if(!save.st.runs&&(save.best>0||save.total>0)) save.st.runs=1; // ya había jugado antes de los logros
 function persist(){save.mod=Date.now();try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}stored={total:save.total|0,spent:save.spent|0,mod:save.mod};cloudSoon()} // con cuenta de Google, también sube a la nube (ver ☁️ nube)
 if(!Array.isArray(save.owned)) save.owned=['sofi'];
-const needOf=c=>c.id==='leandro'&&seasonNow()&&seasonNow().id==='cumple'?Math.round(c.need/2):c.need; // Leandro a mitad de precio en la semana de su cumple
+const needOf=c=>c.id==='leandro'&&(seasonOf()||{}).id==='cumple'?Math.round(c.need/2):c.need; // Leandro a mitad de precio en la semana de su cumple
 const charUnlocked=c=>!c.need||save.owned.includes(c.id); // los personajes se compran con frutillas (500 cada uno)
 if(!Array.isArray(save.cosm)){ // 0.2 o antes: los outfits que ya tenía por frutillas juntadas se conservan
   save.cosm=['default','none'];

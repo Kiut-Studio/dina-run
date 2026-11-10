@@ -28,7 +28,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 
 - **Web (HTML5 + canvas)**, todo el juego en `index.html`. Instalable como app (PWA) y pensado para GitHub Pages.
 - El progreso se guarda en el dispositivo (`localStorage`, clave `sofiRunner.v1`). Desde la 0.9, con cuenta de Google, también va a la nube; desde la 0.9.1 el ranking y el desafío semanal son de todos, en la nube (ver **Cuenta de Google y nube** y **Ranking de todos**).
-- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v16`).
+- **Comparte sitio con Dina Beat** (`kiut-studio.github.io`): por eso usa su propia clave de guardado y su `sw.js` solo borra sus propias cachés (las que empiezan con `sofi-runner-`). Al subir una versión nueva hay que subir el número de caché en `sw.js` (hoy `sofi-runner-v17`).
 - Paso fijo de 60 actualizaciones por segundo (misma velocidad en pantallas de 60, 90 o 120 Hz). Física: gravedad 0,95, salto −17, doble salto −14.
 - `#prueba` al final de la dirección activa `window.TR`, un acceso para las pruebas automáticas (incluye el simulador de partidas).
 
@@ -37,7 +37,7 @@ Se quitó todo lo propio de la familia: fiesta final con la vela y el video, cum
 ```
 index.html        el juego completo
 manifest.json     datos para instalarlo como app
-sw.js             copia sin conexión (caché sofi-runner-v16)
+sw.js             copia sin conexión (caché sofi-runner-v17)
 icon-192.png, icon-512.png, favicon-32.png
 assets/           dibujos de Sofía (WebP). dina_anim.webp: hoja con la caminata de Dina (2 cuadros) × 4 looks (sin disfraz, bruja, brujito, vampiro)
 docs/             capturas para el README
@@ -121,6 +121,7 @@ Antes del equilibrio, la experta llegaba a una mediana de 51.000 m (y Leandro hi
 - **Textos de Halloween (0.9.5):** lo que nombra tortas, pancitos o Kampitos tiene su versión en el campo `hw` (dulces en `DULCES`, desafíos en `RETOS`) y se muestra con `hwV()` solo con el tema prendido; los nombres de siempre no cambian. La ayuda usa `HELP_TXT`/`helpTheme()`, ¡Una más! cambia el botón en `offerContinue()` y las migas del escudo salen de `crumbC()`. Quedan como siempre (a propósito) los logros, las estadísticas y las novedades viejas, porque se juntan en todo el año. Al agregar otro tema: sumar su variante o generalizar `hwV`.
 - **Cumple de Leandro (0.9.8, 22 al 28/11; Leandro cumple el 25):** velitas sobre las tortas (`candles()`, código sobre el dibujo de Sofía), globos y banderines (`drawCumple()`), "Feliz cumpleaños" en la cajita (`BDAY_MEL`, dominio público), gorrito de fiesta y confeti de fiesta (150 🍓 cada uno, `season:'cumple'`), Leandro a mitad de precio (`needOf()`). El 25/11 `bdayGift()` regala 100 🍓 una vez por año (`save.bday`, se junta con el máximo en la nube; va aunque los temas estén apagados). Sin pase ni textos propios. Si Sofía dibuja un gorrito, reemplaza al de código.
 - `VERSION` (la que se ve en Ajustes y dispara el aviso de novedades) había quedado en 0.9.4; desde la 0.9.8 se sube con cada versión.
+- **Probar un tema antes de su fecha:** abrir el juego con `#tema=cumple` (o `#tema=halloween`) al final de la dirección. Cambia lo que se ve y se escucha; el precio de Leandro y el regalo del 25/11 siguen la fecha real.
 - Se activan solos por fecha y se pueden apagar en ⚙️ *Temas de temporada*.
 - Para agregar uno: sumar a `SEASONS` (id, nombre, fechas), dibujarlo en `drawBG` y marcar sus cosméticos con `season`.
 
