@@ -1,5 +1,10 @@
 # Novedades de Dina Run
 
+## Versión 0.10.1 — noviembre 2026: el desafío vuelve a contar todas las partidas
+
+- 🎯 Se quita el desafío aparte sin mejoras de la 0.10: a Leandro le preocupaba que desanimara a los veteranos (sus mejoras no servían y era fácil olvidarse de entrar) y la ventaja que quitaba era chica (las mejoras suman ~28 % de distancia a una experta; lo que más pesa es saber jugar).
+- 🧺 La ventaja realmente injusta era el valor del pancito (5 🍓 sin mejoras, 14 con todo). Desde el 16/11, el desafío "Más frutillas en una partida" pasa a ser **"Más frutillas y pancitos agarrados"**: cuenta piezas, no valor, así nadie siente que "le contaron menos". La semana del 9/11 sigue como estaba.
+
 ## Versión 0.10 — noviembre 2026: estrellas doradas y desafío parejo
 
 - ⭐ **Estrellas doradas:** cada mejora suma 3 niveles después del 4 (600, 1.000 y 1.500 🍓; 3.100 por mejora, 12.400 las cuatro). Imán 13,5 / 15 / 16,5 s y más alcance; escudo 16 / 18 / 20 s y 3 choques; pancito 11 / 12 / 14 🍓; Dina se cansa a los 4,5 / 4 / 3,5 s. Simulación: una experta con todo dorado corre parecido a una con todo al nivel 4 (mediana 15.254 m contra 18.561), así que no se vuelve fácil.
